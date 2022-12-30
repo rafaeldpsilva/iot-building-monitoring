@@ -1,20 +1,15 @@
-from asyncio.windows_events import NULL
-from flask import Flask, jsonify, request, make_response
-import jwt 
 import sys
+
+import jwt
+from flask import Flask, jsonify, request
+
 sys.path.append('.')
 import datetime
-from functools import wraps
-from pymongo import MongoClient
-import json
 import APIToken_Manager.tokenManager as TM
-from bson import ObjectId
+from APIToken_Manager.TokenRepository import TokenRepository
+from Building.BuildingService import BuildingService
 from flask_cors import CORS
-from bson.json_util import dumps
-import pandas as pd
-import pymongo
 from Core import core
-
 # class JSONEncoder(json.JSONEncoder):
 #     def default(self, o):
 #         if isinstance(o, ObjectId):
@@ -27,6 +22,7 @@ CORS(app)
 
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
+#? PORQUE GET E POST
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -34,28 +30,14 @@ def home():
 
 @app.route('/building/energy', methods=['GET', 'POST'])
 @TM.token_required
-def protected():
-    x = []
+def protected_energy():
+    building_service = BuildingService()
+    consumption = building_service.protected_energy(TM)
     
-    if TM.dados['Data Aggregation'] == 'individual':
-        for i in TM.dados['List of Resources']:
-            for iot in cr.iots:
-                if i['text'] == iot.name and i['text'] != 'Generation':
-                    x.append({"resource": iot.name, "values": iot.getPower()})
-                
-                if i['text'] == iot.name and i['text'] == 'Generation':
-                    x.append({"resource": iot.name, "values": iot.getGeneration()})
-    else:
-        x = {"resource": "end-user", "values": 0}
-        for i in TM.dados['List of Resources']:
-            for iot in cr.iots:
-                if i['text'] == iot.name:
-                    x['values'] += iot.getPower() 
-    
-    return jsonify({'consumption': x})
+    return jsonify({'consumption': consumption})
 
 @app.route('/generate_token', methods=['GET', 'POST'])
-def generate():
+def generate_token():
     token= ''
 
     if request.method == 'POST':
@@ -70,75 +52,18 @@ def generate():
         app.config['SECRET_KEY'],
         algorithm = "HS256")
     
-    #fetch data from the database
-    with open('./config/config.json') as config_file:
-        config = json.load(config_file)
+    token_repo = TokenRepository()
 
-    #conectar ao servidor e à base de dados
-    client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-    
-    db1 = client.Tokens_leftside
-        
-    #criar a tabela
-    tokensdb = db1.tokencol
+    token = token_repo.insert_token(token,request.get_json().get("exp"),datetime.datetime.now())
 
-    #inserir objeto em forma de dicionario em mongodb
-    tokensdb.insert_one({"token": token,
-                "expiration_time_minutes" : request.get_json().get("exp"),
-                "datetime": datetime.datetime.now(),
-                "active": True})
-                
     return jsonify({'token':token})
 
 @app.route('/building/historic', methods=['GET', 'POST'])
 @TM.token_required
-def protectedhist():
-    with open('./config/config.json') as config_file:
-        data1 = json.load(config_file)
+def protected_historic():
 
-    #connecting to database
-    client = MongoClient(str(data1['storage']['local']['server']) + ':' + str(data1['storage']['local']['port']))
-    db = client.BuildingRightSide
-    col = db.iots_reading
-    x = []
-
-    time = datetime.datetime.now() - datetime.timedelta(minutes=180) 
-    timeemb = datetime.datetime.now() - datetime.timedelta(minutes=int(TM.dados['Embargo Period']))
-    
-    indexArray = []
-    dataArray = []
-    columns = []
-    if TM.dados['Data Aggregation'] == 'sum':
-        columns.append("end-user")
-    getIndex = True;
-    for i in TM.dados['List of Resources']:
-        x = col.find( {"name": i['text'], 'datetime': { '$gt': str(time), '$lt' : str(timeemb)} } )
-        y = list(x)
-        if TM.dados['Data Aggregation'] == 'individual':
-            columns.append(i['text'])
-        index = 0
-        for entry in y:
-            if getIndex:
-                indexArray.append(datetime.datetime.strptime(entry["datetime"][:19], "%Y-%m-%d %H:%M:%S"))
-                dataArray.append([])
-                if TM.dados['Data Aggregation'] == 'sum':
-                    dataArray[index].append(0)
-            if TM.dados['Data Aggregation'] == 'individual':
-                dataArray[index].append(getvalue(entry['iot_values'], 'power'))
-            else:
-                dataArray[index][0] += getvalue(entry['iot_values'], 'power')
-            index += 1
-        if getIndex:
-            getIndex = False
-
-    df = pd.DataFrame(dataArray, index=indexArray, columns=columns)
-
-    if TM.dados["Time Aggregation"] == "5minutes":
-        df=df.groupby(df.index.floor('5T')).mean()
-    elif TM.dados["Time Aggregation"] == "15minutes":
-        df=df.groupby(df.index.floor('15T')).mean()
-    elif TM.dados["Time Aggregation"] == "60minutes":
-        df=df.groupby(df.index.floor('60T')).mean()
+    building_service = BuildingService()
+    building_service.protected_historic()
     
     return app.response_class(
         response= df.to_json(orient='index', date_format='iso'),
@@ -148,7 +73,7 @@ def protectedhist():
 
 @app.route('/building/rightside/totalpower', methods=['GET', 'POST'])
 @TM.token_required
-def rightside():
+def rightside_totalpower():
     data = cr.getTotalConsumption()
 
     return jsonify({'totalpower': data})
@@ -168,23 +93,8 @@ def correlations():
 @app.route('/building/forecast', methods=['GET'])
 @TM.token_required
 def forecast():
-    with open('./config/config.json') as config_file:
-        data1 = json.load(config_file)
-
-    #connecting to database
-    client = MongoClient(str(data1['storage']['local']['server']) + ':' + str(data1['storage']['local']['port']))
-    db = client.ForecastDay
-    col = db.forecastvalue
-    x = col.find().sort("_id", pymongo.DESCENDING).limit(1)
-    y = list(x)
-    df = pd.DataFrame(y)
-    
-    df.drop('_id', inplace=True, axis=1)
-    # df = df.iloc[1: , :]
-    # print(df)
-    # df.drop('0', inplace=True, axis=1)
-    # df_n = df.set_index('datetime')
-    # reversed_df = df_n.iloc[::-1]
+    building_service = BuildingService()
+    df = building_service.forecast()
 
     return app.response_class(
         response= df.to_json(orient='index', date_format='iso'),
