@@ -9,6 +9,7 @@ from StoringManager.StoringManager import storing
 import schedule
 from Monitoring.Monitoring import monitoring
 from Forecast.consumption_forecast import forecastday
+from Utils import utils
 import time
 
 class core(Thread):
@@ -23,8 +24,7 @@ class core(Thread):
 
     def run(self):
         #ler o ficheiro de configuração (decode do ficheiro)
-        with open('./config/config.json') as config_file:
-            config = json.load(config_file)
+        config = utils.get_config()
 
         #para cada elemento da key 'iots' dentro do ficheiro de configuração fazer
         for i in config["resources"]["iots"]:

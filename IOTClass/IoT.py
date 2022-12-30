@@ -3,7 +3,7 @@ from __future__ import print_function
 import json
 from threading import Thread
 from time import time, sleep
-
+from Utils import utils
 import requests
 
 
@@ -85,10 +85,9 @@ class IoT(Thread):
 
     def run(self):
         #retirar daqui
-        with open('./config/config.json') as config_file:
-            data = json.load(config_file)
+        config = utils.get_config()
 
         while True:
-            sleep(data['resources']['monitoring_period'] - time() % 1) # tempo dado no config (monitoring_period)
+            sleep(config['resources']['monitoring_period'] - time() % 1) # tempo dado no config (monitoring_period)
             self.updateValues()
 

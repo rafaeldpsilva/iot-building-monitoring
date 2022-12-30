@@ -1,10 +1,10 @@
 from pymongo import MongoClient
+from Utils import utils
 import json
 
 class TokenRepository:
     def __init__(self):
-        with open('./config/config.json') as config_file:
-            config = json.load(config_file)
+        config = utils.get_config()
 
         client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
         db1 = client.Tokens_leftside

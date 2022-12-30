@@ -1,10 +1,10 @@
 from pymongo import MongoClient
+from Utils import utils
 import json
 
 class BuildingRepository:
     def __init__(self):
-        with open('./config/config.json') as config_file:
-            config = json.load(config_file)
+        config = utils.get_config()
 
         self.client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
 
