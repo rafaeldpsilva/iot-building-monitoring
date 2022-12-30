@@ -1,32 +1,20 @@
 import datetime
-import math
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
-import os
-import pandas as pd
-import seaborn as sns
-import tensorflow as tf
-import time
-from sklearn.preprocessing import MinMaxScaler
 import json
-from pymongo import MongoClient
+import time
 
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
+import matplotlib as mpl
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from pymongo import MongoClient
+from sklearn.preprocessing import MinMaxScaler
+from Building.BuildingRepository import BuildingRepository
 
 mpl.rcParams['figure.figsize'] = (12, 6)
 mpl.rcParams['axes.grid'] = False
 
-#fetch data from the database
-with open('./config/config.json') as config_file:
-  config = json.load(config_file)
-
-#conectar ao servidor e à base de dados
-client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-        
-db = client.TotalPower
-col = db.powerrightside
+building_repo = BuildingRepository()
+col = building_repo.get_powerrightside_col()
 
 df = pd.DataFrame(list(col.find()))
 
