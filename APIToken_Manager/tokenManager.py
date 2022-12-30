@@ -1,23 +1,18 @@
-from flask import Flask, jsonify, request, make_response
-import jwt 
-import datetime
-from functools import wraps
-from pymongo import MongoClient
 import json
+from functools import wraps
+
+import jwt
+from flask import Flask, jsonify, request
+
+from APIToken_Manager.TokenRepository import TokenRepository
 
 dados = {}
-
 app = Flask(__name__)
-
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
-with open('./config/config.json') as config_file:
-    data1 = json.load(config_file)
 
-#connecting to database
-client = MongoClient(str(data1['storage']['local']['server']) + ':' + str(data1['storage']['local']['port']))
-db = client.Tokens_leftside
-col = db.tokencol
+token_repo = TokenRepository()
+col = token_repo.get_leftside_tokencol()
 
 def token_required(f):
     @wraps(f)
