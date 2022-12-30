@@ -1,13 +1,12 @@
 import datetime
-import json
 import time
 
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from pymongo import MongoClient
 from sklearn.preprocessing import MinMaxScaler
+
 from Building.BuildingRepository import BuildingRepository
 
 mpl.rcParams['figure.figsize'] = (12, 6)

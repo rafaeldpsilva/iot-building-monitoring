@@ -1,4 +1,3 @@
-import json
 from functools import wraps
 
 import jwt

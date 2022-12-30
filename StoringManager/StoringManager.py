@@ -1,8 +1,7 @@
-import json
 import sys
 from threading import Thread
+
 from Building.BuildingRepository import BuildingRepository
-from pymongo import MongoClient
 
 sys.path.append(".")
 from time import time, sleep
