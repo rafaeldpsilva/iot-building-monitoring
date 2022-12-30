@@ -1,7 +1,7 @@
 import json
 import sys
 from threading import Thread
-
+from Building.BuildingRepository import BuildingRepository
 from pymongo import MongoClient
 
 sys.path.append(".")
@@ -24,40 +24,15 @@ class storing(Thread):
     
     #save consumption to a database
     def save(self):
-
-        with open('./config/config.json') as config_file:
-            config = json.load(config_file)
-
-        #conectar ao servidor e à base de dados
-        client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-        
-        db = client.BuildingRightSide
-        
-        #criar a tabela
-        iots = db.iots_reading
-        
+        building_repo = BuildingRepository()
         #inserir objeto em forma de dicionario em mongodb
         for i in self.core.iots:
-            iots.insert_one({"name": i.name, 
-                    "type": i.type, 
-                    "iot_values" : i.values, 
-                    "datetime" : str(datetime.now())})
+            building_repo.insert_iot(i.name, i.type, i.values, str(datetime.now()))
     
-    def savetotal(self):
-        with open('./config/config.json') as config_file:
-            config = json.load(config_file)
-
-        #conectar ao servidor e à base de dados
-        client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
+    def savetotal(self):        
+        building_repo = BuildingRepository()
+        building_repo.insert_totalpower(self.core.getTotalConsumption(), str(datetime.now()))
         
-        db = client.TotalPower
-        
-        #criar a tabela
-        total = db.powerrightside
-        
-        #inserir objeto em forma de dicionario em mongodb
-        total.insert_one({"totalpower": self.core.getTotalConsumption(), 
-                    "datetime" : str(datetime.now())})
 
     #run method of thread monitoring
     #get consumption per x time

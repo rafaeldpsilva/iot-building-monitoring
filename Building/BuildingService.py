@@ -25,7 +25,7 @@ class BuildingService:
 
     def protected_historic():
         col = self.building_repo.get_iots_reading_col()
-        x = []  #! O QUE É ISTO
+        x = []  #! O QUE É ISTO - X e Y
 
         time = datetime.datetime.now() - datetime.timedelta(minutes=180) 
         timeemb = datetime.datetime.now() - datetime.timedelta(minutes=int(TM.dados['Embargo Period']))

@@ -9,6 +9,13 @@ pip install -r reqs.txt
 
 To start the application run [`main.py`](/APIToken_Manager/main.py)
 
+
+### Notas Rafael
+
+- criar novo mecanismo para ler configurações (em vez de ler todas as vezes, ler apenas no inicio)
+
+
+QUAIS É QUE ESTÃO FEITAS?
 Tarefas
 
 - ligação entre  python e a API do edificio para obter dados de dispositivos
