@@ -1,13 +1,12 @@
-from threading import Thread
-import threading
-import sys
 import json
+import sys
+from threading import Thread
+
 from pymongo import MongoClient
+
 sys.path.append(".")
 from time import time, sleep
 from datetime import datetime
-
-
 class storing(Thread):
     def __init__ (self, core):
         Thread.__init__(self)

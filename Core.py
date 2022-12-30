@@ -1,14 +1,14 @@
-from threading import Thread
-import threading
-import sys
 import json
+import sys
+import threading
+from threading import Thread
+
 sys.path.append(".")
-from pymongo import MongoClient
 from IOTClass.IoT import IoT
 from StoringManager.StoringManager import storing
 import schedule
 from Monitoring.Monitoring import monitoring
-from Forecast.consumption_forecast import forecastday, forecasthour
+from Forecast.consumption_forecast import forecastday
 import time
 
 class core(Thread):
@@ -17,7 +17,7 @@ class core(Thread):
         self.iots = []
     
     def run_thread_schedule(self, job):
-        forecast = threading.Thread(target=job)
+        forecast = threading.Thread(target=job)  #!bad variable name
         forecast.start()
         return
 

@@ -1,11 +1,11 @@
 from __future__ import print_function
-from threading import Thread
-import threading
+
 import json
-import os
-import requests
-from flask import request
+from threading import Thread
 from time import time, sleep
+
+import requests
+
 
 class IoT(Thread):
     def __init__(self, config):

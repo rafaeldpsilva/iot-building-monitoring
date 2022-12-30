@@ -1,11 +1,9 @@
+import sys
 from datetime import datetime
 from threading import Thread
-import threading
-import sys
-import json
 from time import time, sleep
+
 sys.path.append(".")
-from IOTClass.IoT import IoT
 
 
 class monitoring(Thread):
