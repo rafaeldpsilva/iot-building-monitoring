@@ -1,4 +1,14 @@
 # TioCPS
+
+## Quickstart
+
+To quickly install all the needed dependencies run:
+```
+pip install -r reqs.txt
+```
+
+To start the application run [`main.py`](/APIToken_Manager/main.py)
+
 Tarefas
 
 - ligação entre  python e a API do edificio para obter dados de dispositivos
