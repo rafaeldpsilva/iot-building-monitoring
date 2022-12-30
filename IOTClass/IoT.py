@@ -24,41 +24,41 @@ class IoT(Thread):
         #for value in self.values:
         #    value["value"] = 0
     
-    def getPower(self):
+    def get_power(self):
         for value in self.values:
             if value["type"] == "power":
                 return value["values"]
         return 0
     
-    def getVoltage(self):
+    def get_voltage(self):
         for value in self.values:
             if value["type"] == "voltage":
                 return value["values"]
         return 0
     
-    def getCurrent(self):
+    def get_current(self):
         for value in self.values:
             if value["type"]  == "current":
                 return value["values"]
         return 0
 
-    def getValue(self, valueName):
+    def get_value(self, valueName):
         for value in self.values:
             if value["type"]  == valueName:
                 return value["values"]
         return 0
     
-    def getGeneration(self):
+    def get_generation(self):
         for value in self.values:
             if value["type"] == "generation":
                 return value["values"]
         return 0
     
-    def getState(self):
+    def get_state(self):
         return self.state
 
     #methods to get data from iot devices
-    def updateValues(self):
+    def update_values(self):
         data = None
         while(data is None):
             try:
@@ -89,5 +89,5 @@ class IoT(Thread):
 
         while True:
             sleep(config['resources']['monitoring_period'] - time() % 1) # tempo dado no config (monitoring_period)
-            self.updateValues()
+            self.update_values()
 

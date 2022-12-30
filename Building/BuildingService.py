@@ -11,16 +11,16 @@ class BuildingService:
             for i in TM.dados['List of Resources']:
                 for iot in cr.iots:
                     if i['text'] == iot.name and i['text'] != 'Generation':
-                        consumption.append({"resource": iot.name, "values": iot.getPower()})
+                        consumption.append({"resource": iot.name, "values": iot.get_power()})
                     
                     if i['text'] == iot.name and i['text'] == 'Generation':
-                        consumption.append({"resource": iot.name, "values": iot.getGeneration()})
+                        consumption.append({"resource": iot.name, "values": iot.get_generation()})
         else:
             consumption = {"resource": "end-user", "values": 0}
             for i in TM.dados['List of Resources']:
                 for iot in cr.iots:
                     if i['text'] == iot.name:
-                        consumption['values'] += iot.getPower() 
+                        consumption['values'] += iot.get_power()
         return consumption
 
     def protected_historic():

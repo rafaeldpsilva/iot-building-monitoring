@@ -9,14 +9,14 @@ import APIToken_Manager.tokenManager as TM
 from APIToken_Manager.TokenRepository import TokenRepository
 from Building.BuildingService import BuildingService
 from flask_cors import CORS
-from Core import core
+from Core import Core
 # class JSONEncoder(json.JSONEncoder):
 #     def default(self, o):
 #         if isinstance(o, ObjectId):
 #             return str(o)
 #         return json.JSONEncoder.default(self, o)
 
-cr = core()
+cr = Core()
 app = Flask(__name__)
 CORS(app)
 
@@ -80,9 +80,9 @@ def rightside_totalpower():
 
 @app.route('/building/rightside/generation', methods=['GET', 'POST'])
 @TM.token_required
-def rightsidegeneration():
+def rightside_generation():
     for iot in cr.iots:
-        data = iot.getGeneration()
+        data = iot.get_generation()
 
     return jsonify({'Generation' : data})
 
@@ -102,7 +102,7 @@ def forecast():
         mimetype='application/json'
     )
 
-def getvalue(array, type):
+def get_value(array, type):
     for value in array:
         if value['type'] == type:
             #print(value)

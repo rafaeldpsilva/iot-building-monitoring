@@ -5,14 +5,14 @@ from threading import Thread
 
 sys.path.append(".")
 from IOTClass.IoT import IoT
-from StoringManager.StoringManager import storing
+from StoringManager.StoringManager import StoringManager
 import schedule
-from Monitoring.Monitoring import monitoring
+from Monitoring.Monitoring import Monitoring
 from Forecast.consumption_forecast import forecastday
 from Utils import utils
 import time
 
-class core(Thread):
+class Core(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.iots = []
@@ -35,13 +35,13 @@ class core(Thread):
         
         #iniciar uma thread de storing (storing(self)) :: enviar o tempo de gravação da configuração (config[storage][storing_frequency])
         #start da thread de storing
-        sto = storing(self)
+        sto = StoringManager(self)
         sto.setDaemon(True)
         sto.start()
         
         #iniciar uma thread de monitoring (monitoring(self))
         #start da thread de monitoring
-        mon = monitoring(self)
+        mon = Monitoring(self)
         mon.setDaemon(True)
         mon.start()
 
@@ -65,13 +65,13 @@ class core(Thread):
     def getTotalConsumption(self):
         totalPower = 0
         for iot in self.iots:
-            totalPower += iot.getPower()
+            totalPower += iot.get_power()
         return totalPower
         
     def getTotalCurrent(self):
         totalCurrent = 0
         for iot in self.iots:
-            totalCurrent += iot.getCurrent()
+            totalCurrent += iot.get_current()
         return totalCurrent
 
 

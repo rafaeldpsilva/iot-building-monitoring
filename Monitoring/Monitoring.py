@@ -6,13 +6,13 @@ from time import time, sleep
 sys.path.append(".")
 
 
-class monitoring(Thread):
+class Monitoring(Thread):
     def __init__ (self, core):
         Thread.__init__(self)
         self.core = core
 
     #Stop Monitoring
-    def stopMonitoring(self):
+    def stop_monitoring(self):
         sys.exit()
         return
 
