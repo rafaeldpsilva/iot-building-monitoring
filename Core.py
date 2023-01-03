@@ -1,22 +1,21 @@
-import json
 import sys
 import threading
 from threading import Thread
-
-sys.path.append(".")
+import time
+import schedule
 from IOTClass.IoT import IoT
 from StoringManager.StoringManager import StoringManager
-import schedule
 from Monitoring.Monitoring import Monitoring
 from Forecast.consumption_forecast import forecastday
 from Utils import utils
-import time
+
+sys.path.append(".")
 
 class Core(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.iots = []
-    
+
     def run_thread_schedule(self, job):
         forecast = threading.Thread(target=job)  #!bad variable name
         forecast.start()
@@ -29,46 +28,49 @@ class Core(Thread):
         #para cada elemento da key 'iots' dentro do ficheiro de configuração fazer
         for i in config["resources"]["iots"]:
             iot = IoT(i)
-            iot.setDaemon(True)
+            iot.daemon = True
             iot.start()
             self.iots.append(iot)
-        
-        #iniciar uma thread de storing (storing(self)) :: enviar o tempo de gravação da configuração (config[storage][storing_frequency])
+
+        #iniciar uma thread de storing (storing(self)) :: enviar o tempo de gravação
+        #da configuração (config[storage][storing_frequency])
         #start da thread de storing
-        sto = StoringManager(self)
-        sto.setDaemon(True)
-        sto.start()
-        
+        storing_manager = StoringManager(self)
+        storing_manager.daemon = True
+        storing_manager.start()
+
         #iniciar uma thread de monitoring (monitoring(self))
         #start da thread de monitoring
-        mon = Monitoring(self)
-        mon.setDaemon(True)
-        mon.start()
+        monitoring = Monitoring(self)
+        monitoring.daemon = True
+        monitoring.start()
 
         schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)    
-        
+
         while 1:
             schedule.run_pending()
             time.sleep(1)
 
-        ########### o que isto faz é de segundo a segundo print(core.getTotalConsumption())
+        ########### o que isto faz é de segundo a segundo print(core.get_total_consumption())
         #join das threads
+        #!for i, iot in enumerate(self.iots):
+        #!    v.join() 
         for i in range(len(self.iots)):
             self.iots[i].join()
-        
-        sto.join()
-        mon.join()
+
+        storing_manager.join()
+        monitoring.join()
         #iniciar os agendamentos dos forecasts (para cada um deles deve-se enviar o 'self')
         #schedule.every().day.at("22:00").do(forecastday())
         #schedule.every().hour.at(":15").do(forecasthour()) 
-        
-    def getTotalConsumption(self):
+
+    def get_total_consumption(self):
         totalPower = 0
         for iot in self.iots:
             totalPower += iot.get_power()
         return totalPower
-        
-    def getTotalCurrent(self):
+
+    def get_total_current(self):
         totalCurrent = 0
         for iot in self.iots:
             totalCurrent += iot.get_current()
@@ -76,4 +78,3 @@ class Core(Thread):
 
 
 print("\nExiting the Program!!!")
-

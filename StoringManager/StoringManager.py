@@ -30,7 +30,7 @@ class StoringManager(Thread):
     
     def save_total_consumption(self):
         building_repo = BuildingRepository()
-        building_repo.insert_totalpower(self.core.getTotalConsumption(), str(datetime.now()))
+        building_repo.insert_totalpower(self.core.get_total_consumption(), str(datetime.now()))
         
 
     #run method of thread monitoring 

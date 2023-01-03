@@ -33,7 +33,7 @@ def home():
 def protected_energy():
     building_service = BuildingService()
     consumption = building_service.protected_energy(TM)
-    
+
     return jsonify({'consumption': consumption})
 
 @app.route('/generate_token', methods=['GET', 'POST'])
@@ -48,10 +48,10 @@ def generate_token():
             'Time Aggregation' : request.get_json().get("timeaggregation"), 
             'Embargo Period' : request.get_json().get("embargo"),
             'exp' : datetime.datetime.now() + datetime.timedelta(minutes = request.get_json().get("exp"))
-        }, 
+        },
         app.config['SECRET_KEY'],
         algorithm = "HS256")
-    
+
     token_repo = TokenRepository()
 
     token = token_repo.insert_token(token,request.get_json().get("exp"),datetime.datetime.now())
@@ -64,7 +64,7 @@ def protected_historic():
 
     building_service = BuildingService()
     building_service.protected_historic()
-    
+
     return app.response_class(
         response= df.to_json(orient='index', date_format='iso'),
         status=200,
@@ -74,7 +74,7 @@ def protected_historic():
 @app.route('/building/rightside/totalpower', methods=['GET', 'POST'])
 @TM.token_required
 def rightside_totalpower():
-    data = cr.getTotalConsumption()
+    data = cr.get_total_consumption()
 
     return jsonify({'totalpower': data})
 
