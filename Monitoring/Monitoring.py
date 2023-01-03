@@ -14,7 +14,6 @@ class Monitoring(Thread):
     #Stop Monitoring
     def stop_monitoring(self):
         sys.exit()
-        return
 
     def run(self):
         sleep(5 - time() % 1)
@@ -24,8 +23,3 @@ class Monitoring(Thread):
             print("Total consumption: " + str(self.core.get_total_consumption()))
             print("Total current: " + str(self.core.get_total_current()))
             print()
-        return
-
-
-
-       

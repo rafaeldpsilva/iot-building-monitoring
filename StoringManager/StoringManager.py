@@ -1,11 +1,10 @@
 import sys
 from threading import Thread
-
+from time import time, sleep
+from datetime import datetime
 from Building.BuildingRepository import BuildingRepository
 
 sys.path.append(".")
-from time import time, sleep
-from datetime import datetime
 class StoringManager(Thread):
     def __init__(self, core):
         Thread.__init__(self)
@@ -13,13 +12,11 @@ class StoringManager(Thread):
 
     #Erase consumption from the database
     def erase_consumption(self):
-        
         return
 
     #Stop Monitoring
     def stop_saving(self):
         sys.exit()
-        return
     
     #save consumption to a database
     def save_consumption(self):
@@ -47,8 +44,3 @@ class StoringManager(Thread):
             #OU
             #for iot in core.iots:
                 #save(iot)
-        return
-
-
-
-       
