@@ -1,7 +1,7 @@
-import pymongo
-from Building.BuildingRepository import BuildingRepository
 import datetime
+import pymongo
 import pandas as pd
+from Building.BuildingRepository import BuildingRepository
 class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
@@ -41,11 +41,12 @@ class BuildingService:
         columns = []
         if TM.dados['Data Aggregation'] == 'sum':
             columns.append("end-user")
+
         getIndex = True
         for i in TM.dados['List of Resources']:
             x = col.find( {"name": i['text'], 'datetime': { '$gt': str(time), '$lt' : str(timeemb)} } )
             y = list(x)
-            if TM.dados['Data Aggregation'] == 'individual':
+            if TM.dados['Data Aggregation'] == 'individual':        #? PARA QUE SERVE
                 columns.append(i['text'])
             index = 0
             for entry in y:
@@ -76,6 +77,7 @@ class BuildingService:
     def forecast(self):
         col = self.building_repo.get_forecastvalue_col
 
+        #? o que faz isto
         x = col.find().sort("_id", pymongo.DESCENDING).limit(1)
         y = list(x)
         df = pd.DataFrame(y)

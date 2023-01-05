@@ -2,9 +2,9 @@ import sys
 from threading import Thread
 from time import time, sleep
 from datetime import datetime
+sys.path.append(".")
 from Building.BuildingRepository import BuildingRepository
 
-sys.path.append(".")
 class StoringManager(Thread):
     def __init__(self, core):
         Thread.__init__(self)

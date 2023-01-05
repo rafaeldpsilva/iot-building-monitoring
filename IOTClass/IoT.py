@@ -3,8 +3,8 @@ from __future__ import print_function
 import json
 from threading import Thread
 from time import time, sleep
-from Utils import utils
 import requests
+from Utils import utils
 
 
 class IoT(Thread):

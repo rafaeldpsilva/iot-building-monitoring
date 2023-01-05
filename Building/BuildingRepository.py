@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from Utils import utils
-import json
 
 
 class BuildingRepository:

@@ -3,19 +3,19 @@ import datetime
 from flask_cors import CORS
 import jwt
 from flask import Flask, jsonify, request
-from Core import Core
+sys.path.append('.')
+from Building.BuildingService import BuildingService
 import APIToken_Manager.tokenManager as TM
 from APIToken_Manager.TokenRepository import TokenRepository
-from Building.BuildingService import BuildingService
+from App.Core import Core
 
-sys.path.append('.')
 # class JSONEncoder(json.JSONEncoder):
 #     def default(self, o):
 #         if isinstance(o, ObjectId):
 #             return str(o)
 #         return json.JSONEncoder.default(self, o)
 
-cr = Core()
+
 app = Flask(__name__)
 CORS(app)
 
@@ -37,7 +37,7 @@ def protected_energy():
 
     return jsonify({'consumption': consumption})
 
-
+#! Deveria ser divido entre GET REQUEST E POST REQUEST
 @app.route('/generate_token', methods=['GET', 'POST'])
 def generate_token():
     token = ''
@@ -49,7 +49,7 @@ def generate_token():
             'Data Aggregation': request.get_json().get("dataaggregation"),
             'Time Aggregation': request.get_json().get("timeaggregation"),
             'Embargo Period': request.get_json().get("embargo"),
-            'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp"))
+            'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp")) #? exp é expiration
         },
             app.config['SECRET_KEY'],
             algorithm="HS256")
@@ -112,6 +112,7 @@ def forecast():
 
 
 if __name__ == "__main__":
+    cr = Core()
     cr.daemon = True
     cr.start()
 
