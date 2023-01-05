@@ -3,13 +3,13 @@ import threading
 from threading import Thread
 import time
 import schedule
+sys.path.append(".")
 from IOTClass.IoT import IoT
 from StoringManager.StoringManager import StoringManager
 from Monitoring.Monitoring import Monitoring
 from Forecast.consumption_forecast import forecastday
 from Utils import utils
 
-sys.path.append(".")
 
 class Core(Thread):
     def __init__(self):
@@ -17,7 +17,7 @@ class Core(Thread):
         self.iots = []
 
     def run_thread_schedule(self, job):
-        forecast = threading.Thread(target=job)  #!bad variable name
+        forecast = threading.Thread(target=job)
         forecast.start()
         return
 
