@@ -1,31 +1,27 @@
 import datetime
 import pymongo
 import pandas as pd
-from Building.BuildingRepository import BuildingRepository
+from database.BuildingRepository import BuildingRepository
 class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
 
     def protected_energy(self, TM, cr):
         consumption = []
-
+        iots = cr.iots
         if TM.dados['Data Aggregation'] == 'individual':
-
-
-            #! ALTERAR LOOP PARA get_iot(name) retira um for loop
-            for i in TM.dados['List of Resources']:
-                for iot in cr.iots:
-                    if i['text'] == iot.name and i['text'] != 'Generation':
-                        consumption.append({"resource": iot.name, "values": iot.get_power()})
-
-                    if i['text'] == iot.name and i['text'] == 'Generation':
-                        consumption.append({"resource": iot.name, "values": iot.get_generation()})
+            for resource in TM.dados['List of Resources']:
+                for iot in iots:
+                    if resource['text'] == iot.name:
+                        if resource['text'] != 'Generation':
+                            consumption.append({"resource": iot.name, "values": iot.get_power()})
+                        else:
+                            consumption.append({"resource": iot.name, "values": iot.get_generation()})
         else:
             consumption = {"resource": "end-user", "values": 0}
-            #! ALTERAR LOOP PARA get_iot(name) retira um for loop
-            for i in TM.dados['List of Resources']:
-                for iot in cr.iots:
-                    if i['text'] == iot.name:
+            for resource in TM.dados['List of Resources']:
+                for iot in iots:
+                    if resource['text'] == iot.name:
                         consumption['values'] += iot.get_power()
         return consumption
 

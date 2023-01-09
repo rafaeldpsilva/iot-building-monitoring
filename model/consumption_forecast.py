@@ -7,7 +7,7 @@ import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 
-from Building.BuildingRepository import BuildingRepository
+from database.BuildingRepository import BuildingRepository
 
 mpl.rcParams['figure.figsize'] = (12, 6)
 mpl.rcParams['axes.grid'] = False
@@ -55,6 +55,7 @@ df_1h["datetime"] = df_1h.index
 df_1h = df_1h.reset_index(drop=True)
 Datetime = pd.to_datetime(df_1h.pop('datetime'), format='%Y-%m-%d %H:%M:%S')
 timestamp_s = Datetime.map(datetime.datetime.timestamp)
+
 # Converting 1D time to 2D time
 days = 24 * 60 * 60
 year = 366 * days

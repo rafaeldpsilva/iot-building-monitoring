@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from Utils import utils
+from utils import utils
 
 
 class BuildingRepository:

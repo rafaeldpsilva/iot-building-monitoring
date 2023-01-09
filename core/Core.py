@@ -4,11 +4,11 @@ from threading import Thread
 import time
 import schedule
 sys.path.append(".")
-from IOTClass.IoT import IoT
-from StoringManager.StoringManager import StoringManager
-from Monitoring.Monitoring import Monitoring
-from Forecast.consumption_forecast import forecastday
-from Utils import utils
+from utils.utils import get_config
+from model.IoT import IoT
+from model.StoringManager import StoringManager
+from model.Monitoring import Monitoring
+from model.consumption_forecast import forecastday
 
 
 class Core(Thread):
@@ -23,11 +23,11 @@ class Core(Thread):
 
     def run(self):
         #ler o ficheiro de configuração (decode do ficheiro)
-        config = utils.get_config()
+        config = get_config()
 
         #para cada elemento da key 'iots' dentro do ficheiro de configuração fazer
         for i in config["resources"]["iots"]:
-            iot = IoT(i)
+            iot = IoT(i, config['resources']['monitoring_period'])
             iot.daemon = True
             iot.start()
             self.iots.append(iot)

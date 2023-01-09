@@ -1,6 +1,5 @@
 from pymongo import MongoClient
-from Utils import utils
-import json
+from utils import utils
 
 
 class TokenRepository:

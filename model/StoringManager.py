@@ -3,7 +3,7 @@ from threading import Thread
 from time import time, sleep
 from datetime import datetime
 sys.path.append(".")
-from Building.BuildingRepository import BuildingRepository
+from database.BuildingRepository import BuildingRepository
 
 class StoringManager(Thread):
     def __init__(self, core):

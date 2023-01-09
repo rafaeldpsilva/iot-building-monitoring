@@ -4,10 +4,10 @@ from flask_cors import CORS
 import jwt
 from flask import Flask, jsonify, request
 sys.path.append('.')
-from Building.BuildingService import BuildingService
-import APIToken_Manager.tokenManager as TM
-from APIToken_Manager.TokenRepository import TokenRepository
-from App.Core import Core
+from services.BuildingService import BuildingService
+import api.tokenManager as TM
+from database.TokenRepository import TokenRepository
+from core.Core import Core
 
 # class JSONEncoder(json.JSONEncoder):
 #     def default(self, o):

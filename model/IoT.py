@@ -4,11 +4,10 @@ import json
 from threading import Thread
 from time import time, sleep
 import requests
-from Utils import utils
 
 
 class IoT(Thread):
-    def __init__(self, config):
+    def __init__(self, config, config_monitoring):
         Thread.__init__(self)
         self.name = config["name"]
         print(self.name)
@@ -19,6 +18,7 @@ class IoT(Thread):
         self.values = config["values"] 
         print(self.values) # [{type:, tag:, dataType:, value},{type:, tag:, dataType:, value}]
         self.control = config["control"]
+        self.monitoring_period = config_monitoring
         #self.store = iot_config.store
 
         #for value in self.values:
@@ -53,9 +53,6 @@ class IoT(Thread):
             if value["type"] == "generation":
                 return value["values"]
         return 0
-    
-    def get_state(self):
-        return self.state
 
     #methods to get data from iot devices
     def update_values(self):
@@ -84,10 +81,7 @@ class IoT(Thread):
             value['values'] = round(path, 4)
 
     def run(self):
-        #retirar daqui
-        config = utils.get_config()
-
         while True:
-            sleep(config['resources']['monitoring_period'] - time() % 1) # tempo dado no config (monitoring_period)
+            sleep(self.monitoring_period - time() % 1) # tempo dado no config (monitoring_period)
             self.update_values()
 

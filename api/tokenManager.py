@@ -3,7 +3,7 @@ from functools import wraps
 import jwt
 from flask import Flask, jsonify, request
 
-from APIToken_Manager.TokenRepository import TokenRepository
+from database.TokenRepository import TokenRepository
 
 dados = {}
 app = Flask(__name__)
