@@ -8,10 +8,12 @@ class BuildingRepository:
 
         self.client = MongoClient(
             str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
+        self.building = self.client.BuildingLeftSide
+        self.building_forecast = self.client.Forecast.forecastvaluerightside
+        self.building_totalpower = self.client.TotalPower.powerrightside
 
     def get_iots_reading_col(self):
-        db = self.client.BuildingRightSide
-        return db.iots_reading
+        return self.building.iots_reading
 
     def get_forecastvalue_col(self):
         #? devia haver class forecastRepo
@@ -19,25 +21,17 @@ class BuildingRepository:
         return db.forecastvalue
 
     def get_powerrightside_col(self):
-        #? devia haver class forecastRepo
-        db = self.client.TotalPower
-        return db.powerrightside
+        return self.building_totalpower
 
     def insert_totalpower(self, totalpower, datetime):
-        db = self.client.TotalPower
-        # criar a tabela
-        total = db.powerrightside
-        # inserir objeto em forma de dicionario em mongodb
-        total.insert_one({"totalpower": totalpower, "datetime": datetime})
+        self.building_totalpower.insert_one({"totalpower": totalpower, "datetime": datetime})
 
     def insert_iot(self, name, type, iot_values, datetime):
         iots = self.get_iots_reading_col()
         iots.insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
 
     def insert_forecast_rightside(self, forecast_power, datetime):
-        db = self.client.Forecast
-        forecastdb = db.forecastvaluerightside
-        forecastdb.insert_one({"forecast_power": forecast_power, "datetime": datetime})
+        self.building_forecast.insert_one({"forecast_power": forecast_power, "datetime": datetime})
 
     def insert_forecastday(self, iat, datetime):
         db = self.client.ForecastDay
