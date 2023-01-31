@@ -8,19 +8,19 @@ class BuildingRepository:
 
         self.client = MongoClient(
             str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-        self.building = self.client.BuildingLeftSide
+        self.building_iot_reading = self.client.BuildingLeftSide.iots_reading
         self.building_forecast = self.client.Forecast.forecastvaluerightside
         self.building_totalpower = self.client.TotalPower.powerrightside
 
     def get_iots_reading_col(self):
-        return self.building.iots_reading
+        return self.building_iot_reading
 
     def get_forecastvalue_col(self):
         #? devia haver class forecastRepo
         db = self.client.ForecastDay
         return db.forecastvalue
 
-    def get_powerrightside_col(self):
+    def get_totalpower_col(self):
         return self.building_totalpower
 
     def insert_totalpower(self, totalpower, datetime):
@@ -30,7 +30,7 @@ class BuildingRepository:
         iots = self.get_iots_reading_col()
         iots.insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
 
-    def insert_forecast_rightside(self, forecast_power, datetime):
+    def insert_forecast(self, forecast_power, datetime):
         self.building_forecast.insert_one({"forecast_power": forecast_power, "datetime": datetime})
 
     def insert_forecastday(self, iat, datetime):

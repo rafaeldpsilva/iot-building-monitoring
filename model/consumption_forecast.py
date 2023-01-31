@@ -13,7 +13,7 @@ mpl.rcParams['figure.figsize'] = (12, 6)
 mpl.rcParams['axes.grid'] = False
 
 building_repo = BuildingRepository()
-col = building_repo.get_powerrightside_col()
+col = building_repo.get_totalpower_col()
 
 df = pd.DataFrame(list(col.find()))
 
@@ -315,7 +315,7 @@ def forecasthour():
     print(Pred.iat[0, 0])
     print(Pred)
 
-    building_repo.insert_forecast_rightside(str(Pred.iat[0, 0]),datetime.datetime.now() + datetime.timedelta(minutes=45))
+    building_repo.insert_forecast(str(Pred.iat[0, 0]), datetime.datetime.now() + datetime.timedelta(minutes=45))
     return Pred
 
 
