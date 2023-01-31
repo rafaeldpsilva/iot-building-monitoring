@@ -33,9 +33,15 @@ In order to change the database access you need to change the following files:
 [BuildingRepository](./database/BuildingRepository.py) :
 
 ```
-self.building =self.client.building_iot_reading_col
+self.building_iot_reading = self.client.Building.iots_reading
 self.building_forecast =self.client.Forecast.building_forecast_col
 self.building_totalpower =self.client.TotalPower.buidling_totalpower_col
+```
+
+[TokenRepository](./database/TokenRepository.py) :
+
+```
+self.tokensdb = client.Tokens_BUILDING_EXAMPLE.tokencol
 ```
 
 ### Notas Rafael
