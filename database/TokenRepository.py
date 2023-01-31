@@ -7,12 +7,10 @@ class TokenRepository:
         config = utils.get_config()
 
         client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-        db1 = client.Tokens_leftside
-
         # criar a tabela
-        self.tokensdb = db1.tokencol
+        self.tokensdb = client.Tokens_leftside.tokencol
 
-    def get_leftside_tokencol(self):
+    def get_tokencol(self):
         return self.tokensdb
 
     def insert_token(self, token, expiration_time_minutes, datetime):

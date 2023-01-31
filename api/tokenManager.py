@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 token_repo = TokenRepository()
-col = token_repo.get_leftside_tokencol()
+col = token_repo.get_tokencol()
 
 
 def token_required(f):
