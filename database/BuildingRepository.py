@@ -17,28 +17,36 @@ class BuildingRepository:
 
     def get_forecastvalue_col(self):
         #? devia haver class forecastRepo
-        db = self.client.ForecastDay
-        return db.forecastvalue
+        return self.client.ForecastDay.forecastvalue
 
     def get_totalpower_col(self):
         return self.building_totalpower
 
     def insert_totalpower(self, totalpower, datetime):
-        self.building_totalpower.insert_one({"totalpower": totalpower, "datetime": datetime})
+        try:
+            self.building_totalpower.insert_one({"totalpower": totalpower, "datetime": datetime})
+        except ConnectionError as exc:
+            raise RuntimeError('Failed to insert totalpower') from exc
+
 
     def insert_iot(self, name, type, iot_values, datetime):
         iots = self.get_iots_reading_col()
-        iots.insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
+        try:
+            iots.insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
+        except ConnectionError as exc:
+            raise RuntimeError('Failed to insert IoT') from exc
 
     def insert_forecast(self, forecast_power, datetime):
-        self.building_forecast.insert_one({"forecast_power": forecast_power, "datetime": datetime})
+        try:
+            self.building_forecast.insert_one({"forecast_power": forecast_power, "datetime": datetime})
+        except ConnectionError as exc:
+            raise RuntimeError('Failed to insert forecast') from exc
 
     def insert_forecastday(self, iat, datetime):
-        db = self.client.ForecastDay
-        forecastdb = db.forecastvalue
+        forecastdb = self.client.ForecastDay.forecastvalue
 
-        # inserir objeto em forma de dicionario em mongodb
-        forecastdb.insert_one({"forecast_power": {"0": str(iat[0, 0]),
+        try:
+            forecastdb.insert_one({"forecast_power": {"0": str(iat[0, 0]),
                                                   "1": str(iat[1, 0]),
                                                   "2": str(iat[2, 0]),
                                                   "3": str(iat[3, 0]),
@@ -63,4 +71,6 @@ class BuildingRepository:
                                                   "22": str(iat[22, 0]),
                                                   "23": str(iat[23, 0])},
                                "datetime": datetime})
-
+        except ConnectionError as exc:
+            raise RuntimeError('Failed to insert forecast day') from exc
+        # inserir objeto em forma de dicionario em mongodb
