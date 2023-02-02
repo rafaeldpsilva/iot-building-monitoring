@@ -8,9 +8,14 @@ class BuildingRepository:
 
         self.client = MongoClient(
             str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
-        self.building_iot_reading = self.client.BuildingLeftSide.iots_reading
-        self.building_forecast = self.client.Forecast.forecastvaluerightside
-        self.building_totalpower = self.client.TotalPower.powerrightside
+        
+        IOTS_READING = config['storage']['local']['iots_reading']
+        FORECAST = config['storage']['local']['forecast']
+        TOTALPOWER = config['storage']['local']['totalpower']
+
+        self.building_iot_reading = self.client.IOTS_READING
+        self.building_forecast = self.client.FORECAST
+        self.building_totalpower = self.client.TOTALPOWER
 
     def get_iots_reading_col(self):
         return self.building_iot_reading

@@ -8,7 +8,8 @@ class TokenRepository:
 
         client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
         # criar a tabela
-        self.tokensdb = client.Tokens_leftside.tokencol
+        TOKEN = config['storage']['local']['token']
+        self.tokensdb = client.TOKEN
 
     def get_tokencol(self):
         return self.tokensdb
