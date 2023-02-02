@@ -45,11 +45,11 @@ class Core(Thread):
         monitoring.daemon = True
         monitoring.start()
 
-        schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)    
+        #schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)    
 
-        while 1:
-            schedule.run_pending()
-            time.sleep(1)
+        #while 1:
+        #    schedule.run_pending()
+        #    time.sleep(1)
 
         ########### o que isto faz é de segundo a segundo print(core.get_total_consumption())
         #join das threads
