@@ -1,5 +1,6 @@
 import sys
 import datetime
+import random
 from flask_cors import CORS
 import jwt
 from flask import Flask, jsonify, request
@@ -92,6 +93,11 @@ def rightside_generation():
 
     return jsonify({'Generation': data})
 
+@app.route('/building/flexibility', methods=['GET'])
+@TM.token_required
+def get_flexibility():
+    flexibility = cr.get_total_consumption() * random.randrange(0,0.2)
+    return jsonify({'flexibility': flexibility})
 
 @app.route('/building/correlations', methods=['GET', 'POST'])
 def correlations():
