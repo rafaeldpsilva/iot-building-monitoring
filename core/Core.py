@@ -8,7 +8,7 @@ from utils.utils import get_config
 from model.IoT import IoT
 from model.StoringManager import StoringManager
 from model.Monitoring import Monitoring
-from model.consumption_forecast import forecastday
+#from model.consumption_forecast import forecastday
 
 
 class Core(Thread):
