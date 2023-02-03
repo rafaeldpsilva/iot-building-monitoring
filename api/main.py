@@ -9,6 +9,7 @@ from services.BuildingService import BuildingService
 import api.tokenManager as TM
 from database.TokenRepository import TokenRepository
 from core.Core import Core
+from utils import utils
 
 # class JSONEncoder(json.JSONEncoder):
 #     def default(self, o):
@@ -123,5 +124,6 @@ if __name__ == "__main__":
     cr.daemon = True
     cr.start()
 
-    app.run(host='0.0.0.0', port=5002)
+    config = utils.get_config()
+    app.run(host='0.0.0.0', port=config['app']['port'])
     cr.join()

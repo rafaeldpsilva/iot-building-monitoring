@@ -18,6 +18,9 @@ In order to change the database access you need to add the following file:
 
 ```
 {
+    "app": {
+        "port" : 5002
+    },
     "storage" : {
         "_comment" : "database configuration using mongodb",
         "storing_frequency": 5,
