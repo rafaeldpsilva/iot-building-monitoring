@@ -6,52 +6,66 @@ class BuildingRepository:
     def __init__(self):
         config = utils.get_config()
 
-        self.client = MongoClient(
-            str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
+        #self.client = MongoClient(
+        #    str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
         
-        IOTS_READING = config['storage']['local']['iots_reading']
-        FORECAST = config['storage']['local']['forecast']
-        TOTALPOWER = config['storage']['local']['totalpower']
+        self.server = str(config['storage']['local']['server'])
+        self.port = str(config['storage']['local']['port'])
+        self.IOTS_READING = config['storage']['local']['iots_reading']
+        self.FORECAST = config['storage']['local']['forecast']
+        self.TOTALPOWER = config['storage']['local']['totalpower']
 
-        self.building_iot_reading = self.client.IOTS_READING
-        self.building_forecast = self.client.FORECAST
-        self.building_totalpower = self.client.TOTALPOWER
+    def client(self):
+        return MongoClient(self.server + ':' + self.port)
 
-    def get_iots_reading_col(self):
-        return self.building_iot_reading
+    def get_iots_reading_col(self, name, time, time_emb):
+        client = self.client()
+        building_iot_reading = client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({"name": name, 'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } )
+        client.close()
+        return building_iot_reading
 
     def get_forecastvalue_col(self):
         #? devia haver class forecastRepo
-        return self.client.ForecastDay.forecastvalue
+        client = self.client()
+        forecastvalue = client.ForecastDay.forecastvalue.find()
+        client.close()
+        return forecastvalue
 
     def get_totalpower_col(self):
-        return self.building_totalpower
+        client = self.client()
+        building_totalpower = client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find()
+        client.close()
+        return building_totalpower
 
     def insert_totalpower(self, totalpower, datetime):
         try:
-            self.building_totalpower.insert_one({"totalpower": totalpower, "datetime": datetime})
+            client = self.client()
+            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one({"totalpower": totalpower, "datetime": datetime})
+            client.close()
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert totalpower') from exc
 
 
     def insert_iot(self, name, type, iot_values, datetime):
-        iots = self.get_iots_reading_col()
         try:
-            iots.insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
+            client = self.client()
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
+            client.close()
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert IoT') from exc
 
     def insert_forecast(self, forecast_power, datetime):
         try:
-            self.building_forecast.insert_one({"forecast_power": forecast_power, "datetime": datetime})
+            client = self.client()
+            client[self.FORECAST[0]][self.FORECAST[1]].insert_one({"forecast_power": forecast_power, "datetime": datetime})
+            client.close()
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert forecast') from exc
 
     def insert_forecastday(self, iat, datetime):
-        forecastdb = self.client.ForecastDay.forecastvalue
-
         try:
-            forecastdb.insert_one({"forecast_power": {"0": str(iat[0, 0]),
+            client = self.client()
+            client.ForecastDay.forecastvalue.insert_one({"forecast_power": {"0": str(iat[0, 0]),
                                                   "1": str(iat[1, 0]),
                                                   "2": str(iat[2, 0]),
                                                   "3": str(iat[3, 0]),
@@ -76,6 +90,7 @@ class BuildingRepository:
                                                   "22": str(iat[22, 0]),
                                                   "23": str(iat[23, 0])},
                                "datetime": datetime})
+            client.close()
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert forecast day') from exc
         # inserir objeto em forma de dicionario em mongodb

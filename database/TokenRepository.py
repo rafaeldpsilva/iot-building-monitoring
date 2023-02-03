@@ -6,18 +6,30 @@ class TokenRepository:
     def __init__(self):
         config = utils.get_config()
 
-        client = MongoClient(str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
+        self.server = str(config['storage']['local']['server'])
+        self.port = str(config['storage']['local']['port'])
+
         # criar a tabela
-        TOKEN = config['storage']['local']['token']
-        self.tokensdb = client.TOKEN
+        self.TOKEN = config['storage']['local']['token']
+        
+    def client(self):
+        return MongoClient(self.server + ':' + self.port)
 
     def get_tokencol(self):
-        return self.tokensdb
+        client = self.client()
+        tokenscol = client[self.TOKEN[0]][self.TOKEN[1]].find()
+        client.close()
+        return tokenscol
 
     def insert_token(self, token, expiration_time_minutes, datetime):
-        # inserir objeto em forma de dicionario em mongodb
-        self.tokensdb.insert_one({"token": token,
-                                  "expiration_time_minutes": expiration_time_minutes,
-                                  "datetime": datetime,
-                                  "active": True})
+        try:
+            client = self.client()
+            # inserir objeto em forma de dicionario em mongodb
+            client[self.TOKEN[0]][self.TOKEN[1]].insert_one({"token": token,
+                                    "expiration_time_minutes": expiration_time_minutes,
+                                    "datetime": datetime,
+                                    "active": True})
+            client.close()
+        except ConnectionError as exc:
+            raise RuntimeError('Failed to insert token') from exc
         return token
