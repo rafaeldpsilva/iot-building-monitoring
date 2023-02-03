@@ -26,10 +26,10 @@ In order to change the database access you need to add the following file:
             "server" : "192.168.2.68",
             "port" : 27018,
             "database" : "BuildingRightSide",
-            "iots_reading": "BuildingRightSide.iots_reading",
-            "forecast": "Forecast.forecastvaluerightside",
-            "totalpower": "TotalPower.powerrightside",
-	    "token": "Tokens_BUILDING_EXAMPLE.tokencol"
+            "iots_reading": ["BuildingRightSide", "iots_reading"],
+            "forecast": ["Forecast","forecastvaluerightside"],
+            "totalpower": ["TotalPower","powerrightside"],
+	    "token": ["Tokens_rightside","tokencol"]
         }
     },
     "resources" : {
