@@ -26,7 +26,6 @@ class BuildingService:
         return consumption
 
     def protected_historic(self, TM):
-        col = self.building_repo.get_iots_reading_col()
         x = []  #! O QUE É ISTO - X e Y
 
         time = datetime.datetime.now() - datetime.timedelta(minutes=180)
@@ -40,7 +39,7 @@ class BuildingService:
 
         getIndex = True
         for i in TM.dados['List of Resources']:
-            x = col.find( {"name": i['text'], 'datetime': { '$gt': str(time), '$lt' : str(timeemb)} } )
+            x = self.building_repo.get_iots_reading_col(i['text'],time, timeemb)
             y = list(x)
             if TM.dados['Data Aggregation'] == 'individual':        #? PARA QUE SERVE
                 columns.append(i['text'])
@@ -71,10 +70,8 @@ class BuildingService:
         return df
 
     def forecast(self):
-        col = self.building_repo.get_forecastvalue_col
-
         #? o que faz isto
-        x = col.find().sort("_id", pymongo.DESCENDING).limit(1)
+        x = self.building_repo.get_forecastvalue_col().sort("_id", pymongo.DESCENDING).limit(1)
         y = list(x)
         df = pd.DataFrame(y)
 

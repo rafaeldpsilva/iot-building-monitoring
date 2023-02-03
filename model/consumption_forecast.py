@@ -13,9 +13,7 @@ mpl.rcParams['figure.figsize'] = (12, 6)
 mpl.rcParams['axes.grid'] = False
 
 building_repo = BuildingRepository()
-col = building_repo.get_totalpower_col()
-
-df = pd.DataFrame(list(col.find()))
+df = pd.DataFrame(list(building_repo.get_totalpower_col()))
 
 df.datetime = pd.to_datetime(df['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
 df.set_index("datetime", inplace=True)
