@@ -27,7 +27,7 @@ app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    return
+    return jsonify({'online': True})
 
 
 @app.route('/building/energy', methods=['GET', 'POST'])
