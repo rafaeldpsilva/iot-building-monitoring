@@ -45,15 +45,16 @@ def generate_token():
 
     if request.method == 'POST':
         token = jwt.encode({
-            'Name': request.get_json().get("name"),
-            'List of Resources': request.get_json().get("listofresources"),
-            'Data Aggregation': request.get_json().get("dataaggregation"),
-            'Time Aggregation': request.get_json().get("timeaggregation"),
-            'Embargo Period': request.get_json().get("embargo"),
-            'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp")) #? exp é expiration
-        },
+                'Name': request.get_json().get("name"),
+                'List of Resources': request.get_json().get("listofresources"),
+                'Data Aggregation': request.get_json().get("dataaggregation"),
+                'Time Aggregation': request.get_json().get("timeaggregation"),
+                'Embargo Period': request.get_json().get("embargo"),
+                'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp")) #? exp é expiration
+            },
             app.config['SECRET_KEY'],
-            algorithm="HS256")
+            algorithm="HS256"
+        )
 
     token_repo = TokenRepository()
 
