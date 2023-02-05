@@ -9,10 +9,6 @@ dados = {}
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
-token_repo = TokenRepository()
-col = token_repo.get_tokencol()
-
-
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -22,8 +18,11 @@ def token_required(f):
         if not token:
             return jsonify({'message': 'Token is missing!'}), 403
 
+        token_repo = TokenRepository()
+        col = token_repo.get_tokencol()
+        
         try:
-            for document in col.find():
+            for document in col:
                 if token == document["token"]:
                     if not document["active"]:
                         return jsonify({'message': 'Token was revoked'})
