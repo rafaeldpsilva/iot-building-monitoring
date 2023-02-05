@@ -1,8 +1,10 @@
 from functools import wraps
 
+import sys
 import jwt
 from flask import Flask, jsonify, request
 
+sys.path.append('.')
 from database.TokenRepository import TokenRepository
 
 dados = {}

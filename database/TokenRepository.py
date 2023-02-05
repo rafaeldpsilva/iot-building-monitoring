@@ -17,7 +17,7 @@ class TokenRepository:
 
     def get_tokencol(self):
         client = self.client()
-        tokenscol = client[self.TOKEN[0]][self.TOKEN[1]].find()
+        tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find())
         client.close()
         return tokenscol
 

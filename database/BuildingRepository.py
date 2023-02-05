@@ -20,20 +20,20 @@ class BuildingRepository:
 
     def get_iots_reading_col(self, name, time, time_emb):
         client = self.client()
-        building_iot_reading = client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({"name": name, 'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } )
+        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({"name": name, 'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } ))
         client.close()
         return building_iot_reading
 
     def get_forecastvalue_col(self):
         #? devia haver class forecastRepo
         client = self.client()
-        forecastvalue = client.ForecastDay.forecastvalue.find()
+        forecastvalue = list(client.ForecastDay.forecastvalue.find())
         client.close()
         return forecastvalue
 
     def get_totalpower_col(self):
         client = self.client()
-        building_totalpower = client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find()
+        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find())
         client.close()
         return building_totalpower
 
