@@ -63,17 +63,17 @@ class IoT(Thread):
                     request = requests.get(self.uri) # tem de se validar o self.method porque pode ser post
                     data_json = request.text
                     data = json.loads(data_json)
-                except ConnectionError as exc:
-                    raise RuntimeError('Failed to make a get request to update values') from exc
+                except requests.exceptions.HTTPError as error:
+                    print (error.response.text)
             else:
                 try:
                     request = requests.post(self.uri)
                     data_json = request.text
                     data = json.loads(data_json)
-                except ConnectionError as exc:
-                    raise RuntimeError('Failed to make a post request to update values') from exc
-                    
-        
+                except requests.exceptions.HTTPError as error:
+                    print (error.response.text)
+
+
         #ir buscar os valores dos analyzers
         for value in self.values:
             tags = value['tag'].split('.')
