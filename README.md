@@ -19,7 +19,8 @@ In order to change the database access you need to add the following file:
 ```
 {
     "app": {
-        "port" : 5002
+        "port" : 5002,
+        "monitoring": 1
     },
     "storage" : {
         "_comment" : "database configuration using mongodb",

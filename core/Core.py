@@ -35,15 +35,15 @@ class Core(Thread):
         #iniciar uma thread de storing (storing(self)) :: enviar o tempo de gravação
         #da configuração (config[storage][storing_frequency])
         #start da thread de storing
-        storing_manager = StoringManager(self)
+        storing_manager = StoringManager(self, config['resources']['monitoring_period'])
         storing_manager.daemon = True
         storing_manager.start()
 
         #iniciar uma thread de monitoring (monitoring(self))
         #start da thread de monitoring
-        monitoring = Monitoring(self)
-        monitoring.daemon = True
-        monitoring.start()
+        #monitoring = Monitoring(self)
+        #monitoring.daemon = True
+        #monitoring.start()
 
         #schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)    
 
@@ -59,7 +59,7 @@ class Core(Thread):
             self.iots[i].join()
 
         storing_manager.join()
-        monitoring.join()
+        #monitoring.join()
         #iniciar os agendamentos dos forecasts (para cada um deles deve-se enviar o 'self')
         #schedule.every().day.at("22:00").do(forecastday())
         #schedule.every().hour.at(":15").do(forecasthour()) 

@@ -4,16 +4,16 @@ from utils import utils
 
 class BuildingRepository:
     def __init__(self):
-        config = utils.get_config()
+        self.config = utils.get_config()
 
         #self.client = MongoClient(
         #    str(config['storage']['local']['server']) + ':' + str(config['storage']['local']['port']))
         
-        self.server = str(config['storage']['local']['server'])
-        self.port = str(config['storage']['local']['port'])
-        self.IOTS_READING = config['storage']['local']['iots_reading']
-        self.FORECAST = config['storage']['local']['forecast']
-        self.TOTALPOWER = config['storage']['local']['totalpower']
+        self.server = str(self.config['storage']['local']['server'])
+        self.port = str(self.config['storage']['local']['port'])
+        self.IOTS_READING = self.config['storage']['local']['iots_reading']
+        self.FORECAST = self.config['storage']['local']['forecast']
+        self.TOTALPOWER = self.config['storage']['local']['totalpower']
 
     def client(self):
         return MongoClient(self.server + ':' + self.port)
@@ -40,8 +40,13 @@ class BuildingRepository:
     def insert_totalpower(self, totalpower, datetime):
         try:
             client = self.client()
-            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one({"totalpower": totalpower, "datetime": datetime})
+            totalpower = {"totalpower": totalpower, "datetime": datetime}
+            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one(totalpower)
             client.close()
+
+            if self.config['app']['monitoring']:
+                print('\TotalPower\n',totalpower)
+            
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert totalpower') from exc
 
@@ -49,23 +54,33 @@ class BuildingRepository:
     def insert_iot(self, name, type, iot_values, datetime):
         try:
             client = self.client()
-            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one({"name": name, "type": type, "iot_values": iot_values, "datetime": datetime})
+            iot = {"name": name, "type": type, "iot_values": iot_values, "datetime": datetime}
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iot)
             client.close()
+
+            if self.config['app']['monitoring']:
+                print('\nIoT\n',iot)
+
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert IoT') from exc
 
     def insert_forecast(self, forecast_power, datetime):
         try:
             client = self.client()
-            client[self.FORECAST[0]][self.FORECAST[1]].insert_one({"forecast_power": forecast_power, "datetime": datetime})
+            forecast = {"forecast_power": forecast_power, "datetime": datetime}
+            client[self.FORECAST[0]][self.FORECAST[1]].insert_one(forecast)
             client.close()
+
+            if self.config['app']['monitoring']:
+                print('\nForecast\n',forecast)
+
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert forecast') from exc
 
     def insert_forecastday(self, iat, datetime):
         try:
             client = self.client()
-            client.ForecastDay.forecastvalue.insert_one({"forecast_power": {"0": str(iat[0, 0]),
+            forecastday = {"forecast_power": {"0": str(iat[0, 0]),
                                                   "1": str(iat[1, 0]),
                                                   "2": str(iat[2, 0]),
                                                   "3": str(iat[3, 0]),
@@ -89,8 +104,13 @@ class BuildingRepository:
                                                   "21": str(iat[21, 0]),
                                                   "22": str(iat[22, 0]),
                                                   "23": str(iat[23, 0])},
-                               "datetime": datetime})
+                               "datetime": datetime}
+            client.ForecastDay.forecastvalue.insert_one(forecastday)
             client.close()
+                               
+            if self.config['app']['monitoring']:
+                print('\nForecastDay\n',forecastday)
+
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert forecast day') from exc
         # inserir objeto em forma de dicionario em mongodb
