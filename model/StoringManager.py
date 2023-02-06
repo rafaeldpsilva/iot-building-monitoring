@@ -6,9 +6,10 @@ sys.path.append(".")
 from database.BuildingRepository import BuildingRepository
 
 class StoringManager(Thread):
-    def __init__(self, core):
+    def __init__(self, core, config_monitoring):
         Thread.__init__(self)
         self.core = core
+        self.monitoring_period = config_monitoring
 
     #Erase consumption from the database
     def erase_consumption(self):
@@ -36,9 +37,10 @@ class StoringManager(Thread):
     #ver consumos da sala x
     #calcular de hora em hora
     def run(self):
+        sleep(5 - time() % 1)
         while True:
             #sleep(self.core.config["storage"]["storing_frequency"] - time() % 1)
-            sleep(5 - time() % 1)
+            sleep(self.monitoring_period - time() % 1)
             self.save_consumption() #save é o antigo saveConsumption
             self.save_total_consumption()
             #OU
