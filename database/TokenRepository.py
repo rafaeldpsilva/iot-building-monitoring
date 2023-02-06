@@ -30,10 +30,9 @@ class TokenRepository:
                         "active": True}
             client[self.TOKEN[0]][self.TOKEN[1]].insert_one(token)
             client.close()
-
-            if self.config['app']['monitoring']:
-                print('\nToken\n',token)
-
         except ConnectionError as exc:
             raise RuntimeError('Failed to insert token') from exc
+
+        if self.config['app']['monitoring']:
+            print('\nToken\n',token)
         return token
