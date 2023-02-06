@@ -41,7 +41,7 @@ class Core(Thread):
 
         #iniciar uma thread de monitoring (monitoring(self))
         #start da thread de monitoring
-        if config['app']['monitoring']:
+        if not config['app']['monitoring']:
             monitoring = Monitoring(self)
             monitoring.daemon = True
             monitoring.start()
