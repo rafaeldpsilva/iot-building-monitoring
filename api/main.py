@@ -76,6 +76,15 @@ def protected_historic():
         mimetype='application/json'
     )
 
+@app.route('/building', methods=['GET'])
+@TM.token_required
+def building():
+    consumption = cr.get_total_consumption()
+    generation = 'NULL'
+    for iot in cr.iots:
+        generation = iot.get_generation()
+
+    return jsonify({'consumption': consumption, 'generation': generation, 'flexibility' : consumption * random.randrange(0,20) / 100})
 
 @app.route('/building/rightside/totalpower', methods=['GET', 'POST'])
 @TM.token_required
@@ -93,12 +102,12 @@ def rightside_generation():
     for iot in cr.iots:
         data = iot.get_generation()
 
-    return jsonify({'Generation': data})
+    return jsonify({'generation': data})
 
 @app.route('/building/flexibility', methods=['GET'])
 @TM.token_required
 def get_flexibility():
-    flexibility = cr.get_total_consumption() * random.randrange(0,0.2)
+    flexibility = cr.get_total_consumption() * random.randrange(0,0.2)/100
     return jsonify({'flexibility': flexibility})
 
 @app.route('/building/correlations', methods=['GET', 'POST'])
