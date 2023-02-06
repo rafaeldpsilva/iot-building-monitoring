@@ -41,9 +41,9 @@ class Core(Thread):
 
         #iniciar uma thread de monitoring (monitoring(self))
         #start da thread de monitoring
-        #monitoring = Monitoring(self)
-        #monitoring.daemon = True
-        #monitoring.start()
+        monitoring = Monitoring(self)
+        monitoring.daemon = True
+        monitoring.start()
 
         #schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)    
 
