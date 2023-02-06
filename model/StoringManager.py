@@ -37,10 +37,9 @@ class StoringManager(Thread):
     #ver consumos da sala x
     #calcular de hora em hora
     def run(self):
-        sleep(5 - time() % 1)
         while True:
             #sleep(self.core.config["storage"]["storing_frequency"] - time() % 1)
-            sleep(self.monitoring_period - time() % 1)
+            sleep(5 - time() % 1)
             self.save_consumption() #save é o antigo saveConsumption
             self.save_total_consumption()
             #OU
