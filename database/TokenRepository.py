@@ -23,11 +23,11 @@ class TokenRepository:
 
     def insert_token(self, token, expiration_time_minutes, datetime):
         try:
-            client = self.client()
             token = {"token": token,
                         "expiration_time_minutes": expiration_time_minutes,
                         "datetime": datetime,
                         "active": True}
+            client = self.client()
             client[self.TOKEN[0]][self.TOKEN[1]].insert_one(token)
             client.close()
         except ConnectionError as exc:

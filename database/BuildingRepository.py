@@ -39,12 +39,12 @@ class BuildingRepository:
 
     def insert_totalpower(self, totalpower, datetime):
         try:
-            client = self.client()
             totalpower = {"totalpower": totalpower, "datetime": datetime}
+            client = self.client()
             client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one(totalpower)
             client.close()
-        except ConnectionError as exc:
-            raise RuntimeError('Failed to insert totalpower') from exc
+        except Exception as e:
+            print("An exception occurred ::", e)
 
         if self.config['app']['monitoring']:
             print('\nTotalPower\n',totalpower)
@@ -52,31 +52,30 @@ class BuildingRepository:
 
     def insert_iot(self, name, type, iot_values, datetime):
         try:
-            client = self.client()
             iot = {"name": name, "type": type, "iot_values": iot_values, "datetime": datetime}
+            client = self.client()
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iot)
             client.close()
-        except ConnectionError as exc:
-            raise RuntimeError('Failed to insert IoT') from exc
+        except Exception as e:
+            print("An exception occurred ::", e)
 
         if self.config['app']['monitoring']:
             print('\nIoT\n',iot)
 
     def insert_forecast(self, forecast_power, datetime):
         try:
-            client = self.client()
             forecast = {"forecast_power": forecast_power, "datetime": datetime}
+            client = self.client()
             client[self.FORECAST[0]][self.FORECAST[1]].insert_one(forecast)
             client.close()
-        except ConnectionError as exc:
-            raise RuntimeError('Failed to insert forecast') from exc
+        except Exception as e:
+            print("An exception occurred ::", e)
         
         if self.config['app']['monitoring']:
             print('\nForecast\n',forecast)
 
     def insert_forecastday(self, iat, datetime):
         try:
-            client = self.client()
             forecastday = {"forecast_power": {"0": str(iat[0, 0]),
                                                   "1": str(iat[1, 0]),
                                                   "2": str(iat[2, 0]),
@@ -102,10 +101,11 @@ class BuildingRepository:
                                                   "22": str(iat[22, 0]),
                                                   "23": str(iat[23, 0])},
                                "datetime": datetime}
+            client = self.client()
             client.ForecastDay.forecastvalue.insert_one(forecastday)
             client.close()
-        except ConnectionError as exc:
-            raise RuntimeError('Failed to insert forecast day') from exc
+        except Exception as e:
+            print("An exception occurred ::", e)
 
         if self.config['app']['monitoring']:
             print('\nForecastDay\n',forecastday)
