@@ -42,9 +42,10 @@ class BuildingRepository:
             totalpower = {"totalpower": totalpower, "datetime": datetime}
             client = self.client()
             client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one(totalpower)
-            client.close()
         except Exception as e:
             print("An exception occurred ::", e)
+        finally:
+            client.close()
 
         if self.config['app']['monitoring']:
             print('\nTotalPower\n',totalpower)
@@ -55,9 +56,10 @@ class BuildingRepository:
             iot = {"name": name, "type": type, "iot_values": iot_values, "datetime": datetime}
             client = self.client()
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iot)
-            client.close()
         except Exception as e:
             print("An exception occurred ::", e)
+        finally:
+            client.close()
 
         if self.config['app']['monitoring']:
             print('\nIoT\n',iot)
@@ -67,9 +69,10 @@ class BuildingRepository:
             forecast = {"forecast_power": forecast_power, "datetime": datetime}
             client = self.client()
             client[self.FORECAST[0]][self.FORECAST[1]].insert_one(forecast)
-            client.close()
         except Exception as e:
             print("An exception occurred ::", e)
+        finally:
+            client.close()
         
         if self.config['app']['monitoring']:
             print('\nForecast\n',forecast)
@@ -103,9 +106,10 @@ class BuildingRepository:
                                "datetime": datetime}
             client = self.client()
             client.ForecastDay.forecastvalue.insert_one(forecastday)
-            client.close()
         except Exception as e:
             print("An exception occurred ::", e)
+        finally:
+            client.close()
 
         if self.config['app']['monitoring']:
             print('\nForecastDay\n',forecastday)
