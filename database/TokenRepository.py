@@ -16,7 +16,7 @@ class TokenRepository:
         return MongoClient(self.server + ':' + self.port)
 
     def get_tokencol(self):
-        client = self.client()
+        client = MongoClient(self.server + ':' + self.port)
         tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find())
         client.close()
         return tokenscol
@@ -27,7 +27,7 @@ class TokenRepository:
                         "expiration_time_minutes": expiration_time_minutes,
                         "datetime": datetime,
                         "active": True}
-            client = self.client()
+            client = MongoClient(self.server + ':' + self.port)
             client[self.TOKEN[0]][self.TOKEN[1]].insert_one(token)
         except Exception as e:
             print("An exception occurred ::", e)
