@@ -30,15 +30,6 @@ app.config['SECRET_KEY'] = 'thisisthesecretkey'
 def home():
     return jsonify({'online': True})
 
-
-@app.route('/building/energy', methods=['GET', 'POST'])
-@TM.token_required
-def protected_energy():
-    building_service = BuildingService()
-    consumption = building_service.protected_energy(TM, cr)
-
-    return jsonify({'consumption': consumption})
-
 #! Deveria ser divido entre GET REQUEST E POST REQUEST
 @app.route('/generate_token', methods=['GET', 'POST'])
 def generate_token():
@@ -64,11 +55,11 @@ def generate_token():
     return jsonify({'token': token})
 
 
-@app.route('/building/historic', methods=['GET', 'POST'])
+@app.route('/historic', methods=['GET', 'POST'])
 @TM.token_required
-def protected_historic():
+def historic():
     building_service = BuildingService()
-    df = building_service.protected_historic(TM)
+    df = building_service.historic(TM)
 
     return app.response_class(
         response=df.to_json(orient='index', date_format='iso'),
@@ -76,9 +67,9 @@ def protected_historic():
         mimetype='application/json'
     )
 
-@app.route('/building', methods=['GET'])
+@app.route('/energy/now', methods=['GET'])
 @TM.token_required
-def building():
+def energy_now():
     consumption = cr.get_total_consumption()
     generation = 'NULL'
     for iot in cr.iots:
@@ -86,17 +77,24 @@ def building():
 
     return jsonify({'consumption': consumption, 'generation': generation, 'flexibility' : consumption * random.randrange(0,20) / 100})
 
-@app.route('/building/rightside/totalpower', methods=['GET', 'POST'])
+@app.route('/energy/totalpower', methods=['GET', 'POST'])
 @TM.token_required
-def rightside_totalpower():
+def energy_totalpower():
     data = cr.get_total_consumption()
 
     return jsonify({'totalpower': data})
 
-
-@app.route('/building/rightside/generation', methods=['GET', 'POST'])
+@app.route('/energy/consumption', methods=['GET', 'POST'])
 @TM.token_required
-def rightside_generation():
+def energy_consumption():
+    building_service = BuildingService()
+    consumption = building_service.energy_consumption(TM, cr)
+
+    return jsonify({'consumption': consumption})
+
+@app.route('/energy/generation', methods=['GET', 'POST'])
+@TM.token_required
+def energy_generation():
     data = 'NULL'
 
     for iot in cr.iots:
@@ -104,22 +102,29 @@ def rightside_generation():
 
     return jsonify({'generation': data})
 
-@app.route('/building/flexibility', methods=['GET'])
+@app.route('/energy/flexibility', methods=['GET'])
 @TM.token_required
-def get_flexibility():
+def energy_flexibility():
     flexibility = cr.get_total_consumption() * random.randrange(0,20)/100
     return jsonify({'flexibility': flexibility})
 
-@app.route('/building/correlations', methods=['GET', 'POST'])
+@app.route('/correlations', methods=['GET', 'POST'])
 def correlations():
     return
 
-
-@app.route('/building/forecast', methods=['GET'])
+@app.route('/forecast/consumption', methods=['GET'])
 @TM.token_required
-def forecast():
+def forecast_consumption():
     building_service = BuildingService()
-    df = building_service.forecast()
+    df = building_service.forecast_consumption()
+
+    return jsonify({'forecast': df})
+
+@app.route('/forecast', methods=['GET'])
+@TM.token_required
+def forecast_value():
+    building_service = BuildingService()
+    df = building_service.forecast_value()
 
     return app.response_class(
         response=df.to_json(orient='index', date_format='iso'),

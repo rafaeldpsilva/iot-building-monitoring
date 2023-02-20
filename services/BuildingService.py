@@ -6,7 +6,7 @@ class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
 
-    def protected_energy(self, TM, cr):
+    def energy_consumption(self, TM, cr):
         consumption = []
         iots = cr.iots
         if TM.dados['Data Aggregation'] == 'individual':
@@ -25,9 +25,7 @@ class BuildingService:
                         consumption['values'] += iot.get_power()
         return consumption
 
-    def protected_historic(self, TM):
-        x = []  #! O QUE É ISTO - X e Y
-
+    def historic(self, TM):
         time = datetime.datetime.now() - datetime.timedelta(minutes=180)
         timeemb = datetime.datetime.now() - datetime.timedelta(minutes=int(TM.dados['Embargo Period']))
 
@@ -69,11 +67,16 @@ class BuildingService:
 
         return df
 
-    def forecast(self):
-        #? o que faz isto
-        x = self.building_repo.get_forecastvalue_col().sort("_id", pymongo.DESCENDING).limit(1)
-        y = list(x)
-        df = pd.DataFrame(y)
+    def forecast_consumption(self):
+        building_repo = BuildingRepository()
+        consumption = pd.DataFrame(building_repo.get_totalpower_col())
+        forecast_adapter = ForecastAdapter()
+        df = forecast_adapter.forecast_day_consumption(consumption)
+        return df
+
+    def forecast_value(self):
+        forecastvalue_list = self.building_repo.get_forecastvalue_col()
+        df = pd.DataFrame(forecastvalue_list)
 
         df.drop('_id', inplace=True, axis=1)
         # df = df.iloc[1: , :]
