@@ -2,6 +2,7 @@ import datetime
 import pymongo
 import pandas as pd
 from database.BuildingRepository import BuildingRepository
+from modules.ForecastAdapter import ForecastAdapter
 class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
