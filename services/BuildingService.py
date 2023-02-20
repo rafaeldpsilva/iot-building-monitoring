@@ -37,13 +37,13 @@ class BuildingService:
             columns.append("end-user")
 
         getIndex = True
+        iots_reading = []
         for i in TM.dados['List of Resources']:
-            x = self.building_repo.get_iots_reading_col(i['text'],time, timeemb)
-            y = list(x)
+            iots_reading = self.building_repo.get_iots_reading_col(i['text'],time, timeemb)
             if TM.dados['Data Aggregation'] == 'individual':        #? PARA QUE SERVE
                 columns.append(i['text'])
             index = 0
-            for entry in y:
+            for entry in iots_reading:
                 if getIndex:
                     indexArray.append(datetime.datetime.strptime(entry["datetime"][:19], "%Y-%m-%d %H:%M:%S"))
                     dataArray.append([])
