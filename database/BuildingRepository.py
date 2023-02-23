@@ -27,7 +27,7 @@ class BuildingRepository:
 
     def get_totalpower_col(self):
         client = MongoClient(self.server + ':' + self.port)
-        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find().limit(5000))
+        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find().sort("datetime",-1).limit(100000))
         client.close()
         return building_totalpower
 
