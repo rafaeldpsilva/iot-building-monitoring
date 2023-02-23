@@ -120,6 +120,14 @@ def forecast_consumption():
 
     return jsonify({'forecast': df})
 
+@app.route('/forecast/flexibility', methods=['GET'])
+@TM.token_required
+def forecast_flexibility():
+    building_service = BuildingService()
+    df = building_service.forecast_consumption()
+
+    return jsonify({'forecast': df})
+
 @app.route('/forecast', methods=['GET'])
 @TM.token_required
 def forecast_value():
