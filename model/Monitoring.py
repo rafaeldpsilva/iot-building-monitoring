@@ -16,6 +16,7 @@ class Monitoring(Thread):
         sys.exit()
 
     def run(self):
+        #schedule.every().day.at("22:00").do(self.run_thread_schedule, forecastday)
         sleep(5 - time() % 1)
         while True:
             sleep(1 - time() % 1)
