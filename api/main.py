@@ -124,9 +124,13 @@ def forecast_consumption():
 @TM.token_required
 def forecast_flexibility():
     building_service = BuildingService()
-    df = building_service.forecast_consumption()
+    df = building_service.forecast_consumption().numpy().tolist()
 
-    return jsonify({'forecast': df})
+    flexibility = []
+    for val in array:
+        flexibility.append(val * random.randrange(0,20)/100)
+
+    return jsonify({'forecastes_flexibility': flexibility})
 
 @app.route('/forecast', methods=['GET'])
 @TM.token_required
