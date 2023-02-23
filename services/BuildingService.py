@@ -71,9 +71,16 @@ class BuildingService:
     def forecast_consumption(self):
         building_repo = BuildingRepository()
         consumption = pd.DataFrame(building_repo.get_totalpower_col())
+        consumption = consumption.drop("_id", axis=1)
         forecast_adapter = ForecastAdapter()
-        df = forecast_adapter.forecast_day_consumption(consumption)
-        return df
+        return forecast_adapter.forecast_day_consumption(consumption)
+
+    def forecast_flexibility(self):
+        building_repo = BuildingRepository()
+        consumption = pd.DataFrame(building_repo.get_totalpower_col())
+        consumption = consumption.drop("_id", axis=1)
+        forecast_adapter = ForecastAdapter()
+        return forecast_adapter.forecast_day_consumption(consumption)
 
     def forecast_value(self):
         forecastvalue_list = self.building_repo.get_forecastvalue_col()

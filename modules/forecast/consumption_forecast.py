@@ -8,15 +8,14 @@ import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 
 def consumption_forecast(df):
+    print(df)
     mpl.rcParams['figure.figsize'] = (12, 6)
     mpl.rcParams['axes.grid'] = False
-    print("df", df)
 
     df.datetime = pd.to_datetime(df['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
     df.set_index("datetime", inplace=True)
     df_init = df.resample('1H').mean()  # only works if the column "Periods" as index
 
-    print("df_init",df_init)
     df_init["datetime"] = (df_init.index)
     # creating a column with week days
     df_init["day_of_week"] = df_init["datetime"].dt.day_name()
@@ -29,7 +28,6 @@ def consumption_forecast(df):
     # interval of the dataset
     #df_1h = df_init["2022-03-28":].copy()
     df_1h = df_init.copy()
-    print("df-1h",df_1h)
 
     df_1h = df_1h.dropna()
 
@@ -49,6 +47,7 @@ def consumption_forecast(df):
     # Removing index and creating the timestamp
     df_1h["datetime"] = df_1h.index
     df_1h = df_1h.reset_index(drop=True)
+    
     Datetime = pd.to_datetime(df_1h.pop('datetime'), format='%Y-%m-%d %H:%M:%S')
     timestamp_s = Datetime.map(datetime.datetime.timestamp)
 
@@ -76,9 +75,12 @@ def consumption_forecast(df):
     # df_train = df_1h[df_1h['day_of_week'] == dt.weekday()]
     # train_df = df_train.tail(240)
     # print(train_df)
+    
     train_df = df_1h[0:int(h * trn)].copy()
     val_df = df_1h[int(h * trn):int(h * (1 - tst))].copy()
-    test_df = df_1h[int(h * (1 - tst)):].copy()
+    #!test is train
+    test_df = df_1h[int(h * (1 - trn)):].copy()
+    print("h",h,"tst",tst,"int",int(h * (1 - trn)))
 
     num_features = df_1h.shape[1]
     # To Invert the Data Normalisation Process (END of the Code)
@@ -87,7 +89,6 @@ def consumption_forecast(df):
 
     N = df_1h['totalpower'].copy()
     N_std = (N - N.min(axis=0)) / (N.max(axis=0) - N.min(axis=0))
-    print("train_df",train_df)
 
     # normalize data
     scaler = MinMaxScaler()
@@ -99,7 +100,6 @@ def consumption_forecast(df):
     val_df[featu] = scaler.transform(val_df)
     test_df[featu] = scaler.transform(test_df)
 
-    print("train_df",train_df)
 
 
     # window generator class -------------------
@@ -229,6 +229,78 @@ def consumption_forecast(df):
                             validation_data=window.val,
                             callbacks=[early_stopping])
         return history
+    # multistepforecast
+    #def forecastday():
+    OUT_STEPS = 24
+    multi_window = WindowGenerator(input_width=24,
+                                label_width=OUT_STEPS,
+                                shift=OUT_STEPS,
+                                label_columns=['totalpower'])
+
+    #print(f'Inputs shape (batch, time, features): {multi_window.example[0].shape}')
+    #print(f'Labels shape (batch, time, features): {multi_window.example[1].shape}\n')
+
+    CONV_WIDTH = 6
+    multi_conv_model = tf.keras.Sequential([
+        # Shape [batch, time, features] => [batch, CONV_WIDTH, features]
+        tf.keras.layers.Lambda(lambda x: x[:, -CONV_WIDTH:, :]),
+        # Shape => [batch, 1, conv_units]
+        tf.keras.layers.Conv1D(256, activation='relu', kernel_size=(CONV_WIDTH)),
+        # Shape => [batch, 1,  out_steps*features]
+        tf.keras.layers.Dense(OUT_STEPS * num_features,
+                            kernel_initializer=tf.initializers.zeros()),
+        # Shape => [batch, out_steps, features]
+        tf.keras.layers.Reshape([OUT_STEPS, num_features])
+    ])
+    tf.config.run_functions_eagerly(True)
+    # Compile and Fit the model
+    history = compile_and_fit(multi_conv_model, multi_window)
+
+    # using the cnn trained to predict
+    df_1h_norm = df_1h.copy()
+    scaler1 = MinMaxScaler()
+    scaler1.fit(df_1h)  # finds the max value of the data
+    df_1h_norm[featu] = scaler.transform(df_1h)
+
+    # using the cnn to predict the day ahead
+
+    beg_inp = len(df_1h_norm) - 48 - 16  # Period that represent the beginning of the Day
+    end_inp = len(df_1h_norm) - 24 - 16  # Period that represent the end of the Day
+    print(f'Beginning: {Datetime[beg_inp]}\nEnd: {Datetime[end_inp - 1]}')
+
+    beg_lab = end_inp  # Period that represent the beginning of the Label
+    end_lab = beg_lab + 24  # Period that represent the end of the Label
+
+    # Selecting the data from the chosen Day
+    InpData = df_1h_norm[featu][beg_inp:end_inp].copy().to_numpy().reshape((1, end_inp - beg_inp, num_features))
+    # LabData = df_1h_norm['totalpower'][(beg_lab):(end_lab)].copy().to_numpy().reshape((1,24,1))
+    # Predictions
+    predictions = multi_conv_model(InpData)
+
+    # #PLOTTING -----------------------------------------------------------------------
+    # plt.figure(figsize=(12,4))
+    # #Input
+    # plt.plot(Datetime[beg_inp:end_inp], InpData[0,:,0],
+    #         marker='.', label='Inputs',  zorder=-10)
+    # #Label
+    # plt.plot(Datetime[beg_lab:end_lab], LabData[0,:,0],
+    #         marker='o', label='Labels', c='#2ca02c')
+    # #Predictions
+    # plt.plot(Datetime[beg_lab:end_lab], predictions[0,:,0], marker='x',
+    #         ls="-.", label='Predictions', c='#ff7f0e')
+
+    # plt.ylabel('Consumption [normed]')
+    # plt.xlabel('Time [h]')
+    # plt.legend()
+
+    # Invert Normalization
+    x = predictions[0, :, 0] * (N.max(axis=0) - N.min(axis=0)) + N.min(axis=0)
+    Pred = pd.DataFrame(x, columns=["Predicted Consumption"])
+    Pred.to_excel("Predicted_Cons.xlsx")
+    print(Pred.iat[1, 0])
+    print(Pred)
+
+    return Pred
 
 
 # convulutional network
@@ -243,8 +315,8 @@ def forecasthour():
     # criar o modelo
     conv_model = tf.keras.Sequential([
         tf.keras.layers.Conv1D(filters=17,
-                               kernel_size=(CONV_WIDTH,),
-                               activation='relu'),
+                            kernel_size=(CONV_WIDTH,),
+                            activation='relu'),
         tf.keras.layers.Dense(units=17, activation='relu'),
         tf.keras.layers.Dense(units=1),
     ])
@@ -308,83 +380,8 @@ def forecasthour():
     # Invert Normalization
     x = predictions[0, :, 0] * (N.max(axis=0) - N.min(axis=0)) + N.min(axis=0)
     Pred = pd.DataFrame(x, columns=["Predicted Consumption"])
-    print(Pred.iat[0, 0])
-    print(Pred)
+    #print(Pred.iat[0, 0])
+    #print(Pred)
 
     building_repo.insert_forecast(str(Pred.iat[0, 0]), datetime.datetime.now() + datetime.timedelta(minutes=45))
-    return Pred
-
-
-# multistepforecast
-def forecastday():
-    OUT_STEPS = 24
-    multi_window = WindowGenerator(input_width=24,
-                                   label_width=OUT_STEPS,
-                                   shift=OUT_STEPS,
-                                   label_columns=['totalpower'])
-
-    print(f'Inputs shape (batch, time, features): {multi_window.example[0].shape}')
-    print(f'Labels shape (batch, time, features): {multi_window.example[1].shape}\n')
-
-    CONV_WIDTH = 6
-    multi_conv_model = tf.keras.Sequential([
-        # Shape [batch, time, features] => [batch, CONV_WIDTH, features]
-        tf.keras.layers.Lambda(lambda x: x[:, -CONV_WIDTH:, :]),
-        # Shape => [batch, 1, conv_units]
-        tf.keras.layers.Conv1D(256, activation='relu', kernel_size=(CONV_WIDTH)),
-        # Shape => [batch, 1,  out_steps*features]
-        tf.keras.layers.Dense(OUT_STEPS * num_features,
-                              kernel_initializer=tf.initializers.zeros()),
-        # Shape => [batch, out_steps, features]
-        tf.keras.layers.Reshape([OUT_STEPS, num_features])
-    ])
-
-    # Compile and Fit the model
-    history = compile_and_fit(multi_conv_model, multi_window)
-
-    # using the cnn trained to predict
-    df_1h_norm = df_1h.copy()
-    scaler1 = MinMaxScaler()
-    scaler1.fit(df_1h)  # finds the max value of the data
-    df_1h_norm[featu] = scaler.transform(df_1h)
-
-    # using the cnn to predict the day ahead
-
-    beg_inp = len(df_1h_norm) - 48 - 16  # Period that represent the beginning of the Day
-    end_inp = len(df_1h_norm) - 24 - 16  # Period that represent the end of the Day
-    print(f'Beginning: {Datetime[beg_inp]}\nEnd: {Datetime[end_inp - 1]}')
-
-    beg_lab = end_inp  # Period that represent the beginning of the Label
-    end_lab = beg_lab + 24  # Period that represent the end of the Label
-
-    # Selecting the data from the chosen Day
-    InpData = df_1h_norm[featu][beg_inp:end_inp].copy().to_numpy().reshape((1, end_inp - beg_inp, num_features))
-    # LabData = df_1h_norm['totalpower'][(beg_lab):(end_lab)].copy().to_numpy().reshape((1,24,1))
-    # Predictions
-    predictions = multi_conv_model(InpData)
-
-    # #PLOTTING -----------------------------------------------------------------------
-    # plt.figure(figsize=(12,4))
-    # #Input
-    # plt.plot(Datetime[beg_inp:end_inp], InpData[0,:,0],
-    #         marker='.', label='Inputs',  zorder=-10)
-    # #Label
-    # plt.plot(Datetime[beg_lab:end_lab], LabData[0,:,0],
-    #         marker='o', label='Labels', c='#2ca02c')
-    # #Predictions
-    # plt.plot(Datetime[beg_lab:end_lab], predictions[0,:,0], marker='x',
-    #         ls="-.", label='Predictions', c='#ff7f0e')
-
-    # plt.ylabel('Consumption [normed]')
-    # plt.xlabel('Time [h]')
-    # plt.legend()
-
-    # Invert Normalization
-    x = predictions[0, :, 0] * (N.max(axis=0) - N.min(axis=0)) + N.min(axis=0)
-    Pred = pd.DataFrame(x, columns=["Predicted Consumption"])
-    Pred.to_excel("Predicted_Cons.xlsx")
-    print(Pred.iat[1, 0])
-    print(Pred)
-
-    building_repo.insert_forecastday(Pred.iat, datetime.datetime.now() + datetime.timedelta(minutes=45))
     return Pred
