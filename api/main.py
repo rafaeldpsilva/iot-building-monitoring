@@ -116,21 +116,25 @@ def correlations():
 @TM.token_required
 def forecast_consumption():
     building_service = BuildingService()
-    df = building_service.forecast_consumption()
+    forecasted_consumption = building_service.forecast_consumption().numpy().tolist()
 
-    return jsonify({'forecast': df})
+    consumption = []
+    for val in forecasted_consumption:
+        consumption.append(val * random.randrange(0,20)/100)
+
+    return jsonify({'forecasted_consumption': consumption})
 
 @app.route('/forecast/flexibility', methods=['GET'])
 @TM.token_required
 def forecast_flexibility():
     building_service = BuildingService()
-    df = building_service.forecast_consumption().numpy().tolist()
+    forecasted_flexibility = building_service.forecast_consumption().numpy().tolist()
 
     flexibility = []
-    for val in array:
+    for val in forecasted_flexibility:
         flexibility.append(val * random.randrange(0,20)/100)
 
-    return jsonify({'forecastes_flexibility': flexibility})
+    return jsonify({'forecasted_flexibility': flexibility})
 
 @app.route('/forecast', methods=['GET'])
 @TM.token_required
