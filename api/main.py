@@ -148,6 +148,17 @@ def forecast_value():
         mimetype='application/json'
     )
 
+@app.route('/shiftable/hours', methods=['GET'])
+@TM.token_required
+def get_shiftable_hours():
+    shiftable_hours = [1,2,3]
+    return jsonify({'shiftable_hours': shiftable_hours})
+
+@app.route('/shiftable/load', methods=['GET'])
+@TM.token_required
+def get_shiftable_led():
+    shiftable_load = 123
+    return jsonify({'shiftable_load': shiftable_load})
 
 if __name__ == "__main__":
     cr = Core()
