@@ -163,14 +163,14 @@ def get_shiftable_led():
     return jsonify({'shiftable_load': shiftable_load})
 
 if __name__ == "__main__":
-    # building_service = BuildingService()
-    # forecasted_flexibility = building_service.forecast_consumption().numpy().tolist()
+    building_service = BuildingService()
+    forecasted_flexibility = building_service.forecast_consumption().numpy().tolist()
 
-    # flexibility = []
-    # for val in forecasted_flexibility:
-    #     flexibility.append(val * random.randrange(0,20)/100)
+    flexibility = []
+    for val in forecasted_flexibility:
+        flexibility.append(val * random.randrange(0,20)/100)
 
-    cr = Core()
+    cr = Core(flexibility)
     cr.daemon = True
     cr.start()
 

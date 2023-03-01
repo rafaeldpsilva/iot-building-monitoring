@@ -3,6 +3,7 @@ import threading
 from threading import Thread
 import time
 import schedule
+
 sys.path.append(".")
 from utils.utils import get_config
 from model.IoT import IoT
@@ -10,13 +11,13 @@ from model.StoringManager import StoringManager
 from model.Monitoring import Monitoring
 
 class Core(Thread):
-    def __init__(self):
+    def __init__(self, flexibility):
         Thread.__init__(self)
         self.iots = []
-        #self.forecasted_flexibility = flexibility
+        self.forecasted_flexibility = flexibility
 
-    #def get_forecasted_flexibility(self):
-    #    return self.forecasted_flexibility
+    def get_forecasted_flexibility(self):
+        return self.forecasted_flexibility
 
     def run_thread_schedule(self, job):
         forecast = threading.Thread(target=job)
