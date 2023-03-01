@@ -32,10 +32,6 @@ class StoringManager(Thread):
 
     def run(self):
         while True:
-            #sleep(self.core.config["storage"]["storing_frequency"] - time() % 1)
-            sleep(5 - time() % 1)
-            self.save_consumption() #save é o antigo saveConsumption
+            sleep(self.storing_frequency - time() % 1)
+            self.save_consumption()
             self.save_total_consumption()
-            #OU
-            #for iot in core.iots:
-                #save(iot)
