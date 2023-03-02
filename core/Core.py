@@ -1,6 +1,7 @@
 import sys
 import threading
 from threading import Thread
+import random
 import time
 import schedule
 
@@ -17,7 +18,10 @@ class Core(Thread):
         self.forecasted_flexibility = flexibility
 
     def get_forecasted_flexibility(self):
-        return self.forecasted_flexibility
+        forecasted_flexibility = []
+        for iot in self.iots:
+            forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0,20)/100])
+        return forecasted_flexibility
 
     def run_thread_schedule(self, job):
         forecast = threading.Thread(target=job)

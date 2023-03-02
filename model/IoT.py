@@ -23,7 +23,6 @@ class IoT(Thread):
 
         #for value in self.values:
         #    value["value"] = 0
-    
     def get_power(self):
         for value in self.values:
             if value["type"] == "power":
