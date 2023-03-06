@@ -162,6 +162,11 @@ def get_shiftable_led():
     shiftable_load = 123
     return jsonify({'shiftable_load': shiftable_load})
 
+@app.route('/invitation', methods=['GET'])
+@TM.token_required
+def invitation():
+    return jsonify({'response': "OK"})
+
 if __name__ == "__main__":
     cr = Core()
     cr.daemon = True
