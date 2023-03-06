@@ -12,10 +12,9 @@ from model.StoringManager import StoringManager
 from model.Monitoring import Monitoring
 
 class Core(Thread):
-    def __init__(self, flexibility):
+    def __init__(self):
         Thread.__init__(self)
         self.iots = []
-        self.forecasted_flexibility = flexibility
 
     def get_forecasted_flexibility(self):
         forecasted_flexibility = []
