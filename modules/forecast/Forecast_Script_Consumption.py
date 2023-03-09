@@ -260,7 +260,6 @@ def ForecastDay_Cons(consumption):
         # Shape => [batch, out_steps, features]
         tf.keras.layers.Reshape([OUT_STEPS, num_features])])
 
-    tf.config.run_functions_eagerly(True)
     # Compile and Fit the model
     history = compile_and_fit(multi_conv_model, multi_window)
 
