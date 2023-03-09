@@ -43,7 +43,8 @@ class Core(Thread):
             iot.join()
 
         storing_manager.join()
-        monitoring.join()
+        if not config['app']['monitoring']:
+            monitoring.join()
 
     def get_iots(self):
         return self.iots
