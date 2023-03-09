@@ -150,17 +150,13 @@ def forecast_value():
         mimetype='application/json'
     )
 
-@app.route('/shiftable/hours', methods=['GET'])
+@app.route('/shifting', methods=['GET'])
 @TM.token_required
-def get_shiftable_hours():
-    shiftable_hours = [1,2,3]
-    return jsonify({'shiftable_hours': shiftable_hours})
-
-@app.route('/shiftable/load', methods=['GET'])
-@TM.token_required
-def get_shiftable_led():
-    shiftable_load = 123
-    return jsonify({'shiftable_load': shiftable_load})
+def get_shifting():
+    iots = cr.get_iots()
+    building_service = BuildingService()
+    [shift_kwh ,shift_hours] = building_service.get_shift_hours_kwh(iots)
+    return jsonify({'shift_hours': shift_hours, 'shift_kwh': shift_kwh})
 
 @app.route('/invitation', methods=['GET'])
 @TM.token_required

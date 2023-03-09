@@ -7,6 +7,44 @@ class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
 
+    def get_shift_quantity(self,iots):
+        shift_quantity = []
+        for i in range(len(iots)):
+            participant = []
+            participant.append(random.randrange(1,3))
+            shift_quantity.append(participant)
+        return shift_quantity
+
+    def get_shift_hours_kwh(self, iots):
+        shift_quantity = self.get_shift_quantity(iots)
+        shift_kwh = []
+        shift_hours = []
+        for i, device in enumerate(shift_quantity):
+            for j, quantity in enumerate(device):
+                iot_kwh = []
+                iot_hour = []
+                if quantity > 0:
+                    iot_kwh.append(iots[i][1]/quantity)
+                    iot_hour.append(random.randrange(0,23))
+                else:
+                    iot_kwh.append(0)
+                    iot_hour.append(0)
+                if quantity > 1:
+                    iot_kwh.append(iots[i][1]/quantity)
+                    iot_hour.append(random.randrange(0,23))
+                else:
+                    iot_kwh.append(0)
+                    iot_hour.append(0)
+                if quantity > 2:
+                    iot_kwh.append(iots[i][1]/quantity)
+                    iot_hour.append(random.randrange(0,23))
+                else:
+                    iot_kwh.append(0)
+                    iot_hour.append(0)
+                shift_kwh.append(iot_kwh)
+                shift_hours.append(iot_hour)
+        return [shift_kwh,shift_hours]
+
     def energy_consumption(self, TM, cr):
         consumption = []
         iots = cr.iots
@@ -87,13 +125,8 @@ class BuildingService:
         df = pd.DataFrame(forecastvalue_list)
 
         df.drop('_id', inplace=True, axis=1)
-        # df = df.iloc[1: , :]
-        # print(df)
-        # df.drop('0', inplace=True, axis=1)
-        # df_n = df.set_index('datetime')
-        # reversed_df = df_n.iloc[::-1]
-
         return df
+
 def get_value(array, type):
     for value in array:
         if value['type'] == type:
