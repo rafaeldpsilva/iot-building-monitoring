@@ -1,9 +1,7 @@
+import random
 import sys
 import threading
 from threading import Thread
-import random
-import time
-import schedule
 
 sys.path.append(".")
 from utils.utils import get_config

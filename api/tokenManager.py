@@ -1,6 +1,6 @@
+import sys
 from functools import wraps
 
-import sys
 import jwt
 from flask import Flask, jsonify, request
 

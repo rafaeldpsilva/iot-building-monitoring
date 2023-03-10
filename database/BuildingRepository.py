@@ -1,5 +1,7 @@
 from pymongo import MongoClient, DESCENDING
+
 from utils import utils
+
 
 class BuildingRepository:
     def __init__(self):

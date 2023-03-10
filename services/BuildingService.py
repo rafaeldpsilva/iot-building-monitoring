@@ -1,8 +1,12 @@
 import datetime
-import pymongo
+import random
+
 import pandas as pd
+
 from database.BuildingRepository import BuildingRepository
 from modules.ForecastAdapter import ForecastAdapter
+
+
 class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
@@ -78,7 +82,7 @@ class BuildingService:
         iots_reading = []
         for i in TM.dados['List of Resources']:
             iots_reading = self.building_repo.get_iots_reading_col(i['text'],time, timeemb)
-            if TM.dados['Data Aggregation'] == 'individual':        #? PARA QUE SERVE
+            if TM.dados['Data Aggregation'] == 'individual':
                 columns.append(i['text'])
             index = 0
             for entry in iots_reading:
@@ -130,6 +134,5 @@ class BuildingService:
 def get_value(array, type):
     for value in array:
         if value['type'] == type:
-            # print(value)
             return (value['values'])
     return -1

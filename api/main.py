@@ -1,9 +1,11 @@
-import sys
 import datetime
 import random
-from flask_cors import CORS
+import sys
+
 import jwt
 from flask import Flask, jsonify, request
+from flask_cors import CORS
+
 sys.path.append('.')
 from services.BuildingService import BuildingService
 import api.tokenManager as TM
@@ -11,26 +13,15 @@ from database.TokenRepository import TokenRepository
 from core.Core import Core
 from utils import utils
 
-# class JSONEncoder(json.JSONEncoder):
-#     def default(self, o):
-#         if isinstance(o, ObjectId):
-#             return str(o)
-#         return json.JSONEncoder.default(self, o)
-
-
 app = Flask(__name__)
 CORS(app)
 
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
-
-#? PORQUE GET E POST
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def home():
     return jsonify({'online': True})
 
-#! Deveria ser divido entre GET REQUEST E POST REQUEST
 @app.route('/generate_token', methods=['GET', 'POST'])
 def generate_token():
     token = ''
@@ -128,14 +119,6 @@ def forecast_consumption():
 @TM.token_required
 def forecast_flexibility():
     flexibility = cr.get_forecasted_flexibility()
-
-    # building_service = BuildingService()
-    # forecasted_flexibility = building_service.forecast_consumption().numpy().tolist()
-
-    # flexibility = []
-    # for val in forecasted_flexibility:
-    #     flexibility.append(val * random.randrange(0,20)/100)
-
     return jsonify({'forecasted_flexibility': flexibility})
 
 @app.route('/forecast', methods=['GET'])

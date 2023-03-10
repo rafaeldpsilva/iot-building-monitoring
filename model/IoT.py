@@ -1,8 +1,7 @@
-from __future__ import print_function
-
 import json
 from threading import Thread
 from time import time, sleep
+
 import requests
 
 
@@ -43,7 +42,7 @@ class IoT(Thread):
 
     def get_value(self, valueName):
         for value in self.values:
-            if value["type"]  == valueName:
+            if value["type"] == valueName:
                 return value["values"]
         return 0
     
@@ -53,13 +52,12 @@ class IoT(Thread):
                 return value["values"]
         return 0
 
-    #methods to get data from iot devices
     def update_values(self):
         data = None
         while(data is None):
             if (self.method == 'GET'):
                 try:
-                    request = requests.get(self.uri) # tem de se validar o self.method porque pode ser post
+                    request = requests.get(self.uri)
                     data_json = request.text
                     data = json.loads(data_json)
                 except requests.exceptions.HTTPError as error:
@@ -72,8 +70,6 @@ class IoT(Thread):
                 except requests.exceptions.HTTPError as error:
                     print (error.response.text)
 
-
-        #ir buscar os valores dos analyzers
         for value in self.values:
             tags = value['tag'].split('.')
             path = data
@@ -85,6 +81,5 @@ class IoT(Thread):
 
     def run(self):
         while True:
-            sleep(self.monitoring_period - time() % 1) # tempo dado no config (monitoring_period)
+            sleep(self.monitoring_period - time() % 1)
             self.update_values()
-

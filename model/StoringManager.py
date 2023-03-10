@@ -1,7 +1,8 @@
 import sys
+from datetime import datetime
 from threading import Thread
 from time import time, sleep
-from datetime import datetime
+
 sys.path.append(".")
 from database.BuildingRepository import BuildingRepository
 
@@ -11,18 +12,11 @@ class StoringManager(Thread):
         self.core = core
         self.storing_frequency = storing_frequency
 
-    #Erase consumption from the database
-    def erase_consumption(self):
-        return
-
-    #Stop Monitoring
     def stop_saving(self):
         sys.exit()
 
-    #save consumption to a database
     def save_consumption(self):
         building_repo = BuildingRepository()
-        #inserir objeto em forma de dicionario em mongodb
         for i in self.core.iots:
             building_repo.insert_iot(i.name, i.type, i.values, str(datetime.now()))
 
