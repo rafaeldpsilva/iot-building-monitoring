@@ -44,9 +44,6 @@ class Core(Thread):
         if not config['app']['monitoring']:
             monitoring.join()
 
-    def get_iots(self):
-        return self.iots
-
     def get_total_consumption(self):
         totalPower = 0
         for iot in self.iots:
