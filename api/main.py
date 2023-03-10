@@ -136,7 +136,7 @@ def forecast_value():
 @app.route('/shifting', methods=['GET'])
 @TM.token_required
 def get_shifting():
-    iots = cr.iots
+    iots = cr.get_forecasted_flexibility()
     building_service = BuildingService()
     [shift_kwh ,shift_hours] = building_service.get_shift_hours_kwh(iots)
     return jsonify({'shift_hours': shift_hours, 'shift_kwh': shift_kwh})
