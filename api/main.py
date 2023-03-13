@@ -79,6 +79,9 @@ def energy_totalpower():
 @TM.token_required
 def energy_consumption():
     consumption = cr.get_iot_consumption()
+    json = []
+    for i in range(len(consumption)):
+        json.append({"resource": consumption[i][0],"values": consumption[i][1]})
     return jsonify({'consumption': consumption})
 
 @app.route('/energy/generation', methods=['GET', 'POST'])
