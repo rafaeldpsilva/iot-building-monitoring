@@ -56,6 +56,12 @@ class Core(Thread):
             totalCurrent += iot.get_current()
         return totalCurrent
 
+    def get_iot_consumption(self):
+        iot_consumption = []
+        for iot in self.iots:
+            iot_consumption.append([iot.name, iot.get_power()])
+        return iot_consumption
+
     def get_forecasted_flexibility(self):
         forecasted_flexibility = []
         for iot in self.iots:

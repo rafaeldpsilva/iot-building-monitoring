@@ -78,9 +78,7 @@ def energy_totalpower():
 @app.route('/energy/consumption', methods=['GET', 'POST'])
 @TM.token_required
 def energy_consumption():
-    building_service = BuildingService()
-    consumption = building_service.energy_consumption(TM, cr)
-
+    consumption = cr.get_iot_consumption()
     return jsonify({'consumption': consumption})
 
 @app.route('/energy/generation', methods=['GET', 'POST'])
