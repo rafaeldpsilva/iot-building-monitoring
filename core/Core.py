@@ -65,7 +65,8 @@ class Core(Thread):
     def get_iot_generation(self):
         iot_generation = []
         for iot in self.iots:
-            iot_generation.append([iot.name, iot.get_generation()])
+            if iot.type == "generation":
+                iot_generation.append([iot.name, iot.get_generation()])
         return iot_generation
 
     def get_forecasted_flexibility(self):
