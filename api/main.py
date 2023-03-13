@@ -87,12 +87,11 @@ def energy_consumption():
 @app.route('/energy/generation', methods=['GET', 'POST'])
 @TM.token_required
 def energy_generation():
-    data = 'NULL'
-
-    for iot in cr.iots:
-        data = iot.get_generation()
-
-    return jsonify({'generation': data})
+    generation = cr.get_iot_generation()
+    json = []
+    for i in range(len(generation)):
+        json.append({"resource": generation[i][0],"values": generation[i][1]})
+    return jsonify(json)
 
 @app.route('/energy/flexibility', methods=['GET'])
 @TM.token_required
