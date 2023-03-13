@@ -82,7 +82,7 @@ def energy_consumption():
     json = []
     for i in range(len(consumption)):
         json.append({"resource": consumption[i][0],"values": consumption[i][1]})
-    return jsonify({'consumption': consumption})
+    return jsonify(json)
 
 @app.route('/energy/generation', methods=['GET', 'POST'])
 @TM.token_required
