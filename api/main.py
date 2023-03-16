@@ -58,6 +58,13 @@ def historic():
         mimetype='application/json'
     )
 
+@app.route('/iots', methods=['GET'])
+@TM.token_required
+def get_iots():
+    building_service = BuildingService()
+    iots = building_service.get_iots()
+    return jsonify({'iots': iots})
+
 @app.route('/energy/now', methods=['GET'])
 @TM.token_required
 def energy_now():

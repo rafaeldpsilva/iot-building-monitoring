@@ -11,6 +11,9 @@ class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
 
+    def get_iots(self):
+        return self.building_repo.get_iots()
+
     def get_shift_quantity(self,iots):
         shift_quantity = []
         for i in range(len(iots)):
