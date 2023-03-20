@@ -49,6 +49,13 @@ class Core(Thread):
         for iot in self.iots:
             totalPower += iot.get_power()
         return totalPower
+    
+    def get_total_generation(self):
+        total_generation = 0
+        for iot in self.iots:
+            if iot.type == "generation":
+                total_generation += iot.get_generation()
+        return total_generation
 
     def get_total_current(self):
         totalCurrent = 0
