@@ -69,9 +69,10 @@ def get_iots():
 @TM.token_required
 def energy_now():
     consumption = cr.get_total_consumption()
-    generation = 'NULL'
-    for iot in cr.iots:
-        generation = iot.get_generation()
+    iot_generation = cr.get_iot_generation()
+    generation = 0
+    for i in range(len(iot_generation)):
+        generation += iot_generation[i][1]
 
     return jsonify({'consumption': consumption, 'generation': generation, 'flexibility' : consumption * random.randrange(0,20) / 100})
 
