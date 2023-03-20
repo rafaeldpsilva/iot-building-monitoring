@@ -15,17 +15,17 @@ class StoringManager(Thread):
     def stop_saving(self):
         sys.exit()
 
-    def save_consumption(self):
+    def save_iot_values(self):
         building_repo = BuildingRepository()
         for i in self.core.iots:
             building_repo.insert_iot(i.name, i.type, i.values, str(datetime.now()))
 
-    def save_total_consumption(self):
+    def save_total(self):
         building_repo = BuildingRepository()
-        building_repo.insert_totalpower(self.core.get_total_consumption(), str(datetime.now()))
+        building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(), str(datetime.now()))
 
     def run(self):
         while True:
             sleep(self.storing_frequency - time() % 1)
-            self.save_consumption()
-            self.save_total_consumption()
+            self.save_iot_values()
+            self.save_total()

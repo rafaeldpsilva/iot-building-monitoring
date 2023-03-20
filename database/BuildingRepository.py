@@ -39,18 +39,18 @@ class BuildingRepository:
         client.close()
         return building_totalpower
 
-    def insert_totalpower(self, totalpower, datetime):
+    def insert_total(self, totalpower, totalgeneration, datetime):
         try:
-            totalpower = {"totalpower": totalpower, "datetime": datetime}
+            total = {"totalpower": totalpower, "totalgeneration": totalgeneration, "datetime": datetime}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one(totalpower)
+            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].insert_one(total)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nTotalPower\n',totalpower)
+            print('\nTotal\n',total)
 
 
     def insert_iot(self, name, type, iot_values, datetime):
