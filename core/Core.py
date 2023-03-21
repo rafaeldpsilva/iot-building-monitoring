@@ -37,12 +37,12 @@ class Core(Thread):
             monitoring.daemon = True
             monitoring.start()
 
-        for i, iot in enumerate(self.iots):
-            iot.join()
+        #for i, iot in enumerate(self.iots):
+        #    iot.join()
 
-        storing_manager.join()
-        if not config['app']['monitoring']:
-            monitoring.join()
+        #storing_manager.join()
+        #if not config['app']['monitoring']:
+        #    monitoring.join()
 
     def get_total_consumption(self):
         totalPower = 0

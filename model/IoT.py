@@ -14,7 +14,7 @@ class IoT(Thread):
         self.uri = config["uri"]
         self.method = config["method"]
         self.body = config["body"]
-        self.values = config["values"] 
+        self.values = config["values"]
         print(self.values) # [{type:, tag:, dataType:, value},{type:, tag:, dataType:, value}]
         self.control = config["control"]
         self.monitoring_period = config_monitoring
@@ -54,21 +54,20 @@ class IoT(Thread):
 
     def update_values(self):
         data = None
-        while(data is None):
-            if (self.method == 'GET'):
-                try:
-                    request = requests.get(self.uri)
-                    data_json = request.text
-                    data = json.loads(data_json)
-                except requests.exceptions.HTTPError as error:
-                    print (error.response.text)
-            else:
-                try:
-                    request = requests.post(self.uri)
-                    data_json = request.text
-                    data = json.loads(data_json)
-                except requests.exceptions.HTTPError as error:
-                    print (error.response.text)
+        if (self.method == 'GET'):
+            try:
+                request = requests.get(self.uri)
+                data_json = request.text
+                data = json.loads(data_json)
+            except requests.exceptions.HTTPError as error:
+                print (error.response.text)
+        else:
+            try:
+                request = requests.post(self.uri)
+                data_json = request.text
+                data = json.loads(data_json)
+            except requests.exceptions.HTTPError as error:
+                print (error.response.text)
 
         for value in self.values:
             tags = value['tag'].split('.')
