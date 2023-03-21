@@ -72,10 +72,10 @@ class IoT(Thread):
         if response != None:
             for value in self.values:
                 tags = value['tag'].split('.')
-
+                path = response
                 for tag in tags:
-                    print(self.name,tag,response[tag])
-                    val = response[tag]
+                    print(self.name,tag,path[tag])
+                    val = path[tag]
                 
                 if("multiplier" in value):
                     val *= value["multiplier"]
