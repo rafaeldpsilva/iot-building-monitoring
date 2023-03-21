@@ -15,7 +15,7 @@ class IoT(Thread):
         self.method = config["method"]
         self.body = config["body"]
         self.values = config["values"]
-        print(self.values) # [{type:, tag:, dataType:, value},{type:, tag:, dataType:, value}]
+        print(self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
         self.control = config["control"]
         self.monitoring_period = config_monitoring
         #self.store = iot_config.store
@@ -53,32 +53,38 @@ class IoT(Thread):
         return 0
 
     def update_values(self):
-        data = None
+        response = None
         if (self.method == 'GET'):
             try:
                 request = requests.get(self.uri)
                 data_json = request.text
-                data = json.loads(data_json)
+                response = json.loads(data_json)
             except requests.exceptions.HTTPError as error:
                 print (error.response.text)
         else:
             try:
                 request = requests.post(self.uri)
                 data_json = request.text
-                data = json.loads(data_json)
+                response = json.loads(data_json)
             except requests.exceptions.HTTPError as error:
                 print (error.response.text)
 
-        for value in self.values:
-            tags = value['tag'].split('.')
-            path = data
-            for tag in tags:
-                path = path[tag]
-            if("multiplier" in value):
-                path *= value["multiplier"]
-            value['values'] = round(path, 4)
+        if response != None:
+            for value in self.values:
+                tags = value['tag'].split('.')
+
+                for tag in tags:
+                    print(self.name,tag,response[tag])
+                    val = response[tag]
+                
+                if("multiplier" in value):
+                    val *= value["multiplier"]
+                
+                value['values'] = round(val, 4)
 
     def run(self):
+        for value in self.values:
+            value['values'] = 0
         while True:
             sleep(self.monitoring_period - time() % 1)
             self.update_values()
