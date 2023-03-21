@@ -85,6 +85,8 @@ class IoT(Thread):
     def run(self):
         for value in self.values:
             value['values'] = 0
+            print(value)
+            sleep(1)
         while True:
             sleep(self.monitoring_period - time() % 1)
             self.update_values()
