@@ -80,6 +80,8 @@ class IoT(Thread):
                 if("multiplier" in value):
                     path *= value["multiplier"]
                 value['values'] = round(path, 4)
+        else:
+            print("ERROR! IN UPDATING VALUES OF IOT", self.name)
 
     def run(self):
         while True:
