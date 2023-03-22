@@ -73,14 +73,13 @@ class IoT(Thread):
             for value in self.values:
                 tags = value['tag'].split('.')
                 path = response
+                
                 for tag in tags:
-                    print(self.name,tag,path[tag])
-                    val = path[tag]
+                    path = path[tag]
                 
                 if("multiplier" in value):
-                    val *= value["multiplier"]
-                
-                value['values'] = round(val, 4)
+                    path *= value["multiplier"]
+                value['values'] = round(path, 4)
 
     def run(self):
         while True:
