@@ -43,7 +43,7 @@ def generate_token():
 
     token = token_repo.insert_token(token, request.get_json().get("exp"), datetime.datetime.now())
 
-    return jsonify({'token': token})
+    return {'token': token}
 
 
 @app.route('/historic', methods=['GET', 'POST'])
