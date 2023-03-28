@@ -61,8 +61,10 @@ def historic_old():
 @app.route('/historic', methods=['GET', 'POST'])
 @TM.token_required
 def historic():
+    request_json = request.get_json()
+    iot_name = request_json['iot_name']
     building_service = BuildingService()
-    historic_total = building_service.get_historic_total()
+    historic_total = building_service.get_historic_total(iot_name)
     return jsonify({'historic': historic_total})
     
 @app.route('/iots', methods=['GET'])

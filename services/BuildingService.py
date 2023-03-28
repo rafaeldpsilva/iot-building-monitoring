@@ -70,22 +70,30 @@ class BuildingService:
                     if resource['text'] == iot.name:
                         consumption['values'] += iot.get_power()
         return consumption
-    def get_historic_total(self):
-        historic_total = []
-        for iot in self.get_iots():
-            total = self.building_repo.get_historic_total(iot['name'])
-            total = pd.DataFrame(total)
-            total = total.drop(["_id"], axis=1)
-            total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
-            total.set_index("datetime", inplace=True)
-            total = total.resample('1H').mean()
-            total = total.tail(24)
-            total['datetime'] = total.index
-            total = total.values.tolist()
 
-            historic_total.append([total])
+    def get_historic_total(self,iot_name):
+        total = self.building_repo.get_historic_total(iot_name)
+        total = pd.DataFrame(total)
+        total = total.drop(["_id"], axis=1)
+        
+        total = total.values.tolist()
+        power = []
+        
+        for iot in total:
+            for sensor in iot[2]:
+                if sensor['type'] == 'power':
+                    power.append([iot[3],sensor['values']])
+        total = pd.DataFrame(power, columns=['datetime', 'power'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1H').mean()
+        total = total.tail(24)
+        print(total)  
+        total['datetime'] = total.index
+        total = total.values.tolist()
 
-        return historic_total
+        return total
+
 
     def historic(self, TM):
         time = datetime.datetime.now() - datetime.timedelta(minutes=180)
