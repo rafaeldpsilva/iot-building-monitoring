@@ -20,7 +20,7 @@ class Monitoring(Thread):
         sleep(5 - time() % 1)
         while True:
             sleep(1 - time() % 1)
-            print(datetime.now())
-            print("Total consumption: " + str(self.core.get_total_consumption()))
-            print("Total current: " + str(self.core.get_total_current()))
-            print()
+            #print(datetime.now())
+            #print("Total consumption: " + str(self.core.get_total_consumption()))
+            #print("Total current: " + str(self.core.get_total_current()))
+            #print()
