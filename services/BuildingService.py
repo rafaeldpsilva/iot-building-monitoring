@@ -70,6 +70,22 @@ class BuildingService:
                     if resource['text'] == iot.name:
                         consumption['values'] += iot.get_power()
         return consumption
+    def get_historic_total(self):
+        historic_total = []
+        for iot in self.get_iots():
+            total = self.building_repo.get_historic_total(iot['name'])
+            total = pd.DataFrame(total)
+            total = total.drop(["_id"], axis=1)
+            total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+            total.set_index("datetime", inplace=True)
+            total = total.resample('1H').mean()
+            total = total.tail(24)
+            total['datetime'] = total.index
+            total = total.values.tolist()
+
+            historic_total.append([total])
+
+        return historic_total
 
     def historic(self, TM):
         time = datetime.datetime.now() - datetime.timedelta(minutes=180)
