@@ -46,9 +46,9 @@ def generate_token():
     return {'token': token}
 
 
-@app.route('/historic', methods=['GET', 'POST'])
+@app.route('/historicold', methods=['GET', 'POST'])
 @TM.token_required
-def historic():
+def historic_old():
     building_service = BuildingService()
     df = building_service.historic(TM)
 
@@ -58,6 +58,13 @@ def historic():
         mimetype='application/json'
     )
 
+@app.route('/historic', methods=['GET', 'POST'])
+@TM.token_required
+def historic():
+    building_service = BuildingService()
+    historic_total = building_service.get_historic_total()
+    return jsonify({'historic': historic_total})
+    
 @app.route('/iots', methods=['GET'])
 @TM.token_required
 def get_iots():
