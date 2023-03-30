@@ -82,11 +82,11 @@ class IoT(Thread):
                         path *= value["multiplier"]
                     value['values'] = round(path, 4)
             except KeyError:
-                utils.print_error("\n\nKey Error in " + self.name)
+                utils.print_error("Key Error in " + self.name)
             except TypeError:
-                utils.print_error("\n\nType Error in " + self.name)
+                utils.print_error("Type Error in " + self.name)
         else:
-            utils.print_error("\n\n\n\n\nERROR! IN UPDATING VALUES OF IOT", self.name)
+            utils.print_error("ERROR! IN UPDATING VALUES OF IOT "+ self.name)
 
     def run(self):
         while True:
