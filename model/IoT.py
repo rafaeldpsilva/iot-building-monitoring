@@ -70,16 +70,21 @@ class IoT(Thread):
                 print (error.response.text)
 
         if response != None:
-            for value in self.values:
-                tags = value['tag'].split('.')
-                path = response
-                
-                for tag in tags:
-                    path = path[tag]
-                
-                if("multiplier" in value):
-                    path *= value["multiplier"]
-                value['values'] = round(path, 4)
+            try:
+                for value in self.values:
+                    tags = value['tag'].split('.')
+                    path = response
+                    
+                    for tag in tags:
+                        path = path[tag]
+                    
+                    if("multiplier" in value):
+                        path *= value["multiplier"]
+                    value['values'] = round(path, 4)
+            except KeyError:
+                print("\n\nKey Error in " + self.name)
+            except TypeError:
+                print("\n\nType Error in " + self.name)
         else:
             print("\n\n\n\n\nERROR! IN UPDATING VALUES OF IOT", self.name)
 
