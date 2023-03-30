@@ -8,4 +8,4 @@ def get_config():
         return json.load(config_file)
 
 def print_error(error): 
-    print(Fore.RED + error)
+    print('\033[93m' + error + '\033[0m')
