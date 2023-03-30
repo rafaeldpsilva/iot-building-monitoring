@@ -2,7 +2,7 @@ import json
 from threading import Thread
 from time import time, sleep
 
-import requests
+
 from utils import utils
 
 class IoT(Thread):
@@ -55,34 +55,25 @@ class IoT(Thread):
     def update_values(self):
         response = None
         if (self.method == 'GET'):
-            try:
-                request = requests.get(self.uri)
-                data_json = request.text
-                response = json.loads(data_json)
-            except requests.exceptions.HTTPError as error:
-                print (error.response.text)
+            response = utils.update_values_get(self.name, self.uri)
         else:
-            try:
-                request = requests.post(self.uri)
-                data_json = request.text
-                response = json.loads(data_json)
-            except requests.exceptions.HTTPError as error:
-                print (error.response.text)
+            response = utils.update_values_post(self.name, self.uri)
 
         if response != None:
             try:
                 for value in self.values:
-                    tags = value['tag'].split('.')
                     path = response
                     
-                    for tag in tags:
-                        path = path[tag]
+                    config_tags = value['tag'].split('.')
+
+                    for config_tag in config_tags:
+                        path = path[config_tag]
                     
                     if("multiplier" in value):
                         path *= value["multiplier"]
                     value['values'] = round(path, 4)
             except KeyError:
-                utils.print_error("Key Error in " + self.name)
+                utils.print_error("Key Error in " + self.name + " with tag " + config_tag)
             except TypeError:
                 utils.print_error("Type Error in " + self.name)
         else:
