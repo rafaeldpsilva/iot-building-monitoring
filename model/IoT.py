@@ -3,7 +3,7 @@ from threading import Thread
 from time import time, sleep
 
 import requests
-
+from utils import utils
 
 class IoT(Thread):
     def __init__(self, config, config_monitoring):
@@ -82,11 +82,11 @@ class IoT(Thread):
                         path *= value["multiplier"]
                     value['values'] = round(path, 4)
             except KeyError:
-                print("\n\nKey Error in " + self.name)
+                utils.print_error("\n\nKey Error in " + self.name)
             except TypeError:
-                print("\n\nType Error in " + self.name)
+                utils.print_error("\n\nType Error in " + self.name)
         else:
-            print("\n\n\n\n\nERROR! IN UPDATING VALUES OF IOT", self.name)
+            utils.print_error("\n\n\n\n\nERROR! IN UPDATING VALUES OF IOT", self.name)
 
     def run(self):
         while True:
