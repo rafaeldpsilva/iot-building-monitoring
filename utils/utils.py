@@ -1,11 +1,14 @@
 import json
 import sys
-from colorama import Fore
+from colorama import init, Fore
+
 sys.path.append('.')
 
 def get_config():
     with open('./config/config.json') as config_file:
         return json.load(config_file)
 
-def print_error(error): 
-    print('\033[93m' + error + '\033[0m')
+def print_error(error):
+    init(autoreset=True)
+    print(Fore.RED + error)
+    
