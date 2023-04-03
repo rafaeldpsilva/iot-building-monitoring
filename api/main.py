@@ -58,7 +58,7 @@ def historic_old():
         mimetype='application/json'
     )
 
-@app.route('/historic', methods=['GET', 'POST'])
+@app.route('/historic', methods=['POST'])
 @TM.token_required
 def historic():
     request_json = request.get_json()
