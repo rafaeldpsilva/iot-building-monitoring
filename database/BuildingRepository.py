@@ -27,9 +27,9 @@ class BuildingRepository:
             iots.append({'name':iot['name'],'type':iot['type']})
         return iots
 
-    def get_iots_reading_col(self, name, time, time_emb):
+    def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
-        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({"name": name, 'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } ))
+        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } ))
         client.close()
         return building_iot_reading
 
@@ -59,18 +59,18 @@ class BuildingRepository:
             print('\nTotal\n',total)
 
 
-    def insert_iot(self, name, type, iot_values, datetime):
+    def insert_iots(self, iots, datetime):
         try:
-            iot = {"name": name, "type": type, "iot_values": iot_values, "datetime": datetime}
+            iots_save = {"iots": iots, "datetime": datetime}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iot)
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iots_save)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nIoT\n',iot)
+            print('\nIoTS\n',iots_save)
 
     def insert_forecast(self, forecast_power, datetime):
         try:

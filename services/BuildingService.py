@@ -108,7 +108,7 @@ class BuildingService:
         getIndex = True
         iots_reading = []
         for i in TM.dados['List of Resources']:
-            iots_reading = self.building_repo.get_iots_reading_col(i['text'],time, timeemb)
+            iots_reading = self.building_repo.get_iots_reading_col(time, timeemb)
             if TM.dados['Data Aggregation'] == 'individual':
                 columns.append(i['text'])
             index = 0
