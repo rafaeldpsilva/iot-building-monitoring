@@ -85,19 +85,24 @@ class BuildingService:
         for row in total:
             iots = row[0]
             datetime = row[1]
-            power = 0
+            consumption = 0
+            generation = 0
+            flexibility = 0
             for iot in iots:
+                if iot['type'] == generation:
+                    generation += iot['values']['values']
                 for value in iot['values']:
                     if value['type'] == 'power':
-                        power += value['values']
+                        consumption += value['values']
+                        flexibility += value['values'] * random.randrange(0,20) / 100
 
-            total_power.append([datetime,power])
+            total_power.append([datetime,consumption,generation,flexibility])
             
-        total = pd.DataFrame(total_power, columns=['datetime', 'power'])
+        total = pd.DataFrame(total_power, columns=['datetime', 'consumption','generation','flexibility'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
         total = total.resample('1H').mean()
-        total = total.tail(24)  
+        total = total.tail(24)
         total['datetime'] = total.index
         total = total.values.tolist()
         return total
