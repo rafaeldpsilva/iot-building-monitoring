@@ -15,9 +15,9 @@ class BuildingRepository:
     def client(self):
         return MongoClient(self.server + ':' + self.port)
 
-    def get_historic_total(self,iot_name):
+    def get_historic_total(self):
         client = MongoClient(self.server + ':' + self.port)
-        historic_total = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'name' : iot_name}).sort("datetime",-1).limit(18000))
+        historic_total = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find().sort("datetime",-1).limit(18000))
         client.close()
         return historic_total
 
