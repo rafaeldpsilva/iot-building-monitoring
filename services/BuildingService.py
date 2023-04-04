@@ -76,7 +76,6 @@ class BuildingService:
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
         
-        total = total.drop(["name","type","iot_values"], axis=1)
         total = total.dropna()
         
         total = total.values.tolist()

@@ -1,5 +1,5 @@
 from pymongo import MongoClient, DESCENDING
-
+from datetime import datetime, timedelta
 from utils import utils
 
 
@@ -16,8 +16,9 @@ class BuildingRepository:
         return MongoClient(self.server + ':' + self.port)
 
     def get_historic_total(self):
+        last_24_hours  = datetime.now() - timedelta(hours=24)
         client = MongoClient(self.server + ':' + self.port)
-        historic_total = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find().sort("datetime",-1).limit(18000))
+        historic_total = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': { '$gt': str(last_24_hours) } }))
         client.close()
         return historic_total
 
