@@ -40,7 +40,7 @@ def generate_token():
                 'Data Aggregation': request.get_json().get("dataaggregation"),
                 'Time Aggregation': request.get_json().get("timeaggregation"),
                 'Embargo Period': request.get_json().get("embargo"),
-                'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp")) #? exp é expiration
+                'exp': str(datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp"))) #? exp é expiration
             },
             app.config['SECRET_KEY'],
             algorithm="HS256"
@@ -48,9 +48,9 @@ def generate_token():
 
     token_repo = TokenRepository()
 
-    token = token_repo.insert_token(token, request.get_json().get("exp"), datetime.datetime.now())
+    token = token_repo.insert_token(token, request.get_json().get("exp"), str(datetime.datetime.now()))
 
-    return {'token': token}
+    return jsonify({'token' : token['token'], 'expiration_time_minutes': token['expiration_time_minutes'] , 'datetime': token['datetime'] , 'active': token['active']})
 
 
 @app.route('/historicold', methods=['GET', 'POST'])
