@@ -16,12 +16,12 @@ class TokenRepository:
     def client(self):
         return MongoClient(self.server + ':' + self.port)
 
-    def get_tokencol(self):
+    def get_tokens(self):
         client = MongoClient(self.server + ':' + self.port)
         tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find())
         client.close()
         return tokenscol
-
+    
     def insert_token(self, token, expiration_time_minutes, datetime):
         try:
             token = {"token": token,

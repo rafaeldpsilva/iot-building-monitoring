@@ -22,6 +22,13 @@ app.config['SECRET_KEY'] = 'thisisthesecretkey'
 def home():
     return jsonify({'online': True})
 
+@app.route('/tokens', methods=['GET'])
+@TM.token_required
+def get_token_list():
+    token_repo = TokenRepository()
+    tokens = token_repo.get_tokens()
+    return jsonify({'tokens' : tokens})
+
 @app.route('/generate_token', methods=['GET', 'POST'])
 def generate_token():
     token = ''
