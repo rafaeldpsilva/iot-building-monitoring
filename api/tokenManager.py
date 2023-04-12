@@ -21,7 +21,7 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 403
 
         token_repo = TokenRepository()
-        col = token_repo.get_tokencol()
+        col = token_repo.get_tokens()
         
         try:
             for document in col:
