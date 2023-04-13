@@ -31,6 +31,7 @@ def get_token_list():
     return jsonify({'tokens' : tokens})
 
 @app.route('/tokens/generate', methods=['GET', 'POST'])
+@TM.token_required
 def generate_token():
     token = ''
 
@@ -49,6 +50,7 @@ def generate_token():
     return jsonify({'token' : token})
 
 @app.route('/tokens/check', methods=['POST'])
+@TM.token_required
 def check_token():
     token = request.get_json().get("token")
 
@@ -59,6 +61,7 @@ def check_token():
     return jsonify(token)
 
 @app.route('/tokens/save', methods=['POST'])
+@TM.token_required
 def save_token():
     token = request.get_json().get("token")
 
