@@ -7,6 +7,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 sys.path.append('.')
+import api.tokenManager as TM
+import api.trust as trust_manager
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
 from core.Core import Core
@@ -66,6 +68,7 @@ def historic_old():
 
 @app.route('/historic', methods=['GET'])
 @TM.token_required
+@trust_manager.access_control
 def historic():
     building_service = BuildingService()
     historic_total = building_service.get_historic_total()
