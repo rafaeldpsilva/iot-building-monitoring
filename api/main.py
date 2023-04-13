@@ -8,8 +8,7 @@ from flask_cors import CORS
 
 sys.path.append('.')
 from services.BuildingService import BuildingService
-import api.tokenManager as TM
-from database.TokenRepository import TokenRepository
+from services.TokenService import TokenService
 from core.Core import Core
 from utils import utils
 
@@ -25,8 +24,8 @@ def home():
 @app.route('/tokens', methods=['GET'])
 @TM.token_required
 def get_token_list():
-    token_repo = TokenRepository()
-    tokens = token_repo.get_tokens()
+    token_service = TokenService()
+    tokens = token_service.get_tokens()
     return jsonify({'tokens' : tokens})
 
 @app.route('/generate_token', methods=['GET', 'POST'])
@@ -46,9 +45,9 @@ def generate_token():
             algorithm="HS256"
         )
 
-    token_repo = TokenRepository()
+    token_service = TokenService()
 
-    token = token_repo.insert_token(token, request.get_json().get("exp"), str(datetime.datetime.now()))
+    token = token_service.insert_token(token, request.get_json().get("exp"))
 
     return jsonify({'token' : token['token'], 'expiration_time_minutes': token['expiration_time_minutes'] , 'datetime': token['datetime'] , 'active': token['active']})
 
