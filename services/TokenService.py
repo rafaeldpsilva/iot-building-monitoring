@@ -11,7 +11,7 @@ class TokenService:
         tokens_array = []
         for token in tokens:
             decoded = jwt.decode(token['token'], 'thisisthesecretkey', algorithms=["HS256"])
-            tokens_array.append({'name' : decoded['Name'],'List of Resources': decoded['List of Resources'],'token': token['token'], 'expiration_time_minutes': token['expiration_time_minutes'],'datetime': token['datetime']})
+            tokens_array.append({'name' : decoded['Name'],'list_of_resources': decoded['List of Resources'],'token': token['token'], 'expiration_time_minutes': token['expiration_time_minutes'],'datetime': token['datetime']})
         return tokens_array
     
     def insert_token(self,token, exp):
