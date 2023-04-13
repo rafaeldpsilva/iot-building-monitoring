@@ -30,7 +30,7 @@ def get_token_list():
     tokens = token_service.get_tokens()
     return jsonify({'tokens' : tokens})
 
-@app.route('/generate_token', methods=['GET', 'POST'])
+@app.route('/tokens/generate', methods=['GET', 'POST'])
 def generate_token():
     token = ''
 
@@ -46,15 +46,30 @@ def generate_token():
             app.config['SECRET_KEY'],
             algorithm="HS256"
         )
+    return jsonify({'token' : token})
+
+@app.route('/tokens/check', methods=['POST'])
+def check_token():
+    token = request.get_json().get("token")
 
     token_service = TokenService()
 
-    token = token_service.insert_token(token, request.get_json().get("exp"))
+    token = token_service.decode_token(token)
 
-    return jsonify({'token' : token['token'], 'expiration_time_minutes': token['expiration_time_minutes'] , 'datetime': token['datetime'] , 'active': token['active']})
+    return jsonify(token)
+
+@app.route('/tokens/save', methods=['POST'])
+def save_token():
+    token = request.get_json().get("token")
+
+    token_service = TokenService()
+
+    token = token_service.insert_token(token)
+
+    return jsonify({'token' : token['token'] , 'datetime': token['datetime'] , 'active': token['active']})
 
 
-@app.route('/historicold', methods=['GET', 'POST'])
+@app.route('/historicold', methods=['GET'])
 @TM.token_required
 def historic_old():
     building_service = BuildingService()
@@ -89,14 +104,14 @@ def energy_now():
 
     return jsonify({'consumption': consumption, 'generation': generation, 'flexibility' : consumption * random.randrange(0,20) / 100})
 
-@app.route('/energy/totalpower', methods=['GET', 'POST'])
+@app.route('/energy/totalpower', methods=['GET'])
 @TM.token_required
 def energy_totalpower():
     data = cr.get_total_consumption()
 
     return jsonify({'totalpower': data})
 
-@app.route('/energy/consumption', methods=['GET', 'POST'])
+@app.route('/energy/consumption', methods=['GET'])
 @TM.token_required
 def energy_consumption():
     consumption = cr.get_iot_consumption()
@@ -105,7 +120,7 @@ def energy_consumption():
         json.append({"resource": consumption[i][0],"values": consumption[i][1]})
     return jsonify(json)
 
-@app.route('/energy/generation', methods=['GET', 'POST'])
+@app.route('/energy/generation', methods=['GET'])
 @TM.token_required
 def energy_generation():
     generation = cr.get_iot_generation()

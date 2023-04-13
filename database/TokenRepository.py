@@ -22,10 +22,21 @@ class TokenRepository:
         client.close()
         return tokenscol
     
-    def insert_token(self, token, expiration_time_minutes, datetime):
+    def check_token(self, token):
+        client = MongoClient(self.server + ':' + self.port)
+        tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find({'token': token}))
+        client.close()
+        return tokenscol
+    
+    def revoke_token(self, token):
+        client = MongoClient(self.server + ':' + self.port)
+        tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find({'token': token}))
+        client.close()
+        return tokenscol
+    
+    def insert_token(self, token, datetime):
         try:
             token = {"token": token,
-                        "expiration_time_minutes": expiration_time_minutes,
                         "datetime": datetime,
                         "active": True}
             client = MongoClient(self.server + ':' + self.port)
