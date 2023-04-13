@@ -41,7 +41,7 @@ def generate_token():
                 'Data Aggregation': request.get_json().get("dataaggregation"),
                 'Time Aggregation': request.get_json().get("timeaggregation"),
                 'Embargo Period': request.get_json().get("embargo"),
-                'exp': str(datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp"))) #? exp é expiration
+                'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp"))
             },
             app.config['SECRET_KEY'],
             algorithm="HS256"
