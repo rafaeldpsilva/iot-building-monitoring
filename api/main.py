@@ -86,7 +86,6 @@ def historic_old():
 
 @app.route('/historic', methods=['GET'])
 @TM.token_required
-@trust_manager.access_control
 def historic():
     building_service = BuildingService()
     historic_total = building_service.get_historic_total()
