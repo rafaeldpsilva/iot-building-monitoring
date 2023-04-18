@@ -20,6 +20,7 @@ CORS(app)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 @app.route('/', methods=['GET'])
+@trust_manager.access_control
 def home():
     return jsonify({'online': True})
 
