@@ -30,7 +30,7 @@ class TokenRepository:
     
     def revoke_token(self, token):
         client = MongoClient(self.server + ':' + self.port)
-        tokenscol = list(client[self.TOKEN[0]][self.TOKEN[1]].find({'token': token}))
+        tokenscol = client[self.TOKEN[0]][self.TOKEN[1]].update_one({'token': token},{'$set': { 'active': False }})
         client.close()
         return tokenscol
     

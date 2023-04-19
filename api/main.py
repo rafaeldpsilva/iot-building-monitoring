@@ -72,6 +72,18 @@ def save_token():
 
     return jsonify({'token' : token['token'] , 'datetime': token['datetime'] , 'active': token['active']})
 
+@app.route('/tokens/revoke', methods=['POST'])
+@TM.token_required
+@trust_manager.admin
+def revoke_token():
+    token = request.get_json().get("token")
+
+    token_service = TokenService()
+
+    token = token_service.revoke_token(token)
+
+    return jsonify({'token' : token['token'] , 'datetime': token['datetime'] , 'active': token['active']})
+
 
 @app.route('/historicold', methods=['GET'])
 @TM.token_required
