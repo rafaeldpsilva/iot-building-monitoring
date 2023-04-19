@@ -2,12 +2,13 @@ import jwt
 from datetime import datetime
 from functools import wraps
 from flask import Flask, jsonify, request
+from services.TokenService import TokenService
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
-def access_control(f):
+def aggregated(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
@@ -16,8 +17,74 @@ def access_control(f):
         data_exp = datetime.strftime(data['exp'])
         if data_exp > datetime.now():
             return jsonify({'message': 'Token has expired'})
-    
+        token_service = TokenService()
+        decoded = token_service.decode_token(token)
+        
+        access = False
+        for access_resource in decoded['List of Resources']:
+            if access_resource == 'aggregated':
+                access = True
+        
+        if not access:
+            return jsonify({'message': 'Access not allowed'})
+        return f(*args, **kwargs)
 
+    return decorated
+
+def discrete(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
+    
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+        data_exp = datetime.strftime(data['exp'])
+        if data_exp > datetime.now():
+            return jsonify({'message': 'Token has expired'})
+        token_service = TokenService()
+        decoded = token_service.decode_token(token)
+        access = False
+        for access_resource in decoded['List of Resources']:
+            if access_resource == 'discrete':
+                access = True
+        
+        if not access:
+            return jsonify({'message': 'Access not allowed'})
+        
+        return f(*args, **kwargs)
+
+    return decorated
+
+def admin(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
+        token_service = TokenService()
+        decoded = token_service.decode_token(token)
+        access = False
+        for access_resource in decoded['List of Resources']:
+            if access_resource == 'admin':
+                access = True
+        
+        if not access:
+            return jsonify({'message': 'Access not allowed'})
+        return f(*args, **kwargs)
+
+    return decorated
+
+def community_manager(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
+        token_service = TokenService()
+        decoded = token_service.decode_token(token)
+        access = False
+        for access_resource in decoded['List of Resources']:
+            if access_resource == 'community_manager':
+                access = True
+        
+        if not access:
+            return jsonify({'message': 'Access not allowed'})
+        
         return f(*args, **kwargs)
 
     return decorated
