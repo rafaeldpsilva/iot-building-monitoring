@@ -10,13 +10,27 @@ class TokenService:
         tokens = self.token_repo.get_tokens()
         tokens_array = []
         for token in tokens:
-            decoded = jwt.decode(token['token'], 'thisisthesecretkey', algorithms=["HS256"])
-            tokens_array.append({'name' : decoded['Name'],'list_of_resources': decoded['List of Resources'],'token': token['token'], 'expiration_time_minutes': token['expiration_time_minutes'],'datetime': token['datetime']})
+            decoded = self.decode_token(token['token'])
+            print(decoded)
+            tokens_array.append({'name' : decoded['name'],'list_of_resources': decoded['list_of_resources'],'token': token['token'], 'expiration_time_minutes': decoded['exp'],'datetime': token['datetime']})
         return tokens_array
     
+    def generate_token(self, secret_key, name, list_of_resources, data_aggregation, time_aggregation, embargo, exp):
+        token = jwt.encode({
+                'name': name,
+                'list_of_resources': list_of_resources,
+                'data_aggregation': data_aggregation,
+                'time_aggregation': time_aggregation,
+                'embargo_period': embargo,
+                'exp': datetime.datetime.now() + datetime.timedelta(minutes=exp)
+            },
+            secret_key, algorithm="HS256"
+        )
+        return token
+
     def decode_token(self, token):
-        decoded = jwt.decode(token['token'], 'thisisthesecretkey', algorithms=["HS256"])
-        return {'name' : decoded['Name'],'list_of_resources': decoded['List of Resources'],'token': token['token'], 'expiration_time_minutes': token['expiration_time_minutes'],'datetime': token['datetime']}
+        decoded = jwt.decode(token, 'thisisthesecretkey', algorithms=["HS256"])
+        return {'name' : decoded['name'],'list_of_resources': decoded['list_of_resources'],'token': token, 'expiration_time_minutes': decoded['exp'],'data_aggregation': decoded['data_aggregation'],'time_aggregation': decoded['time_aggregation'],'embargo_period': decoded['embargo_period']}
     
     def revoke_token(self,token):
         return self.token_repo.revoke_token(token)

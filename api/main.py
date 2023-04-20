@@ -35,19 +35,10 @@ def get_token_list():
 @TM.token_required
 def generate_token():
     token = ''
-
+    json = request.get_json()
     if request.method == 'POST':
-        token = jwt.encode({
-                'Name': request.get_json().get("name"),
-                'List of Resources': request.get_json().get("listofresources"),
-                'Data Aggregation': request.get_json().get("dataaggregation"),
-                'Time Aggregation': request.get_json().get("timeaggregation"),
-                'Embargo Period': request.get_json().get("embargo"),
-                'exp': datetime.datetime.now() + datetime.timedelta(minutes=request.get_json().get("exp"))
-            },
-            app.config['SECRET_KEY'],
-            algorithm="HS256"
-        )
+        token_service = TokenService()
+        token = token_service.generate_token(app.config['SECRET_KEY'], json.get("name"),json.get("list_of_resources"), json.get("data_aggregation"), json.get("time_aggregation"), json.get("embargo"), json.get("exp"))
     return jsonify({'token' : token})
 
 @app.route('/tokens/check', methods=['POST'])

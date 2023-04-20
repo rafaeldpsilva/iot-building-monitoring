@@ -13,15 +13,11 @@ def aggregated(f):
     def decorated(*args, **kwargs):
         token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
     
-        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-        data_exp = datetime.strftime(data['exp'])
-        if data_exp > datetime.now():
-            return jsonify({'message': 'Token has expired'})
         token_service = TokenService()
         decoded = token_service.decode_token(token)
         
         access = False
-        for access_resource in decoded['List of Resources']:
+        for access_resource in decoded['list_of_resources']:
             if access_resource == 'aggregated':
                 access = True
         
@@ -36,14 +32,10 @@ def discrete(f):
     def decorated(*args, **kwargs):
         token = request.args.get('token') #http://127.0.0.1:5000/route?token=alshfjfjdklsfj89549834ur
     
-        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-        data_exp = datetime.strftime(data['exp'])
-        if data_exp > datetime.now():
-            return jsonify({'message': 'Token has expired'})
         token_service = TokenService()
         decoded = token_service.decode_token(token)
         access = False
-        for access_resource in decoded['List of Resources']:
+        for access_resource in decoded['list_of_resources']:
             if access_resource == 'discrete':
                 access = True
         
@@ -61,7 +53,7 @@ def admin(f):
         token_service = TokenService()
         decoded = token_service.decode_token(token)
         access = False
-        for access_resource in decoded['List of Resources']:
+        for access_resource in decoded['list_of_resources']:
             if access_resource == 'admin':
                 access = True
         
@@ -78,7 +70,7 @@ def community_manager(f):
         token_service = TokenService()
         decoded = token_service.decode_token(token)
         access = False
-        for access_resource in decoded['List of Resources']:
+        for access_resource in decoded['list_of_resources']:
             if access_resource == 'community_manager':
                 access = True
         
