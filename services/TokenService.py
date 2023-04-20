@@ -12,7 +12,7 @@ class TokenService:
         for token in tokens:
             decoded = self.decode_token(token['token'])
             print(decoded)
-            tokens_array.append({'name' : decoded['name'],'list_of_resources': decoded['list_of_resources'],'token': token['token'], 'expiration_time_minutes': decoded['exp'],'datetime': token['datetime']})
+            tokens_array.append({'name' : decoded['name'], 'list_of_resources': decoded['list_of_resources'],'token': token['token'], 'expiration_time_minutes': decoded['expiration_time_minutes'],'datetime': token['datetime']})
         return tokens_array
     
     def generate_token(self, secret_key, name, list_of_resources, data_aggregation, time_aggregation, embargo, exp):
