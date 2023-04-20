@@ -20,12 +20,12 @@ CORS(app)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 @app.route('/', methods=['GET'])
-@trust_manager.access_control
 def home():
     return jsonify({'online': True})
 
 @app.route('/tokens', methods=['GET'])
 @TM.token_required
+@trust_manager.admin
 def get_token_list():
     token_service = TokenService()
     tokens = token_service.get_tokens()
@@ -52,6 +52,7 @@ def generate_token():
 
 @app.route('/tokens/check', methods=['POST'])
 @TM.token_required
+@trust_manager.admin
 def check_token():
     token = request.get_json().get("token")
 
@@ -63,6 +64,7 @@ def check_token():
 
 @app.route('/tokens/save', methods=['POST'])
 @TM.token_required
+@trust_manager.admin
 def save_token():
     token = request.get_json().get("token")
 
@@ -99,6 +101,7 @@ def historic_old():
 
 @app.route('/historic', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def historic():
     building_service = BuildingService()
     historic_total = building_service.get_historic_total()
@@ -106,6 +109,7 @@ def historic():
     
 @app.route('/iots', methods=['GET'])
 @TM.token_required
+@trust_manager.discrete
 def get_iots():
     building_service = BuildingService()
     iots = building_service.get_iots()
@@ -113,6 +117,7 @@ def get_iots():
 
 @app.route('/energy/now', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def energy_now():
     consumption = cr.get_total_consumption()
     generation = cr.get_total_generation()
@@ -121,6 +126,7 @@ def energy_now():
 
 @app.route('/energy/totalpower', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def energy_totalpower():
     data = cr.get_total_consumption()
 
@@ -128,6 +134,7 @@ def energy_totalpower():
 
 @app.route('/energy/consumption', methods=['GET'])
 @TM.token_required
+@trust_manager.discrete
 def energy_consumption():
     consumption = cr.get_iot_consumption()
     json = []
@@ -137,6 +144,7 @@ def energy_consumption():
 
 @app.route('/energy/generation', methods=['GET'])
 @TM.token_required
+@trust_manager.discrete
 def energy_generation():
     generation = cr.get_iot_generation()
     json = []
@@ -146,6 +154,7 @@ def energy_generation():
 
 @app.route('/energy/flexibility', methods=['GET'])
 @TM.token_required
+@trust_manager.discrete
 def energy_flexibility():
     flexibility = cr.get_total_consumption() * random.randrange(0,20)/100
     return jsonify({'flexibility': flexibility})
@@ -156,6 +165,7 @@ def correlations():
 
 @app.route('/forecast/consumption', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def forecast_consumption():
     building_service = BuildingService()
     forecasted_consumption = building_service.forecast_consumption().numpy().tolist()
@@ -168,12 +178,14 @@ def forecast_consumption():
 
 @app.route('/forecast/flexibility', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def forecast_flexibility():
     flexibility = cr.get_forecasted_flexibility()
     return jsonify({'forecasted_flexibility': flexibility})
 
 @app.route('/forecast', methods=['GET'])
 @TM.token_required
+@trust_manager.aggregated
 def forecast_value():
     building_service = BuildingService()
     df = building_service.forecast_value()
@@ -186,6 +198,7 @@ def forecast_value():
 
 @app.route('/shifting', methods=['GET'])
 @TM.token_required
+@trust_manager.community_manager
 def get_shifting():
     iots = cr.get_forecasted_flexibility()
     building_service = BuildingService()
@@ -194,6 +207,7 @@ def get_shifting():
 
 @app.route('/invitation', methods=['GET'])
 @TM.token_required
+@trust_manager.community_manager
 def invitation():
     return jsonify({'response': "OK"})
 
