@@ -196,11 +196,6 @@ def get_shifting():
 @TM.token_required
 def invitation():
     return jsonify({'response': "OK"})
-    
-@app.route('/audit/validate', methods=['GET'])
-@TM.token_required
-def audit_validate():
-    return jsonify({'response': "OK"})
 
 @app.route('/audit/check', methods=['GET'])
 @TM.token_required
