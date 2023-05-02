@@ -66,7 +66,8 @@ class Core(Thread):
     def get_iot_consumption(self):
         iot_consumption = []
         for iot in self.iots:
-            iot_consumption.append([iot.name, iot.get_power()])
+            if iot.type != "generation":
+                iot_consumption.append([iot.name, iot.get_power()])
         return iot_consumption
 
     def get_iot_generation(self):

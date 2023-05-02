@@ -152,7 +152,7 @@ def energy_flexibility():
 
 @app.route('/correlations', methods=['GET', 'POST'])
 def correlations():
-    return
+    return jsonify({'correlations': "not implemented yet"})
 
 @app.route('/forecast/consumption', methods=['GET'])
 @TM.token_required
