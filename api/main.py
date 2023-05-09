@@ -209,7 +209,7 @@ def get_invitations():
 @app.route('/invitation/answer', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
-def invitation():
+def answer_invitation():
     json = request.get_json()
     event_time = json['event_time']
     response = json['response']
