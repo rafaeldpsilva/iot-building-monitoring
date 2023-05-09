@@ -218,7 +218,7 @@ def invitation():
     dr_service.answer_invitation(event_time, response)
     return jsonify({'response': response})
 
-@app.route('/invitation', methods=['POST'])
+@app.route('/invitation/send', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
 def invitation():
