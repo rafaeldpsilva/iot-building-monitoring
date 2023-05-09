@@ -1,8 +1,6 @@
-import datetime
 import random
 import sys
 
-import jwt
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -11,6 +9,7 @@ import api.tokenManager as TM
 import api.trust as trust_manager
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
+from services.DemandResponseService import DemandResponseService
 from core.Core import Core
 from utils import utils
 
@@ -196,11 +195,41 @@ def get_shifting():
     [shift_kwh ,shift_hours] = building_service.get_shift_hours_kwh(iots)
     return jsonify({'shift_hours': shift_hours, 'shift_kwh': shift_kwh})
 
-@app.route('/invitation', methods=['GET'])
+@app.route('/invitation/get', methods=['GET'])
+@TM.token_required
+@trust_manager.community_manager
+def get_invitations():
+    json = request.get_json()
+    event_time = json['event_time']
+    
+    dr_service = DemandResponseService()
+    datetime, event_time, load_kwh, load_percentage, response = dr_service.get_invitations(event_time)
+    return jsonify({'datetime': datetime,"event_time": event_time,"load_kwh": load_kwh,"load_percentage": load_percentage,"response": response})
+
+@app.route('/invitation/answer', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
 def invitation():
-    return jsonify({'response': "OK"})
+    json = request.get_json()
+    event_time = json['event_time']
+    response = json['response']
+    
+    dr_service = DemandResponseService()
+    dr_service.answer_invitation(event_time, response)
+    return jsonify({'response': response})
+
+@app.route('/invitation', methods=['POST'])
+@TM.token_required
+@trust_manager.community_manager
+def invitation():
+    json = request.get_json()
+    event_time = json['event_time']
+    load_kwh = json['kwh']
+    load_percentage = json['percentage']
+    
+    dr_service = DemandResponseService()
+    dr_service.invitation(event_time, load_kwh, load_percentage)
+    return jsonify({'event_time': event_time})
 
 @app.route('/audit/check', methods=['GET'])
 @TM.token_required
