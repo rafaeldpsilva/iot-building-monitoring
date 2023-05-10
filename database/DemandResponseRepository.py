@@ -10,6 +10,12 @@ class DemandResponseRepository:
         self.port = str(self.config['storage']['local']['port'])
         self.DEMANDRESPONSE = self.config['storage']['local']['demand_response']
 
+    def get_invitations(self):
+        client = MongoClient(self.server + ':' + self.port)
+        invitations = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find())
+        client.close()
+        return invitations
+    
     def get_invitation(self, event_time):
         client = MongoClient(self.server + ':' + self.port)
         invitation = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'event_time': event_time } ))
@@ -17,18 +23,18 @@ class DemandResponseRepository:
         return invitation
     
     def answer_invitation(self, event_time, response):
+        response = "NO"
         if response:
             response = "YES"
-        else:
-            response = "NO"
+
         client = MongoClient(self.server + ':' + self.port)
-        invitation = client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].update_one({'event_time': event_time},{'$set': { 'response': response}})
+        client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].update_one({'event_time': event_time},{'$set': { 'response': response}})
         client.close()
-        return invitation
+        return response
     
     def insert_invitation(self, datetime, event_time, load_kwh, load_percentage):
         response = "WAITING"
-        if self.config['dr_events_auto_accept']:
+        if self.config['app']['dr_events_auto_accept']:
             response = "YES"
         
         try:
