@@ -27,8 +27,12 @@ class DemandResponseRepository:
         return invitation
     
     def insert_invitation(self, datetime, event_time, load_kwh, load_percentage):
+        response = "WAITING"
+        if self.config['dr_events_auto_accept']:
+            response = "YES"
+        
         try:
-            invitation = {"datetime": datetime, "event_time": event_time, "load_kwh": load_kwh, "load_percentage": load_percentage, "response": "WAITING"}
+            invitation = {"datetime": datetime, "event_time": event_time, "load_kwh": load_kwh, "load_percentage": load_percentage, "response": response}
             client = MongoClient(self.server + ':' + self.port)
             client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].insert_one(invitation)
         except Exception as e:
