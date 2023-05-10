@@ -195,7 +195,7 @@ def get_shifting():
     [shift_kwh ,shift_hours] = building_service.get_shift_hours_kwh(iots)
     return jsonify({'shift_hours': shift_hours, 'shift_kwh': shift_kwh})
 
-@app.route('/invitation/get', methods=['GET'])
+@app.route('/invitation/get', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
 def get_invitations():
