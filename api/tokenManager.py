@@ -3,12 +3,14 @@ from functools import wraps
 
 import jwt
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 sys.path.append('.')
 from database.TokenRepository import TokenRepository
 
 dados = {}
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 def token_required(f):

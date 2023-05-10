@@ -2,10 +2,11 @@ import jwt
 from datetime import datetime
 from functools import wraps
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from services.TokenService import TokenService
 
 app = Flask(__name__)
-
+CORS(app)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
 def aggregated(f):
