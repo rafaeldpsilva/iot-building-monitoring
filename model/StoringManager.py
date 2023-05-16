@@ -24,7 +24,7 @@ class StoringManager(Thread):
 
     def save_total(self):
         building_repo = BuildingRepository()
-        building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(), str(datetime.now()))
+        building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(), datetime.now())
 
     def run(self):
         while True:
