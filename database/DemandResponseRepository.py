@@ -10,7 +10,13 @@ class DemandResponseRepository:
         self.port = str(self.config['storage']['local']['port'])
         self.DEMANDRESPONSE = self.config['storage']['local']['demand_response']
 
-    def get_invitations(self):
+    def get_unanswered_invitations(self):
+        client = MongoClient(self.server + ':' + self.port)
+        invitations = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': "WAITING"}))
+        client.close()
+        return invitations
+    
+    def get_all_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
         invitations = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find())
         client.close()

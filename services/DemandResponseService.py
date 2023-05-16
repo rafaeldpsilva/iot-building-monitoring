@@ -11,6 +11,9 @@ class DemandResponseService:
         invitation = self.dr_repo.get_invitation(event_time)[0]
         return invitation['datetime'],invitation['event_time'],invitation['load_kwh'],invitation['load_percentage'],invitation['response']
 
+    def get_unanswered_invitations(self):
+        return self.dr_repo.get_unanswered_invitations()
+
     def answer_invitation(self, event_time, response):
         return self.dr_repo.answer_invitation(event_time,response)
 

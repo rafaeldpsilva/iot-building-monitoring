@@ -198,13 +198,21 @@ def get_shifting():
 @app.route('/invitation/get', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
-def get_invitations():
+def get_invitation():
     json = request.get_json()
     event_time = json['event_time']
     
     dr_service = DemandResponseService()
     datetime, event_time, load_kwh, load_percentage, response = dr_service.get_invitations(event_time)
     return jsonify({'datetime': datetime,"event_time": event_time,"load_kwh": load_kwh,"load_percentage": load_percentage,"response": response})
+
+@app.route('/invitation/unanswered', methods=['GET'])
+@TM.token_required
+@trust_manager.community_manager
+def get_unanswered_invitations():
+    dr_service = DemandResponseService()
+    invitations = dr_service.get_unanswered_invitations()
+    return jsonify({'invitations': invitations})
 
 @app.route('/invitation/answer', methods=['POST'])
 @TM.token_required
