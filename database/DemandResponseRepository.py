@@ -33,12 +33,12 @@ class DemandResponseRepository:
         return invitation
     
     def answer_invitation(self, event_time, response):
-        response = "NO"
+        res = "NO"
         if response == "YES":
-            response = "YES"
+            res = "YES"
 
         client = MongoClient(self.server + ':' + self.port)
-        client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].update_one({'event_time': event_time},{'$set': { 'response': response}})
+        client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].update_one({'event_time': event_time},{'$set': { 'response': res}})
         client.close()
         return response
     
