@@ -22,7 +22,7 @@ class DemandResponseRepository:
     
     def get_answered_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
-        inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': {"ne" : "WAITING"}}).sort("event_time",-1).limit(5))
+        inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': {"$ne" : "WAITING"}}).sort("event_time",-1).limit(5))
         client.close()
         invitations = []
         for invite in inv:
