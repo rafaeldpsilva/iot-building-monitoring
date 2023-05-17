@@ -33,7 +33,7 @@ class DemandResponseRepository:
     
     def answer_invitation(self, event_time, response):
         response = "NO"
-        if response:
+        if response == "YES":
             response = "YES"
 
         client = MongoClient(self.server + ':' + self.port)
