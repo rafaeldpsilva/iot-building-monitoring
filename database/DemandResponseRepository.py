@@ -12,8 +12,11 @@ class DemandResponseRepository:
 
     def get_unanswered_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
-        invitations = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': "WAITING"}))
+        inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': "WAITING"}))
         client.close()
+        invitations = []
+        for invite in inv:
+            invitations.append({"datetime":invite['datetime'],"event_time":invite['event_time'],"load_kwh":invite['load_kwh'],"load_percentage":invite['load_percentage'],"iots":invite['iots'],"response":invite['response']})
         return invitations
     
     def get_all_invitations(self):
@@ -38,13 +41,13 @@ class DemandResponseRepository:
         client.close()
         return response
     
-    def insert_invitation(self, datetime, event_time, load_kwh, load_percentage):
+    def insert_invitation(self, datetime, event_time, load_kwh, load_percentage, iots):
         response = "WAITING"
         if self.config['app']['dr_events_auto_accept']:
             response = "YES"
         
         try:
-            invitation = {"datetime": datetime, "event_time": event_time, "load_kwh": load_kwh, "load_percentage": load_percentage, "response": response}
+            invitation = {"datetime": datetime, "event_time": event_time, "load_kwh": load_kwh, "load_percentage": load_percentage, "iots" : iots, "response": response}
             client = MongoClient(self.server + ':' + self.port)
             client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].insert_one(invitation)
         except Exception as e:

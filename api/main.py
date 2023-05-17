@@ -234,9 +234,10 @@ def invitation():
     event_time = json['event_time']
     load_kwh = json['kwh']
     load_percentage = json['percentage']
+    iots = json['iots']
     
     dr_service = DemandResponseService()
-    dr_service.invitation(event_time, load_kwh, load_percentage)
+    dr_service.invitation(event_time, load_kwh, load_percentage, iots)
     return jsonify({'event_time': event_time})
 
 @app.route('/audit/check', methods=['GET'])

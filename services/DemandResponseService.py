@@ -17,7 +17,7 @@ class DemandResponseService:
     def answer_invitation(self, event_time, response):
         return self.dr_repo.answer_invitation(event_time,response)
 
-    def invitation(self, event_time, load_kwh, load_percentage):
+    def invitation(self, event_time, load_kwh, load_percentage, iots):
         creation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         event_time = datetime.strptime(event_time, "%Y-%m-%d %H:%M:%S")
-        return self.dr_repo.insert_invitation(creation_date, event_time, load_kwh, load_percentage)
+        return self.dr_repo.insert_invitation(creation_date, event_time, load_kwh, load_percentage, iots)
