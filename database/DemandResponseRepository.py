@@ -20,6 +20,16 @@ class DemandResponseRepository:
             invitations.append({"datetime":invite['datetime'],"event_time": event_time,"load_kwh":invite['load_kwh'],"load_percentage":invite['load_percentage'],"iots":invite['iots'],"response":invite['response']})
         return invitations
     
+    def get_answered_invitations(self):
+        client = MongoClient(self.server + ':' + self.port)
+        inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': {"ne" : "WAITING"}}).sort("event_time",-1).limit(5))
+        client.close()
+        invitations = []
+        for invite in inv:
+            event_time = datetime.strftime(invite['event_time'], "%Y-%m-%d %H:%M:%S")
+            invitations.append({"datetime":invite['datetime'],"event_time": event_time,"load_kwh":invite['load_kwh'],"load_percentage":invite['load_percentage'],"iots":invite['iots'],"response":invite['response']})
+        return invitations
+    
     def get_all_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
         invitations = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find())

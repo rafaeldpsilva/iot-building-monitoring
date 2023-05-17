@@ -214,6 +214,14 @@ def get_unanswered_invitations():
     invitations = dr_service.get_unanswered_invitations()
     return jsonify({'invitations': invitations})
 
+@app.route('/invitation/answered', methods=['GET'])
+@TM.token_required
+@trust_manager.community_manager
+def get_answered_invitations():
+    dr_service = DemandResponseService()
+    invitations = dr_service.get_answered_invitations()
+    return jsonify({'invitations': invitations})
+
 @app.route('/invitation/answer', methods=['POST'])
 @TM.token_required
 @trust_manager.community_manager
