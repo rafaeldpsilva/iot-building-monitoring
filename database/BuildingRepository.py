@@ -21,6 +21,20 @@ class BuildingRepository:
         client.close()
         return historic
 
+    def get_historic_update(self, start):
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': start}}))
+        client.close()
+        client = MongoClient(self.server + ':' + self.port)
+        print("Historic Encontrado")
+        for entry in historic:
+            print(entry['datetime'])
+            new_date = datetime.strptime(entry['datetime'],"%Y-%m-%d %H:%M:%S.%f")
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].update_one({'datetime': entry['datetime']},{'$set': { 'datetime': new_date}})
+
+        client.close()
+        return historic
+    
     def get_iots(self):
         iots = []
         for iot in self.config['resources']['iots']:
@@ -29,7 +43,7 @@ class BuildingRepository:
 
     def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
-        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': { '$gt': str(time), '$lt' : str(time_emb)} } ))
+        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': { '$gt': time, '$lt' : time_emb} } ))
         client.close()
         return building_iot_reading
 
