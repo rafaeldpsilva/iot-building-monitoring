@@ -97,11 +97,11 @@ def historic():
     historic_last_day = building_service.get_historic_last_day()
     return jsonify({'historic': historic_last_day})
 
-@app.route('/historic/interval', methods=['GET'])
+@app.route('/historic/interval', methods=['POST'])
 @TM.token_required
 @trust_manager.discrete
 def energy_consumption_interval():
-    start = request.args.get('start')
+    start = request.get_json()['start']
     building_service = BuildingService()
     historic = building_service.get_historic(start)
     return jsonify({'historic': historic})

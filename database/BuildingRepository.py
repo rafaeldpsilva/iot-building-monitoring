@@ -26,9 +26,7 @@ class BuildingRepository:
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': start}}))
         client.close()
         client = MongoClient(self.server + ':' + self.port)
-        print("Historic Encontrado")
         for entry in historic:
-            print(entry['datetime'])
             new_date = datetime.strptime(entry['datetime'],"%Y-%m-%d %H:%M:%S.%f")
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].update_one({'datetime': entry['datetime']},{'$set': { 'datetime': new_date}})
 
