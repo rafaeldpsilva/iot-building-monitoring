@@ -94,9 +94,18 @@ def historic_old():
 @trust_manager.aggregated
 def historic():
     building_service = BuildingService()
-    historic_total = building_service.get_historic_total()
-    return jsonify({'historic': historic_total})
-    
+    historic_last_day = building_service.get_historic_last_day()
+    return jsonify({'historic': historic_last_day})
+
+@app.route('/historic/interval', methods=['GET'])
+@TM.token_required
+@trust_manager.discrete
+def energy_consumption_interval():
+    start = request.args.get('start')
+    building_service = BuildingService()
+    historic = building_service.get_historic(start)
+    return jsonify({'historic': historic})
+
 @app.route('/iots', methods=['GET'])
 @TM.token_required
 @trust_manager.discrete

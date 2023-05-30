@@ -14,18 +14,12 @@ class BuildingRepository:
 
     def client(self):
         return MongoClient(self.server + ':' + self.port)
-
-    def get_historic_total(self):
-        last_24_hours  = datetime.now() - timedelta(hours=24)
-        client = MongoClient(self.server + ':' + self.port)
-        historic_total = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': { '$gt': str(last_24_hours) } }))
-        client.close()
-        return historic_total
     
-    def update_historic_total(self, datetime, new_datetime):
+    def get_historic(self, start):
         client = MongoClient(self.server + ':' + self.port)
-        client[self.IOTS_READING[0]][self.IOTS_READING[1]].update_one({'datetime': datetime},{'$set': { 'datetime': new_datetime}})
+        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
         client.close()
+        return historic
 
     def get_iots(self):
         iots = []

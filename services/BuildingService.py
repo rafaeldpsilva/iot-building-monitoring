@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta
 import random
 
 import pandas as pd
@@ -71,8 +71,14 @@ class BuildingService:
                         consumption['values'] += iot.get_power()
         return consumption
 
-    def get_historic_total(self):
-        total = self.building_repo.get_historic_total()
+    def get_historic(self, start):
+        total = self.building_repo.get_historic(start)
+        total = pd.DataFrame(total)
+        total = total.drop(["_id"], axis=1)
+        return total.values.tolist()
+
+    def get_historic_last_day(self):
+        total = self.building_repo.get_historic(datetime.now() - timedelta(hours=24))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
         
@@ -108,8 +114,8 @@ class BuildingService:
 
 
     def historic(self, TM):
-        time = datetime.datetime.now() - datetime.timedelta(minutes=180)
-        timeemb = datetime.datetime.now() - datetime.timedelta(minutes=int(TM.dados['Embargo Period']))
+        time = datetime.now() - timedelta(minutes=180)
+        timeemb = datetime.now() - timedelta(minutes=int(TM.dados['Embargo Period']))
 
         indexArray = []
         dataArray = []
@@ -126,7 +132,7 @@ class BuildingService:
             index = 0
             for entry in iots_reading:
                 if getIndex:
-                    indexArray.append(datetime.datetime.strptime(entry["datetime"][:19], "%Y-%m-%d %H:%M:%S"))
+                    indexArray.append(datetime.strptime(entry["datetime"][:19], "%Y-%m-%d %H:%M:%S"))
                     dataArray.append([])
                     if TM.dados['Data Aggregation'] == 'sum':
                         dataArray[index].append(0)
