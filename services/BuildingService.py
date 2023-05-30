@@ -83,12 +83,13 @@ class BuildingService:
                 for part in main_participants:
                     if iot['name'] == part:
                         event_participant = True
-                if iot['values'][0]['type'] == "power" and not event_participant:
-                    print(iot['name'],iot['values'][0]['values'])
-                    consumption += iot['values'][0]['values']
-                    
-                if iot['type'] == "generation":
-                    generation += iot['values'][0]['values']
+
+                if 'values' in iot['values'][0]:
+                    if iot['values'][0]['type'] == "power" and not event_participant:
+                            consumption += iot['values'][0]['values']
+
+                    if iot['type'] == "generation":
+                            generation += iot['values'][0]['values']
         return consumption/instants, generation/instants
         
     def get_historic(self, start):
