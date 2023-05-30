@@ -116,11 +116,12 @@ class BuildingService:
             flexibility = 0
             for iot in iots:
                 for value in iot['values']:
-                    if value['type'] == 'generation':
-                        generation += value['values']
-                    if value['type'] == 'power':
-                        consumption += value['values']
-                        flexibility += value['values'] * random.randrange(0,20) / 100
+                    if 'values' in iot['values'][0]:
+                        if value['type'] == 'generation':
+                            generation += value['values']
+                        if value['type'] == 'power':
+                            consumption += value['values']
+                            flexibility += value['values'] * random.randrange(0,20) / 100
 
             total_power.append([date,consumption,generation,flexibility])
             
