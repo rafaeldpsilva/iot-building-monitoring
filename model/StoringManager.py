@@ -20,7 +20,7 @@ class StoringManager(Thread):
         iots = []
         for i in self.core.iots:
             iots.append({"name":i.name, "type":i.type, "values":i.values})
-        building_repo.insert_iots(iots, str(datetime.now()))
+        building_repo.insert_iots(iots, datetime.now())
 
     def save_total(self):
         building_repo = BuildingRepository()

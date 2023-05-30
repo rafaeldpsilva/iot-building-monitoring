@@ -89,7 +89,7 @@ class BuildingService:
         
         for row in total:
             iots = row[0]
-            datetime = row[1]
+            date = row[1]
             consumption = 0
             generation = 0
             flexibility = 0
@@ -101,7 +101,7 @@ class BuildingService:
                         consumption += value['values']
                         flexibility += value['values'] * random.randrange(0,20) / 100
 
-            total_power.append([datetime,consumption,generation,flexibility])
+            total_power.append([date,consumption,generation,flexibility])
             
         total = pd.DataFrame(total_power, columns=['datetime', 'consumption','generation','flexibility'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
