@@ -101,10 +101,12 @@ def historic():
 @TM.token_required
 @trust_manager.discrete
 def energy_consumption_interval():
-    start = request.get_json()['start']
+    json = request.get_json()
+    main_participants = json['main_participants']
+    start = json['start']
     building_service = BuildingService()
-    historic = building_service.get_historic(start)
-    return jsonify({'historic': historic})
+    mean_consumption, mean_generation = building_service.get_mean_values(start, main_participants)
+    return jsonify({'mean_consumption': mean_consumption, 'mean_generation': mean_generation})
 
 @app.route('/iots', methods=['GET'])
 @TM.token_required

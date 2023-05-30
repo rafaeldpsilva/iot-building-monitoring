@@ -71,6 +71,26 @@ class BuildingService:
                         consumption['values'] += iot.get_power()
         return consumption
 
+    def get_mean_values(self, start, main_participants):
+        historic = self.building_repo.get_historic(start)
+        instants = 0
+        consumption = 0
+        generation = 0
+        for instant in historic:
+            instants += 1
+            for iot in instant['iots']:
+                event_participant = False
+                for part in main_participants:
+                    if iot['name'] == part:
+                        event_participant = True
+                if iot['values'][0]['type'] == "power" and not event_participant:
+                    print(iot['name'],iot['values'][0]['values'])
+                    consumption += iot['values'][0]['values']
+                    
+                if iot['type'] == "generation":
+                    generation += iot['values'][0]['values']
+        return consumption/instants, generation/instants
+        
     def get_historic(self, start):
         total = self.building_repo.get_historic(start)
         total = pd.DataFrame(total)
@@ -78,7 +98,7 @@ class BuildingService:
         return total.values.tolist()
 
     def get_historic_last_day(self):
-        total = self.building_repo.get_historic(datetime.now() - timedelta(hours=24))
+        total = self.building_repo.get_historic(datetime.strptime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
         
