@@ -71,27 +71,22 @@ class BuildingService:
                         consumption['values'] += iot.get_power()
         return consumption
 
-    def get_mean_values(self, start, main_participants):
+    def get_mean_values(self, start):
         historic = self.building_repo.get_historic(start)
         instants = 0
-        consumption = 0
-        generation = 0
+        consumption = []
+        generation = []
         for instant in historic:
             instants += 1
             for iot in instant['iots']:
-                event_participant = False
-                for part in main_participants:
-                    if iot['name'] == part:
-                        event_participant = True
-
                 for value in iot['values']:
                     if 'values' in value:
-                        if value['type'] == "power" and not event_participant:
-                                consumption += value['values']
+                        if value['type'] == "power":
+                                consumption.append([iot['name'], value['values']])
 
                         if iot['type'] == "generation":
-                                generation += value['values']
-        return consumption/instants, generation/instants
+                                generation.append(iot['name'], value['values'])
+        return consumption, generation, instants
         
     def get_historic(self, start):
         total = self.building_repo.get_historic(start)
