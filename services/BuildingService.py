@@ -85,7 +85,7 @@ class BuildingService:
                                 consumption.append([iot['name'], value['values']])
 
                         if iot['type'] == "generation":
-                                generation.append(iot['name'], value['values'])
+                                generation.append([iot['name'], value['values']])
         return consumption, generation, instants
         
     def get_historic(self, start):
