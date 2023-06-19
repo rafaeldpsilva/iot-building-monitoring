@@ -28,7 +28,7 @@ class Core(Thread):
             iot.start()
             self.iots.append(iot)
 
-        storing_manager = StoringManager(self, config['storage']['storing_frequency'])
+        storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
         storing_manager.daemon = True
         storing_manager.start()
 

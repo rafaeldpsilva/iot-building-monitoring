@@ -21,12 +21,3 @@ sudo docker rm tiocps-h2-monitoring
 sudo docker rmi rdpds/tiocps-h2-monitoring
 sudo docker pull rdpds/tiocps-h2-monitoring:latest
 sudo docker run -d --name tiocps-h2-monitoring -p 5008:5008 rdpds/tiocps-h2-monitoring
-
-
-sudo docker stop tiocps-h1-monitoring
-sudo docker rm tiocps-h1-monitoring
-sudo docker run -d --name tiocps-h1-monitoring -p 5007:5003 rdpds/tiocps-h1-monitoring
-
-sudo docker stop tiocps-h2-monitoring
-sudo docker rm tiocps-h2-monitoring
-sudo docker run -d --name tiocps-h2-monitoring -p 5008:5004 rdpds/tiocps-h2-monitoring

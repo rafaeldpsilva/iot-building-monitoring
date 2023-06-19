@@ -86,8 +86,12 @@ class BuildingService:
 
                         if iot['type'] == "generation":
                                 generation.append([iot['name'], value['values']])
-        return consumption, generation, instants
-        
+        if len(consumption) != 0:
+            return consumption, generation, instants
+        else:
+            return [0],[0],1
+
+
     def get_historic(self, start):
         total = self.building_repo.get_historic(start)
         total = pd.DataFrame(total)
