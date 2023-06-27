@@ -9,7 +9,19 @@ class DemandResponseRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.DEMANDRESPONSE = self.config['storage']['local']['demand_response']
+        self.CONFIG = self.config['storage']['local']['config']
 
+    def get_auto_answer_config(self):
+        client = MongoClient(self.server + ':' + self.port)
+        config = list(client[self.CONFIG[0]][self.CONFIG[1]].find())
+        client.close()
+        return config[0]['auto_answer']
+        
+    def set_auto_answer_config(self, auto_answer):
+        client = MongoClient(self.server + ':' + self.port)
+        client[self.CONFIG[0]][self.CONFIG[1]].update_one({'config': "config"},{'$set': { 'auto_answer': auto_answer}})
+        client.close()
+    
     def get_unanswered_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
         inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find({'response': "WAITING"}))
@@ -54,7 +66,7 @@ class DemandResponseRepository:
     
     def insert_invitation(self, datetime, event_time, load_kwh, load_percentage, iots):
         response = "WAITING"
-        if self.config['app']['dr_events_auto_accept']:
+        if self.get_auto_answer_config():
             response = "YES"
         
         try:

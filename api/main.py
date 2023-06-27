@@ -258,6 +258,15 @@ def invitation():
     dr_service.invitation(event_time, load_kwh, load_percentage, iots)
     return jsonify({'event_time': event_time})
 
+@app.route('/invitation/auto', methods=['POST'])
+@TM.token_required
+def auto_answer():
+    json = request.get_json()
+    auto_answer = json['auto_answer']
+    dr_service = DemandResponseService()
+    dr_service.set_auto_answer_config(auto_answer)
+    return jsonify({'response': "OK"})
+
 @app.route('/audit/check', methods=['GET'])
 @TM.token_required
 def audit_check():

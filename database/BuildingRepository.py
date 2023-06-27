@@ -11,9 +11,20 @@ class BuildingRepository:
         self.IOTS_READING = self.config['storage']['local']['iots_reading']
         self.FORECAST = self.config['storage']['local']['forecast']
         self.TOTALPOWER = self.config['storage']['local']['totalpower']
+        self.CONFIG = self.config['storage']['local']['config']
 
-    def client(self):
-        return MongoClient(self.server + ':' + self.port)
+    def save_config(self):
+        try:
+            conf = {"config": "config", "auto_answer": True}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.CONFIG[0]][self.CONFIG[1]].insert_one(conf)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()
+
+        if self.config['app']['monitoring']:
+            print('\nConfig\n',conf)        
     
     def get_historic(self, start):
         client = MongoClient(self.server + ':' + self.port)
