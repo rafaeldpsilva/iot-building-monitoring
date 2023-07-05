@@ -11,13 +11,13 @@ class BuildingRepository:
         self.IOTS_READING = self.config['storage']['local']['iots_reading']
         self.FORECAST = self.config['storage']['local']['forecast']
         self.TOTALPOWER = self.config['storage']['local']['totalpower']
-        self.CONFIG = self.config['storage']['local']['config']
+        self.CONFIG_DB = self.config['storage']['local']['config']
 
     def save_config(self):
         try:
             conf = {"config": "config", "auto_answer": True}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.CONFIG[0]][self.CONFIG[1]].insert_one(conf)
+            client[self.CONFIG_DB[0]][self.CONFIG_DB[1]].insert_one(conf)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
