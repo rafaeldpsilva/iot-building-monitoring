@@ -18,6 +18,10 @@ class DemandResponseRepository:
         return config[0]['auto_answer']
         
     def set_auto_answer_config(self, auto_answer):
+        if auto_answer:
+            print("AUTO ANSWER SET TO TRUE")
+        else:
+            print("AUTO ANSWER SET TO FALSE")
         client = MongoClient(self.server + ':' + self.port)
         client[self.CONFIG[0]][self.CONFIG[1]].update_one({'config': "config"},{'$set': { 'auto_answer': auto_answer}})
         client.close()
