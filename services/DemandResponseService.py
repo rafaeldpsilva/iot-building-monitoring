@@ -20,6 +20,9 @@ class DemandResponseService:
     def get_answered_invitations(self):
         return self.dr_repo.get_answered_invitations()
 
+    def get_auto_answer_config(self):
+        return self.dr_repo.get_auto_answer_config()
+
     def set_auto_answer_config(self, auto_answer):
         self.dr_repo.set_auto_answer_config(auto_answer)
         
