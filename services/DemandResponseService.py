@@ -12,6 +12,7 @@ class DemandResponseService:
         if len(invitations) != 0:
             invitation = invitations[0]
             return invitation['datetime'],invitation['event_time'],invitation['load_kwh'],invitation['load_percentage'],invitation['response']
+        return "","","","",""
 
     def get_unanswered_invitations(self):
         return self.dr_repo.get_unanswered_invitations()
