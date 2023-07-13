@@ -253,7 +253,7 @@ def invitation():
     load_kwh = json['kwh']
     load_percentage = json['percentage']
     iots = json['iots']
-    
+    print(event_time, load_kwh, load_percentage, iots)
     dr_service = DemandResponseService()
     dr_service.invitation(event_time, load_kwh, load_percentage, iots)
     return jsonify({'event_time': event_time})
