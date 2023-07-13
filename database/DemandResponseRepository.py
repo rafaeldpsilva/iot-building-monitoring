@@ -21,6 +21,8 @@ class DemandResponseRepository:
         client = MongoClient(self.server + ':' + self.port)
         client[self.CONFIG[0]][self.CONFIG[1]].update_one({'config': "config"},{'$set': { 'auto_answer': auto_answer}})
         client.close()
+        if self.get_auto_answer_config() != auto_answer:
+            print("ERROR ON AUTO ANSWER UPDATE!")
     
     def get_unanswered_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
