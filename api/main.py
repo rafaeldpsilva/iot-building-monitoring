@@ -213,7 +213,7 @@ def get_invitation():
     event_time = json['event_time']
     
     dr_service = DemandResponseService()
-    datetime, event_time, load_kwh, load_percentage, response = dr_service.get_invitations(event_time)
+    datetime, event_time, load_kwh, load_percentage, response = dr_service.get_invitation(event_time)
     return jsonify({'datetime': datetime,"event_time": event_time,"load_kwh": load_kwh,"load_percentage": load_percentage,"response": response})
 
 @app.route('/invitation/unanswered', methods=['GET'])
