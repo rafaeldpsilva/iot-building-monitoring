@@ -34,3 +34,6 @@ class DemandResponseService:
         creation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         event_time = datetime.strptime(event_time, "%Y-%m-%d %H:%M:%S")
         return self.dr_repo.insert_invitation(creation_date, event_time, load_kwh, load_percentage, iots)
+
+    def add_benefit(self, benefit):
+        self.dr_repo.add_benefit(benefit)

@@ -279,6 +279,15 @@ def auto_answer():
 def audit_check():
     return jsonify({'response': "OK"})
 
+@app.route('/benefit', methods=['POST'])
+@TM.token_required
+def benefit():
+    json = request.get_json()
+    benefit = json['benefit']
+    dr_service = DemandResponseService()
+    dr_service.add_benefit(benefit)
+    return jsonify({'response': "OK"})
+
 if __name__ == "__main__":
     cr = Core()
     cr.daemon = True

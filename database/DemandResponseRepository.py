@@ -86,3 +86,22 @@ class DemandResponseRepository:
 
         if self.config['app']['monitoring']:
             print('\nInvitation\n',invitation)
+    
+    def add_benefit(self, benefit):
+        client = MongoClient(self.server + ':' + self.port)
+        balance = client[self.BENEFIT[0]][self.BENEFIT[1]].find().sort("datetime",-1).limit(1)
+        client.close()
+        
+        new_balance = balance[0]['balance'] + benefit
+        try:
+            json = {"balance": new_balance, "benefit": benefit}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.BENEFIT[0]][self.BENEFIT[1]].insert_one(json)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()
+
+        if self.config['app']['monitoring']:
+            print('\nBenefit\n',json)
+        return json
