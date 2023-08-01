@@ -9,6 +9,7 @@ class DemandResponseRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.DEMANDRESPONSE = self.config['storage']['local']['demand_response']
+        self.BENEFIT = self.config['storage']['local']['benefit']
         self.CONFIG = self.config['storage']['local']['config']
 
     def get_auto_answer_config(self):
