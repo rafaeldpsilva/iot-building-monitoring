@@ -7,6 +7,7 @@ import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 
+
 def consumption_forecast(df):
     print(df)
     mpl.rcParams['figure.figsize'] = (12, 6)
@@ -16,7 +17,7 @@ def consumption_forecast(df):
     df.set_index("datetime", inplace=True)
     df_init = df.resample('1H').mean()  # only works if the column "Periods" as index
 
-    df_init["datetime"] = (df_init.index)
+    df_init["datetime"] = df_init.index
     # creating a column with week days
     df_init["day_of_week"] = df_init["datetime"].dt.day_name()
     df_init['day_of_week'] = df_init[['day_of_week']].replace(
@@ -26,7 +27,7 @@ def consumption_forecast(df):
     df_init = df_init.loc[(df_init["day_of_week"] != 5) & (df_init['day_of_week'] != 6)]
 
     # interval of the dataset
-    #df_1h = df_init["2022-03-28":].copy()
+    # df_1h = df_init["2022-03-28":].copy()
     df_1h = df_init.copy()
 
     df_1h = df_1h.dropna()
@@ -47,7 +48,7 @@ def consumption_forecast(df):
     # Removing index and creating the timestamp
     df_1h["datetime"] = df_1h.index
     df_1h = df_1h.reset_index(drop=True)
-    
+
     Datetime = pd.to_datetime(df_1h.pop('datetime'), format='%Y-%m-%d %H:%M:%S')
     timestamp_s = Datetime.map(datetime.datetime.timestamp)
 
@@ -75,12 +76,12 @@ def consumption_forecast(df):
     # df_train = df_1h[df_1h['day_of_week'] == dt.weekday()]
     # train_df = df_train.tail(240)
     # print(train_df)
-    
+
     train_df = df_1h[0:int(h * trn)].copy()
     val_df = df_1h[int(h * trn):int(h * (1 - tst))].copy()
-    #!test is train
+    # !test is train
     test_df = df_1h[int(h * (1 - trn)):].copy()
-    print("h",h,"tst",tst,"int",int(h * (1 - trn)))
+    print("h", h, "tst", tst, "int", int(h * (1 - trn)))
 
     num_features = df_1h.shape[1]
     # To Invert the Data Normalisation Process (END of the Code)
@@ -100,13 +101,11 @@ def consumption_forecast(df):
     val_df[featu] = scaler.transform(val_df)
     test_df[featu] = scaler.transform(test_df)
 
-
-
     # window generator class -------------------
     class WindowGenerator:
         def __init__(self, input_width, label_width, shift,
-                    train_df=train_df, val_df=val_df, test_df=test_df,
-                    label_columns=None):
+                     train_df=train_df, val_df=val_df, test_df=test_df,
+                     label_columns=None):
             # Store the raw data.
             self.train_df = train_df
             self.val_df = val_df
@@ -116,9 +115,9 @@ def consumption_forecast(df):
             self.label_columns = label_columns
             if label_columns is not None:
                 self.label_columns_indices = {name: i for i, name in
-                                            enumerate(label_columns)}
+                                              enumerate(label_columns)}
             self.column_indices = {name: i for i, name in
-                                enumerate(train_df.columns)}
+                                   enumerate(train_df.columns)}
 
             # Work out the window parameters.
             self.input_width = input_width
@@ -141,7 +140,6 @@ def consumption_forecast(df):
                 f'Label indices: {self.label_indices}',
                 f'Label column name(s): {self.label_columns}'])
 
-
     def split_window(self, features):
         inputs = features[:, self.input_slice, :]
         labels = features[:, self.labels_slice, :]
@@ -157,9 +155,7 @@ def consumption_forecast(df):
 
         return inputs, labels
 
-
     WindowGenerator.split_window = split_window
-
 
     def make_dataset(self, data):
         data = np.array(data, dtype=np.float32)
@@ -175,24 +171,19 @@ def consumption_forecast(df):
 
         return ds
 
-
     WindowGenerator.make_dataset = make_dataset
-
 
     @property
     def train(self):
         return self.make_dataset(self.train_df)
 
-
     @property
     def val(self):
         return self.make_dataset(self.val_df)
 
-
     @property
     def test(self):
         return self.make_dataset(self.test_df)
-
 
     @property
     def example(self):
@@ -205,7 +196,6 @@ def consumption_forecast(df):
             self._example = result
         return result
 
-
     WindowGenerator.train = train
     WindowGenerator.val = val
     WindowGenerator.test = test
@@ -213,32 +203,31 @@ def consumption_forecast(df):
 
     # window generator class -------------------
 
-
     # function for compile and fit the model
     MAX_EPOCHS = 30
-
 
     def compile_and_fit(model, window, patience=2):
         early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=patience, mode='min')
 
         model.compile(loss='mse',
-                    optimizer=tf.optimizers.Adam(),
-                    metrics=[tf.metrics.MeanAbsoluteError()])
+                      optimizer=tf.optimizers.Adam(),
+                      metrics=[tf.metrics.MeanAbsoluteError()])
 
         history = model.fit(window.train, epochs=MAX_EPOCHS,
                             validation_data=window.val,
-                            callbacks=[early_stopping])
+                            callbacks=[early_stopping], run_eagerly= True)
         return history
+
     # multistepforecast
-    #def forecastday():
+    # def forecastday():
     OUT_STEPS = 24
     multi_window = WindowGenerator(input_width=24,
-                                label_width=OUT_STEPS,
-                                shift=OUT_STEPS,
-                                label_columns=['totalpower'])
+                                   label_width=OUT_STEPS,
+                                   shift=OUT_STEPS,
+                                   label_columns=['totalpower'])
 
-    #print(f'Inputs shape (batch, time, features): {multi_window.example[0].shape}')
-    #print(f'Labels shape (batch, time, features): {multi_window.example[1].shape}\n')
+    # print(f'Inputs shape (batch, time, features): {multi_window.example[0].shape}')
+    # print(f'Labels shape (batch, time, features): {multi_window.example[1].shape}\n')
 
     CONV_WIDTH = 6
     multi_conv_model = tf.keras.Sequential([
@@ -248,7 +237,7 @@ def consumption_forecast(df):
         tf.keras.layers.Conv1D(256, activation='relu', kernel_size=(CONV_WIDTH)),
         # Shape => [batch, 1,  out_steps*features]
         tf.keras.layers.Dense(OUT_STEPS * num_features,
-                            kernel_initializer=tf.initializers.zeros()),
+                              kernel_initializer=tf.initializers.zeros()),
         # Shape => [batch, out_steps, features]
         tf.keras.layers.Reshape([OUT_STEPS, num_features])
     ])
@@ -315,8 +304,8 @@ def forecasthour():
     # criar o modelo
     conv_model = tf.keras.Sequential([
         tf.keras.layers.Conv1D(filters=17,
-                            kernel_size=(CONV_WIDTH,),
-                            activation='relu'),
+                               kernel_size=(CONV_WIDTH,),
+                               activation='relu'),
         tf.keras.layers.Dense(units=17, activation='relu'),
         tf.keras.layers.Dense(units=1),
     ])
@@ -380,8 +369,8 @@ def forecasthour():
     # Invert Normalization
     x = predictions[0, :, 0] * (N.max(axis=0) - N.min(axis=0)) + N.min(axis=0)
     Pred = pd.DataFrame(x, columns=["Predicted Consumption"])
-    #print(Pred.iat[0, 0])
-    #print(Pred)
+    # print(Pred.iat[0, 0])
+    # print(Pred)
 
     building_repo.insert_forecast(str(Pred.iat[0, 0]), datetime.datetime.now() + datetime.timedelta(minutes=45))
     return Pred
