@@ -14,11 +14,11 @@ class BuildingService:
     def get_iots(self):
         return self.building_repo.get_iots()
 
-    def get_shift_quantity(self,iots):
+    def get_shift_quantity(self, iots):
         shift_quantity = []
         for i in range(len(iots)):
             participant = []
-            participant.append(random.randrange(1,3))
+            participant.append(random.randrange(1, 3))
             shift_quantity.append(participant)
         return shift_quantity
 
@@ -31,26 +31,26 @@ class BuildingService:
                 iot_kwh = []
                 iot_hour = []
                 if quantity > 0:
-                    iot_kwh.append(iots[i][1]/quantity)
-                    iot_hour.append(random.randrange(0,23))
+                    iot_kwh.append(iots[i][1] / quantity)
+                    iot_hour.append(random.randrange(0, 23))
                 else:
                     iot_kwh.append(0)
                     iot_hour.append(0)
                 if quantity > 1:
-                    iot_kwh.append(iots[i][1]/quantity)
-                    iot_hour.append(random.randrange(0,23))
+                    iot_kwh.append(iots[i][1] / quantity)
+                    iot_hour.append(random.randrange(0, 23))
                 else:
                     iot_kwh.append(0)
                     iot_hour.append(0)
                 if quantity > 2:
-                    iot_kwh.append(iots[i][1]/quantity)
-                    iot_hour.append(random.randrange(0,23))
+                    iot_kwh.append(iots[i][1] / quantity)
+                    iot_hour.append(random.randrange(0, 23))
                 else:
                     iot_kwh.append(0)
                     iot_hour.append(0)
                 shift_kwh.append(iot_kwh)
                 shift_hours.append(iot_hour)
-        return [shift_kwh,shift_hours]
+        return [shift_kwh, shift_hours]
 
     def energy_consumption(self, TM, cr):
         consumption = []
@@ -82,15 +82,14 @@ class BuildingService:
                 for value in iot['values']:
                     if 'values' in value:
                         if value['type'] == "power":
-                                consumption.append([iot['name'], value['values']])
+                            consumption.append([iot['name'], value['values']])
 
                         if iot['type'] == "generation":
-                                generation.append([iot['name'], value['values']])
+                            generation.append([iot['name'], value['values']])
         if len(consumption) != 0:
             return consumption, generation, instants
         else:
-            return [0],[0],1
-
+            return [0], [0], 1
 
     def get_historic(self, start):
         total = self.building_repo.get_historic(start)
@@ -99,15 +98,16 @@ class BuildingService:
         return total.values.tolist()
 
     def get_historic_last_day(self):
-        total = self.building_repo.get_historic(datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
+        total = self.building_repo.get_historic(
+            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
-        
+
         total = total.dropna()
-        
+
         total = total.values.tolist()
         total_power = []
-        
+
         for row in total:
             iots = row[0]
             date = row[1]
@@ -121,11 +121,11 @@ class BuildingService:
                             generation += value['values']
                         if value['type'] == 'power':
                             consumption += value['values']
-                            flexibility += value['values'] * random.randrange(0,20) / 100
+                            flexibility += value['values'] * random.randrange(0, 20) / 100
 
-            total_power.append([date,consumption,generation,flexibility])
-            
-        total = pd.DataFrame(total_power, columns=['datetime', 'consumption','generation','flexibility'])
+            total_power.append([date, consumption, generation, flexibility])
+
+        total = pd.DataFrame(total_power, columns=['datetime', 'consumption', 'generation', 'flexibility'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
         total = total.resample('1H').mean()
@@ -133,7 +133,6 @@ class BuildingService:
         total['datetime'] = total.index
         total = total.values.tolist()
         return total
-
 
     def historic(self, TM):
         time = datetime.now() - timedelta(minutes=180)
@@ -169,20 +168,45 @@ class BuildingService:
         df = pd.DataFrame(dataArray, index=indexArray, columns=columns)
 
         if TM.dados["Time Aggregation"] == "5minutes":
-            df=df.groupby(df.index.floor('5T')).mean()
+            df = df.groupby(df.index.floor('5T')).mean()
         elif TM.dados["Time Aggregation"] == "15minutes":
-            df=df.groupby(df.index.floor('15T')).mean()
+            df = df.groupby(df.index.floor('15T')).mean()
         elif TM.dados["Time Aggregation"] == "60minutes":
-            df=df.groupby(df.index.floor('60T')).mean()
+            df = df.groupby(df.index.floor('60T')).mean()
 
         return df
 
     def forecast_consumption(self):
         building_repo = BuildingRepository()
-        consumption = pd.DataFrame(building_repo.get_totalpower_col())
-        consumption = consumption.drop("_id", axis=1)
+
+        df_test = pd.DataFrame(building_repo.get_totalpower_col())
+        df_test = df_test.drop("_id", axis=1)
+
+        df_test['datetime'] = pd.to_datetime(df_test['datetime'])
+
+        current_time = df_test['datetime'].max()
+        twenty_four_hours_ago = current_time - timedelta(hours=24)
+
+        last_24_hours_data = df_test[df_test['datetime'] >= twenty_four_hours_ago]
+
+        last_24_hours_data['totalpower'] = pd.to_numeric(last_24_hours_data['totalpower'], errors='coerce')
+        last_24_hours_data['Month'] = last_24_hours_data['datetime'].dt.month
+        last_24_hours_data['Day'] = last_24_hours_data['datetime'].dt.day
+        last_24_hours_data['Hour'] = last_24_hours_data['datetime'].dt.hour
+        last_24_hours_data['Minute'] = last_24_hours_data['datetime'].dt.minute
+
+        last_24_hours_data.rename(columns={'totalpower': 'Consumption'}, inplace=True)
+        last_24_hours_data.drop(['datetime', 'totalgeneration'], axis=1, inplace=True)
+
+        last_24_hours_data = last_24_hours_data.dropna()
+        last_24_hours_data['Consumption-1'] = last_24_hours_data['Consumption'].shift(1)
+        last_24_hours_data.loc[last_24_hours_data['Day'] != last_24_hours_data['Day'].shift(1), 'Consumption-1'] = 0
+        last_24_hours_data['Consumption-2'] = last_24_hours_data['Consumption'].shift(2)
+        last_24_hours_data.loc[last_24_hours_data['Day'] != last_24_hours_data['Day'].shift(2), 'Consumption-2'] = 0
+        last_24_hours_data = last_24_hours_data[
+            ['Month', 'Day', 'Hour', 'Minute', 'Consumption-1', 'Consumption-2', 'Consumption']]
         forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_day_consumption(consumption)
+        return forecast_adapter.forecast_saved_model(last_24_hours_data)
 
     def forecast_flexibility(self):
         building_repo = BuildingRepository()
@@ -197,6 +221,7 @@ class BuildingService:
 
         df.drop('_id', inplace=True, axis=1)
         return df
+
 
 def get_value(array, type):
     for value in array:

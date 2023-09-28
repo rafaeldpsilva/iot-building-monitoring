@@ -2,7 +2,6 @@ from pymongo import MongoClient, DESCENDING
 from datetime import datetime, timedelta
 from utils import utils
 
-
 class BuildingRepository:
     def __init__(self):
         self.config = utils.get_config()
