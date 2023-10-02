@@ -73,6 +73,3 @@ def forecast_consumption():
         ['Month', 'Day', 'Hour', 'Minute', 'Consumption-1', 'Consumption-2', 'Consumption']]
 
     return predict_saved_model(last_24_hours_data)
-
-if __name__ == "__main__":
-    forecast_consumption()
