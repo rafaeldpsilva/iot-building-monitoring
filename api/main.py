@@ -172,7 +172,7 @@ def forecast_consumption():
 
     consumption = []
     for val in forecasted_consumption:
-        consumption.append(val[3] * random.randrange(0,20)/100)
+        consumption.append(val[3])
 
     return jsonify({'forecasted_consumption': consumption})
 
