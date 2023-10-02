@@ -168,7 +168,7 @@ def correlations():
 @trust_manager.aggregated
 def forecast_consumption():
     building_service = BuildingService()
-    forecasted_consumption = building_service.forecast_consumption().numpy().tolist()
+    forecasted_consumption = building_service.forecast_consumption().values.tolist()
 
     consumption = []
     for val in forecasted_consumption:

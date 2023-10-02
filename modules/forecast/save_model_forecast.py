@@ -41,7 +41,21 @@ def predict_saved_model(last_24_hours_data):
     
     y_pred = model.predict(X_pred)
     y_pred = pred_scaler.inverse_transform(y_pred)
-    return y_pred
+
+    last = scaler.inverse_transform(df_scaled[:-3])
+
+    df = pd.DataFrame(last, columns=['Month', 'Day', 'Hour', 'Minute', 'Consumption-1', 'Consumption-2', 'Consumption'])
+    df['Prediction'] = y_pred
+    df['datetime'] = pd.to_datetime(df[['Month', 'Day', 'Hour', 'Minute']].assign(Year=2023))
+
+    # Drop the separate columns if needed
+    df.drop(['Month', 'Day', 'Hour', 'Minute'], axis=1, inplace=True)
+
+    df.set_index("datetime", inplace=True)
+    df = df.resample('1H').mean()
+    df["datetime"] = df.index
+
+    return df
 def forecast_consumption():
     building_repo = BuildingRepository()
 
@@ -75,4 +89,7 @@ def forecast_consumption():
     return predict_saved_model(last_24_hours_data)
 
 if __name__ == "__main__":
-    forecast_consumption()
+    forecast = forecast_consumption().values.tolist()
+
+    for line in forecast:
+        print("Consumption-1",line[0],"Consumption-2",line[1],"Consumption",line[2],"Prediction",line[3],"Datetime",line[4])
