@@ -3,6 +3,10 @@ import sys
 import requests
 import urllib3
 from colorama import init, Fore
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
 sys.path.append('.')
 init(autoreset=True)
 
@@ -53,4 +57,41 @@ def update_values_post(iot_name, uri):
 
 def print_error(error):
     print('\n'+Fore.RED + error)
+    send_error_email(error)
 
+def send_error_email(message):
+    config = get_config()
+    subject = "Error in IoT Building" + config['storage']['local']['database']
+    to_email = "rdpds@isep.ipp.pt"
+
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587
+    smtp_username = "noreplytiocps@gmail.com"
+    smtp_password = "T!ocpsGecad2023"
+
+    # Create a MIMEText object to represent the email message
+    msg = MIMEMultipart()
+    msg['From'] = smtp_username
+    msg['To'] = to_email
+    msg['Subject'] = subject
+
+    # Attach the message to the email
+    msg.attach(MIMEText(message, 'plain'))
+
+    # Establish a connection to the SMTP server
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(smtp_username, smtp_password)
+    except Exception as e:
+        print(f"Error: Unable to connect to the SMTP server - {e}")
+        return
+
+    # Send the email
+    try:
+        server.sendmail(smtp_username, to_email, msg.as_string())
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Error: Unable to send the email - {e}")
+    finally:
+        server.quit()
