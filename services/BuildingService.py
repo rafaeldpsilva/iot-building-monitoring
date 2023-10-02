@@ -181,7 +181,7 @@ class BuildingService:
         consumption = pd.DataFrame(building_repo.get_totalpower_col())
         consumption = consumption.drop("_id", axis=1)
         forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_day_consumption(consumption)
+        return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
 
     def forecast_consumption_saved_model(self):
         building_repo = BuildingRepository()
