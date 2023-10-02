@@ -23,8 +23,14 @@ class BuildingRepository:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nConfig\n',conf)        
-    
+            print('\nConfig\n',conf)
+
+    def get_historic_interval(self, start, end):
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': start, '$lt': end}}))
+        client.close()
+        return historic
+
     def get_historic(self, start):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))

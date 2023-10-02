@@ -178,10 +178,40 @@ class BuildingService:
 
     def forecast_consumption(self):
         building_repo = BuildingRepository()
-        consumption = pd.DataFrame(building_repo.get_totalpower_col())
-        consumption = consumption.drop("_id", axis=1)
-        forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
+        now = datetime.now()
+        start = now - timedelta(days=7, hours=now.hour, minutes=now.minute)
+        consumption = building_repo.get_historic_interval(start, start + timedelta(days=1))
+        consumption = pd.DataFrame(consumption)
+        total = consumption.drop(["_id"], axis=1)
+
+        total = total.dropna()
+
+        total = total.values.tolist()
+        total_power = []
+
+        for row in total:
+            iots = row[0]
+            date = row[1]
+            consumption = 0
+            for iot in iots:
+                for value in iot['values']:
+                    if 'values' in value:
+                        if value['type'] == 'power':
+                            consumption += value['values']
+
+            total_power.append([date, consumption])
+
+        total = pd.DataFrame(total_power, columns=['datetime', 'consumption'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1H').mean()
+        total = total.tail(24)
+        total['datetime'] = total.index
+        return total['consumption'].values.tolist()
+        #consumption = pd.DataFrame(building_repo.get_totalpower_col())
+        #consumption = consumption.drop("_id", axis=1)
+        #forecast_adapter = ForecastAdapter()
+        #return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
 
     def forecast_consumption_saved_model(self):
         building_repo = BuildingRepository()
