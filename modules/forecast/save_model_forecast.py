@@ -88,8 +88,4 @@ def forecast_consumption():
 
     return predict_saved_model(last_24_hours_data)
 
-if __name__ == "__main__":
-    forecast = forecast_consumption().values.tolist()
 
-    for line in forecast:
-        print("Consumption-1",line[0],"Consumption-2",line[1],"Consumption",line[2],"Prediction",line[3],"Datetime",line[4])
