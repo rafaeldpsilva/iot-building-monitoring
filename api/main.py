@@ -170,11 +170,7 @@ def forecast_consumption():
     building_service = BuildingService()
     forecasted_consumption = building_service.forecast_consumption()
 
-    consumption = []
-    for val in forecasted_consumption:
-        consumption.append(val[3])
-
-    return jsonify({'forecasted_consumption': consumption})
+    return jsonify({'forecasted_consumption': forecasted_consumption})
 
 @app.route('/forecast/flexibility', methods=['GET'])
 @TM.token_required
