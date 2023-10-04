@@ -279,9 +279,17 @@ def audit_check():
 @TM.token_required
 def benefit():
     json = request.get_json()
-    benefit = json['benefit']
+    iot = json['iot']
+    value = json['value']
     dr_service = DemandResponseService()
-    dr_service.add_benefit(benefit)
+    dr_service.add_benefit(iot, value)
+    return jsonify({'response': "OK"})
+
+@app.route('/benefit/historic', methods=['GET'])
+@TM.token_required
+def get_benefit():
+    dr_service = DemandResponseService()
+    dr_service.get_benefit_historic()
     return jsonify({'response': "OK"})
 
 if __name__ == "__main__":

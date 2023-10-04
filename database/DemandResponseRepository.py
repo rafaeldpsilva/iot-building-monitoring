@@ -9,6 +9,7 @@ class DemandResponseRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.DEMANDRESPONSE = self.config['storage']['local']['demand_response']
+        self.BALANCE = self.config['storage']['local']['balance']
         self.BENEFIT = self.config['storage']['local']['benefit']
         self.CONFIG = self.config['storage']['local']['config']
 
@@ -87,17 +88,30 @@ class DemandResponseRepository:
 
         if self.config['app']['monitoring']:
             print('\nInvitation\n',invitation)
-    
-    def add_benefit(self, benefit):
+
+    def insert_benefit(self, iot, value):
+        try:
+            benefit = {"iot": iot, "value": value}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.BENEFIT[0]][self.BENEFIT[1]].insert_one(benefit)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()
+
+        if self.config['app']['monitoring']:
+            print('\nInvitation\n', benefit)
+
+    def add_benefit(self, value):
         client = MongoClient(self.server + ':' + self.port)
-        balance = client[self.BENEFIT[0]][self.BENEFIT[1]].find().sort("datetime",-1).limit(1)
+        balance = client[self.BALANCE[0]][self.BALANCE[1]].find().sort("datetime",-1).limit(1)
         client.close()
         
-        new_balance = balance[0]['balance'] + benefit
+        new_balance = balance[0]['balance'] + value
         try:
-            json = {"balance": new_balance, "benefit": benefit}
+            json = {"balance": new_balance}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.BENEFIT[0]][self.BENEFIT[1]].insert_one(json)
+            client[self.BALANCE[0]][self.BALANCE[1]].insert_one(json)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
@@ -106,3 +120,9 @@ class DemandResponseRepository:
         if self.config['app']['monitoring']:
             print('\nBenefit\n',json)
         return json
+
+    def get_benefit_historic(self):
+        client = MongoClient(self.server + ':' + self.port)
+        benefits = list(client[self.BENEFIT[0]][self.BENEFIT[1]].find())
+        client.close()
+        return benefits
