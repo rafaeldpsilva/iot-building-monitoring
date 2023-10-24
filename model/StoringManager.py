@@ -6,6 +6,7 @@ from time import time, sleep
 sys.path.append(".")
 from database.BuildingRepository import BuildingRepository
 
+
 class StoringManager(Thread):
     def __init__(self, core, storing_frequency, hour_offset):
         Thread.__init__(self)
@@ -16,19 +17,28 @@ class StoringManager(Thread):
     def stop_saving(self):
         sys.exit()
 
+    def save_batteries_values(self):
+        building_repo = BuildingRepository()
+        batteries = []
+        for i in self.core.batteries:
+            batteries.append({"name": i.name, "values": i.values})
+        building_repo.insert_batteries(batteries)
+
     def save_iot_values(self):
         building_repo = BuildingRepository()
         iots = []
         for i in self.core.iots:
-            iots.append({"name":i.name, "type":i.type, "values":i.values})
+            iots.append({"name": i.name, "type": i.type, "values": i.values})
         building_repo.insert_iots(iots, datetime.now() + timedelta(hours=self.hour_offset))
 
     def save_total(self):
         building_repo = BuildingRepository()
-        building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(), datetime.now() + timedelta(hours=self.hour_offset))
+        building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(),
+                                   datetime.now() + timedelta(hours=self.hour_offset))
 
     def run(self):
         while True:
             sleep(self.storing_frequency - time() % 1)
             self.save_iot_values()
+            self.save_batteries_values()
             self.save_total()

@@ -6,13 +6,16 @@ from threading import Thread
 sys.path.append(".")
 from utils.utils import get_config
 from model.IoT import IoT
+from model.Battery import Battery
 from model.StoringManager import StoringManager
 from model.Monitoring import Monitoring
+
 
 class Core(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.iots = []
+        self.batteries = []
 
     def run_thread_schedule(self, job):
         forecast = threading.Thread(target=job)
@@ -28,6 +31,12 @@ class Core(Thread):
             iot.start()
             self.iots.append(iot)
 
+        for i in config["resources"]["batteries"]:
+            battery = Battery(i, config['resources']['monitoring_period'])
+            battery.daemon = True
+            battery.start()
+            self.batteries.append(battery)
+
         storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
         storing_manager.daemon = True
         storing_manager.start()
@@ -37,19 +46,25 @@ class Core(Thread):
             monitoring.daemon = True
             monitoring.start()
 
-        #for i, iot in enumerate(self.iots):
+        # for i, iot in enumerate(self.iots):
         #    iot.join()
 
-        #storing_manager.join()
-        #if not config['app']['monitoring']:
+        # storing_manager.join()
+        # if not config['app']['monitoring']:
         #    monitoring.join()
+
+    def get_total_batteries_state(self):
+        total_state = 0
+        for bat in self.batteries:
+            total_state += bat.get_charge_state()
+        return total_state / len(self.batteries)
 
     def get_total_consumption(self):
         totalPower = 0
         for iot in self.iots:
             totalPower += iot.get_power()
         return totalPower
-    
+
     def get_total_generation(self):
         total_generation = 0
         for iot in self.iots:
@@ -80,5 +95,5 @@ class Core(Thread):
     def get_forecasted_flexibility(self):
         forecasted_flexibility = []
         for iot in self.iots:
-            forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0,20)/100])
+            forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return forecasted_flexibility

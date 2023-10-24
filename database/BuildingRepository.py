@@ -149,3 +149,16 @@ class BuildingRepository:
 
         if self.config['app']['monitoring']:
             print('\nForecastDay\n',forecastday)
+
+    def insert_batteries(self, batteries):
+        try:
+            batteries_save = {"iots": batteries, "datetime": datetime.now() + timedelta(hours=self.hour_offset)}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(batteries_save)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()
+
+        if self.config['app']['monitoring']:
+            print('\nIoTS\n', batteries_save)
