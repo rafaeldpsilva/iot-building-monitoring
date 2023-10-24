@@ -38,16 +38,14 @@ class Battery(Thread):
                     "charging_rate": charge_rate
                 }
         }
-
         if response != None:
             try:
                 for value in self.values:
                     path = response
 
                     config_tags = value['tag'].split('.')
-
                     for config_tag in config_tags:
-                        print("Config tag", config_tag)
+                        path = path[config_tag]
 
                     if ("multiplier" in value):
                         path *= value["multiplier"]
@@ -63,4 +61,3 @@ class Battery(Thread):
         while True:
             sleep(self.monitoring_period - time() % 1)
             self.update_values()
-            print(self.values)

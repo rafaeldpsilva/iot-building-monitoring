@@ -32,7 +32,7 @@ class Core(Thread):
             self.iots.append(iot)
 
         for i in config["resources"]["batteries"]:
-            battery = Battery(i, config['resources']['monitoring_period'])
+            battery = Battery(i, config['storage']['storing_frequency'])
             battery.daemon = True
             battery.start()
             self.batteries.append(battery)

@@ -8,6 +8,7 @@ class BuildingRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.IOTS_READING = self.config['storage']['local']['iots_reading']
+        self.BATTERIES = self.config['storage']['local']['batteries']
         self.FORECAST = self.config['storage']['local']['forecast']
         self.TOTALPOWER = self.config['storage']['local']['totalpower']
         self.CONFIG_DB = self.config['storage']['local']['config']
@@ -152,13 +153,13 @@ class BuildingRepository:
 
     def insert_batteries(self, batteries):
         try:
-            batteries_save = {"iots": batteries, "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
+            batteries_save = {"batteries": batteries, "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(batteries_save)
+            client[self.BATTERIES[0]][self.BATTERIES[1]].insert_one(batteries_save)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nIoTS\n', batteries_save)
+            print('\nBatteries\n', batteries_save)
