@@ -152,7 +152,7 @@ class BuildingRepository:
 
     def insert_batteries(self, batteries):
         try:
-            batteries_save = {"iots": batteries, "datetime": datetime.now() + timedelta(hours=self.hour_offset)}
+            batteries_save = {"iots": batteries, "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
             client = MongoClient(self.server + ':' + self.port)
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(batteries_save)
         except Exception as e:
