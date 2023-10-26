@@ -115,6 +115,14 @@ def get_iots():
     iots = building_service.get_iots()
     return jsonify({'iots': iots})
 
+@app.route('/batteries', methods=['GET'])
+@TM.token_required
+@trust_manager.discrete
+def get_iots():
+    building_service = BuildingService()
+    batteries = building_service.get_batteries()
+    return jsonify({'batteries': batteries})
+
 @app.route('/energy/now', methods=['GET'])
 @TM.token_required
 @trust_manager.aggregated

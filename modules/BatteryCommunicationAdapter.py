@@ -58,10 +58,3 @@ def get_battery_state_of_charge(host) -> int:
     else:
         logger.warn(f'FAIL: could not read battery state of charge. (host:{host};register:{843};unit_id:{100})')
     return result
-
-
-if __name__ == "__main__":
-    logger.setLevel(logging.INFO)
-    logger.addHandler(logging.StreamHandler())
-    battery = "192.168.2.56"
-    get_battery_state_of_charge(battery)

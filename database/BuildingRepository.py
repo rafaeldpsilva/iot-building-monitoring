@@ -56,6 +56,13 @@ class BuildingRepository:
             iots.append({'name':iot['name'],'type':iot['type']})
         return iots
 
+    def get_batteries(self):
+        batteries = []
+        for battery in self.config['resources']['batteries']:
+            batteries.append({'name': battery['name'], 'ip': battery['ip']})
+        return batteries
+
+
     def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
         building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': { '$gt': time, '$lt' : time_emb} } ))

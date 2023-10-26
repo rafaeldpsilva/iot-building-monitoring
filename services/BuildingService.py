@@ -5,7 +5,7 @@ import pandas as pd
 
 from database.BuildingRepository import BuildingRepository
 from modules.ForecastAdapter import ForecastAdapter
-
+from modules import BatteryCommunicationAdapter
 
 class BuildingService:
     def __init__(self):
@@ -14,6 +14,13 @@ class BuildingService:
     def get_iots(self):
         return self.building_repo.get_iots()
 
+    def get_batteries(self):
+        batteries = self.building_repo.get_batteries()
+        for battery in batteries:
+            battery['charging_rate'] = BatteryCommunicationAdapter.get_battery_charging_rate(battery['ip'])
+            battery['charge'] = BatteryCommunicationAdapter.get_battery_state_of_charge(battery['ip'])
+
+        return batteries
     def get_shift_quantity(self, iots):
         shift_quantity = []
         for i in range(len(iots)):
