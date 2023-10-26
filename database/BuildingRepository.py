@@ -59,7 +59,7 @@ class BuildingRepository:
     def get_batteries(self):
         batteries = []
         for battery in self.config['resources']['batteries']:
-            batteries.append({'name': battery['name'], 'ip': battery['ip']})
+            batteries.append({'name': battery['name'], 'ip': battery['ip'], 'capacity': battery['capacity']})
         return batteries
 
 
