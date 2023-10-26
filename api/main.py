@@ -118,7 +118,7 @@ def get_iots():
 @app.route('/batteries', methods=['GET'])
 @TM.token_required
 @trust_manager.discrete
-def get_iots():
+def get_batteries():
     building_service = BuildingService()
     batteries = building_service.get_batteries()
     return jsonify({'batteries': batteries})
