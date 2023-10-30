@@ -28,18 +28,30 @@ class BuildingService:
         total = total.drop(["_id"], axis=1)
         total = total.dropna()
         total = total.values.tolist()
-        total_energy = []
+
+        batteries_energy = []
         for row in total:
             batteries = row[0]
             date = row[1]
             stored_energy = 0
+
+            cena = []
             for battery in batteries:
                 for value in battery['values']:
                     if 'values' in value:
-                        stored_energy += value['values']
-            total_energy.append([date, stored_energy])
+                        if value['tag'] == "battery.stored_energy":
+                            stored_energy += value['values']
+                            cena.append(value['values'])
+            aux = [date, stored_energy / len(batteries)]
+            aux.extend(cena)
+            batteries_energy.append(aux)
+        names = ['datetime', 'stored_energy']
 
-        total = pd.DataFrame(total_energy, columns=['datetime', 'stored_energy'])
+        batteries = total[0][0]
+        for battery in batteries:
+            names.append(battery['name'])
+
+        total = pd.DataFrame(batteries_energy, columns=names)
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
         total = total.resample('1H').mean()
