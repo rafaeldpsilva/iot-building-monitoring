@@ -21,6 +21,33 @@ class BuildingService:
             battery['charge'] = BatteryCommunicationAdapter.get_battery_state_of_charge(battery['ip'])
 
         return batteries
+
+    def get_batteries_historic_last_day(self):
+        total = self.building_repo.get_batteries_historic(datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
+        total = pd.DataFrame(total)
+        total = total.drop(["_id"], axis=1)
+        total = total.dropna()
+        total = total.values.tolist()
+        total_energy = []
+        for row in total:
+            batteries = row[0]
+            date = row[1]
+            stored_energy = 0
+            for battery in batteries:
+                for value in battery['values']:
+                    if 'values' in value:
+                        stored_energy += value['values']
+            total_energy.append([date, stored_energy])
+
+        total = pd.DataFrame(total_energy, columns=['datetime', 'stored_energy'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1H').mean()
+        total = total.tail(24)
+        total['datetime'] = total.index
+        total = total.values.tolist()
+        return total
+
     def get_shift_quantity(self, iots):
         shift_quantity = []
         for i in range(len(iots)):

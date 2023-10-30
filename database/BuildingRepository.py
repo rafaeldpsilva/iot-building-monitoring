@@ -62,6 +62,11 @@ class BuildingRepository:
             batteries.append({'name': battery['name'], 'ip': battery['ip'], 'capacity': battery['capacity']})
         return batteries
 
+    def get_batteries_historic(self, start):
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(client[self.BATTERIES[0]][self.BATTERIES[1]].find({'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
+        client.close()
+        return historic
 
     def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
