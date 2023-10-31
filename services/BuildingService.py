@@ -41,8 +41,8 @@ class BuildingService:
                     if 'values' in value:
                         if value['tag'] == "battery.stored_energy":
                             stored_energy += value['values']
-                            cena.append(value['values'])
-            aux = [date, stored_energy / len(batteries)]
+                            cena.append(round(value['values'],2))
+            aux = [date, round(stored_energy / len(batteries),2)]
             aux.extend(cena)
             batteries_energy.append(aux)
         names = ['datetime', 'stored_energy']
