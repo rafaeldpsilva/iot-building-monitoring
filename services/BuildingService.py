@@ -7,6 +7,7 @@ from database.BuildingRepository import BuildingRepository
 from modules.ForecastAdapter import ForecastAdapter
 from modules import BatteryCommunicationAdapter
 
+
 class BuildingService:
     def __init__(self):
         self.building_repo = BuildingRepository()
@@ -23,7 +24,8 @@ class BuildingService:
         return batteries
 
     def get_batteries_historic_last_day(self):
-        total = self.building_repo.get_batteries_historic(datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
+        total = self.building_repo.get_batteries_historic(
+            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
         total = total.dropna()
@@ -41,8 +43,8 @@ class BuildingService:
                     if 'values' in value:
                         if value['tag'] == "battery.stored_energy":
                             stored_energy += value['values']
-                            cena.append(round(value['values'],2))
-            aux = [date, round(stored_energy / len(batteries),2)]
+                            cena.append(round(value['values'], 2))
+            aux = [date, round(stored_energy / len(batteries), 2)]
             aux.extend(cena)
             batteries_energy.append(aux)
         names = ['datetime', 'stored_energy']
@@ -254,10 +256,10 @@ class BuildingService:
         total = total.tail(24)
         total['datetime'] = total.index
         return total['consumption'].values.tolist()
-        #consumption = pd.DataFrame(building_repo.get_totalpower_col())
-        #consumption = consumption.drop("_id", axis=1)
-        #forecast_adapter = ForecastAdapter()
-        #return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
+        # consumption = pd.DataFrame(building_repo.get_totalpower_col())
+        # consumption = consumption.drop("_id", axis=1)
+        # forecast_adapter = ForecastAdapter()
+        # return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
 
     def forecast_consumption_saved_model(self):
         building_repo = BuildingRepository()
