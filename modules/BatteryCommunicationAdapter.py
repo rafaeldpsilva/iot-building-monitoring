@@ -41,7 +41,7 @@ def get_battery_charging_rate(host: str) -> int:
     return result
 
 
-def get_battery_state_of_charge(host) -> int:
+def get_battery_state_of_charge(host: str) -> int:
     """Get state of charge of the battery.
 
     Args:

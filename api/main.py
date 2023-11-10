@@ -131,6 +131,17 @@ def get_last_day_batteries():
     historic_last_day = building_service.get_batteries_historic_last_day()
     return jsonify({'historic': historic_last_day})
 
+@app.route('/batteries/charge', methods=['POST'])
+@TM.token_required
+@trust_manager.aggregated
+def charge_battery():
+    json = request.get_json()
+    battery = json['battery']
+    quantity = json['quantity']
+    building_service = BuildingService()
+    building_service.charge_battery(battery, quantity)
+
+
 @app.route('/energy/now', methods=['GET'])
 @TM.token_required
 @trust_manager.aggregated

@@ -62,6 +62,12 @@ class BuildingService:
         total = total.values.tolist()
         return total
 
+    def charge_battery(self, battery, quantity):
+        batteries = self.building_repo.get_batteries()
+        for bat in batteries:
+            if bat['name'] == battery:
+                BatteryCommunicationAdapter.charge_battery(bat['ip'], quantity)
+    
     def get_shift_quantity(self, iots):
         shift_quantity = []
         for i in range(len(iots)):
