@@ -140,7 +140,7 @@ def charge_battery():
     quantity = json['quantity']
     building_service = BuildingService()
     building_service.charge_battery(battery, quantity)
-
+    return jsonify({'response': True})
 
 @app.route('/energy/now', methods=['GET'])
 @TM.token_required
