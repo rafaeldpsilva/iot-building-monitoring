@@ -62,4 +62,3 @@ class BatteryService:
         for bat in batteries:
             if bat['name'] == battery:
                 BatteryCommunicationAdapter.charge_battery(bat['ip'], quantity)
-    

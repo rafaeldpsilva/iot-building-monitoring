@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 from utils import utils
 
+
 class BatteryRepository:
     def __init__(self):
         self.config = utils.get_config()
@@ -17,13 +18,15 @@ class BatteryRepository:
 
     def get_batteries_historic(self, start):
         client = MongoClient(self.server + ':' + self.port)
-        historic = list(client[self.BATTERIES[0]][self.BATTERIES[1]].find({'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
+        historic = list(client[self.BATTERIES[0]][self.BATTERIES[1]].find(
+            {'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
         client.close()
         return historic
 
     def insert_batteries(self, batteries):
         try:
-            batteries_save = {"batteries": batteries, "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
+            batteries_save = {"batteries": batteries,
+                              "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
             client = MongoClient(self.server + ':' + self.port)
             client[self.BATTERIES[0]][self.BATTERIES[1]].insert_one(batteries_save)
         except Exception as e:
