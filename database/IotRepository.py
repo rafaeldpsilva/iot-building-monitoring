@@ -27,3 +27,10 @@ class IotRepository:
 
         if self.config['app']['monitoring']:
             print('\nIoTS\n',iots_save)
+
+    def get_historic_by_interval(self, start: datetime, end: datetime):
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start, '$lt': end}}))
+        client.close()
+        return historic

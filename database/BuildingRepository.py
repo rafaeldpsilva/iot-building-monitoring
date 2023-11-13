@@ -33,7 +33,7 @@ class BuildingRepository:
         client.close()
         return historic
 
-    def get_historic(self, start):
+    def get_historic(self, start: str):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find(
             {'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
