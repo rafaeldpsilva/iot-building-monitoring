@@ -1,5 +1,5 @@
 from pymongo import MongoClient, DESCENDING
-from datetime import datetime, timedelta
+from datetime import datetime
 from utils import utils
 
 class BuildingRepository:
@@ -8,7 +8,6 @@ class BuildingRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.IOTS_READING = self.config['storage']['local']['iots_reading']
-        self.BATTERIES = self.config['storage']['local']['batteries']
         self.FORECAST = self.config['storage']['local']['forecast']
         self.TOTALPOWER = self.config['storage']['local']['totalpower']
         self.CONFIG_DB = self.config['storage']['local']['config']
@@ -55,18 +54,6 @@ class BuildingRepository:
         for iot in self.config['resources']['iots']:
             iots.append({'name':iot['name'],'type':iot['type']})
         return iots
-
-    def get_batteries(self):
-        batteries = []
-        for battery in self.config['resources']['batteries']:
-            batteries.append({'name': battery['name'], 'ip': battery['ip'], 'capacity': battery['capacity']})
-        return batteries
-
-    def get_batteries_historic(self, start):
-        client = MongoClient(self.server + ':' + self.port)
-        historic = list(client[self.BATTERIES[0]][self.BATTERIES[1]].find({'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
-        client.close()
-        return historic
 
     def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
@@ -168,16 +155,3 @@ class BuildingRepository:
 
         if self.config['app']['monitoring']:
             print('\nForecastDay\n',forecastday)
-
-    def insert_batteries(self, batteries):
-        try:
-            batteries_save = {"batteries": batteries, "datetime": datetime.now() + timedelta(hours=self.config['app']['hour_offset'])}
-            client = MongoClient(self.server + ':' + self.port)
-            client[self.BATTERIES[0]][self.BATTERIES[1]].insert_one(batteries_save)
-        except Exception as e:
-            print("An exception occurred ::", e)
-        finally:
-            client.close()
-
-        if self.config['app']['monitoring']:
-            print('\nBatteries\n', batteries_save)

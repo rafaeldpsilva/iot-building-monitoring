@@ -5,7 +5,7 @@ from time import time, sleep
 
 sys.path.append(".")
 from database.BuildingRepository import BuildingRepository
-
+from database.BatteryRepository import BatteryRepository
 
 class StoringManager(Thread):
     def __init__(self, core, storing_frequency, hour_offset):
@@ -18,11 +18,11 @@ class StoringManager(Thread):
         sys.exit()
 
     def save_batteries_values(self):
-        building_repo = BuildingRepository()
+        battery_repo = BatteryRepository()
         batteries = []
         for i in self.core.batteries:
             batteries.append({"name": i.name, "values": i.values})
-        building_repo.insert_batteries(batteries)
+        battery_repo.insert_batteries(batteries)
 
     def save_iot_values(self):
         building_repo = BuildingRepository()

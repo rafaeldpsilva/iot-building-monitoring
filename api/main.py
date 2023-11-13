@@ -7,6 +7,7 @@ from flask_cors import CORS
 sys.path.append('.')
 import api.tokenManager as TM
 import api.trust as trust_manager
+from services.BatteryService import BatteryService
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
 from services.DemandResponseService import DemandResponseService
@@ -119,16 +120,16 @@ def get_iots():
 @TM.token_required
 @trust_manager.discrete
 def get_batteries():
-    building_service = BuildingService()
-    batteries = building_service.get_batteries()
+    batteries_service = BatteryService()
+    batteries = batteries_service.get_batteries()
     return jsonify({'batteries': batteries})
 
 @app.route('/batteries/historic', methods=['GET'])
 @TM.token_required
 @trust_manager.aggregated
 def get_last_day_batteries():
-    building_service = BuildingService()
-    historic_last_day = building_service.get_batteries_historic_last_day()
+    batteries_service = BatteryService()
+    historic_last_day = batteries_service.get_batteries_historic_last_day()
     return jsonify({'historic': historic_last_day})
 
 @app.route('/batteries/charge', methods=['POST'])
@@ -138,8 +139,8 @@ def charge_battery():
     json = request.get_json()
     battery = json['battery']
     quantity = json['quantity']
-    building_service = BuildingService()
-    building_service.charge_battery(battery, quantity)
+    batteries_service = BatteryService()
+    batteries_service.charge_battery(battery, quantity)
     return jsonify({'response': True})
 
 @app.route('/energy/now', methods=['GET'])
