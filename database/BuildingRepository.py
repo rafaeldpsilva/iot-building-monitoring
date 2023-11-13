@@ -2,6 +2,7 @@ from pymongo import MongoClient, DESCENDING
 from datetime import datetime
 from utils import utils
 
+
 class BuildingRepository:
     def __init__(self):
         self.config = utils.get_config()
@@ -23,41 +24,39 @@ class BuildingRepository:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nConfig\n',conf)
+            print('\nConfig\n', conf)
 
     def get_historic_interval(self, start, end):
         client = MongoClient(self.server + ':' + self.port)
-        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': start, '$lt': end}}))
+        historic = list(
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start, '$lt': end}}))
         client.close()
         return historic
 
     def get_historic(self, start):
         client = MongoClient(self.server + ':' + self.port)
-        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
+        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find(
+            {'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
         client.close()
         return historic
 
     def get_historic_update(self, start):
         client = MongoClient(self.server + ':' + self.port)
-        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({ 'datetime': {'$gt': start}}))
+        historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start}}))
         client.close()
         client = MongoClient(self.server + ':' + self.port)
         for entry in historic:
-            new_date = datetime.strptime(entry['datetime'],"%Y-%m-%d %H:%M:%S.%f")
-            client[self.IOTS_READING[0]][self.IOTS_READING[1]].update_one({'datetime': entry['datetime']},{'$set': { 'datetime': new_date}})
+            new_date = datetime.strptime(entry['datetime'], "%Y-%m-%d %H:%M:%S.%f")
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].update_one({'datetime': entry['datetime']},
+                                                                          {'$set': {'datetime': new_date}})
 
         client.close()
         return historic
-    
-    def get_iots(self):
-        iots = []
-        for iot in self.config['resources']['iots']:
-            iots.append({'name':iot['name'],'type':iot['type']})
-        return iots
 
     def get_iots_reading_col(self, time, time_emb):
         client = MongoClient(self.server + ':' + self.port)
-        building_iot_reading = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': { '$gt': time, '$lt' : time_emb} } ))
+        building_iot_reading = list(
+            client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': time, '$lt': time_emb}}))
         client.close()
         return building_iot_reading
 
@@ -75,7 +74,8 @@ class BuildingRepository:
 
     def get_totalpower_col(self):
         client = MongoClient(self.server + ':' + self.port)
-        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find().sort("datetime",-1).limit(100000))
+        building_totalpower = list(
+            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find().sort("datetime", -1).limit(100000))
         client.close()
         return building_totalpower
 
@@ -90,21 +90,7 @@ class BuildingRepository:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nTotal\n',total)
-
-
-    def insert_iots(self, iots, datetime):
-        try:
-            iots_save = {"iots": iots, "datetime": datetime}
-            client = MongoClient(self.server + ':' + self.port)
-            client[self.IOTS_READING[0]][self.IOTS_READING[1]].insert_one(iots_save)
-        except Exception as e:
-            print("An exception occurred ::", e)
-        finally:
-            client.close()
-
-        if self.config['app']['monitoring']:
-            print('\nIoTS\n',iots_save)
+            print('\nTotal\n', total)
 
     def insert_forecast(self, forecast_power, datetime):
         try:
@@ -115,37 +101,37 @@ class BuildingRepository:
             print("An exception occurred ::", e)
         finally:
             client.close()
-        
+
         if self.config['app']['monitoring']:
-            print('\nForecast\n',forecast)
+            print('\nForecast\n', forecast)
 
     def insert_forecastday(self, iat, datetime):
         try:
             forecastday = {"forecast_power": {"0": str(iat[0, 0]),
-                                                  "1": str(iat[1, 0]),
-                                                  "2": str(iat[2, 0]),
-                                                  "3": str(iat[3, 0]),
-                                                  "4": str(iat[4, 0]),
-                                                  "5": str(iat[5, 0]),
-                                                  "6": str(iat[6, 0]),
-                                                  "7": str(iat[7, 0]),
-                                                  "8": str(iat[8, 0]),
-                                                  "9": str(iat[9, 0]),
-                                                  "10": str(iat[10, 0]),
-                                                  "11": str(iat[11, 0]),
-                                                  "12": str(iat[12, 0]),
-                                                  "13": str(iat[13, 0]),
-                                                  "14": str(iat[14, 0]),
-                                                  "15": str(iat[15, 0]),
-                                                  "16": str(iat[16, 0]),
-                                                  "17": str(iat[17, 0]),
-                                                  "18": str(iat[18, 0]),
-                                                  "19": str(iat[19, 0]),
-                                                  "20": str(iat[20, 0]),
-                                                  "21": str(iat[21, 0]),
-                                                  "22": str(iat[22, 0]),
-                                                  "23": str(iat[23, 0])},
-                               "datetime": datetime}
+                                              "1": str(iat[1, 0]),
+                                              "2": str(iat[2, 0]),
+                                              "3": str(iat[3, 0]),
+                                              "4": str(iat[4, 0]),
+                                              "5": str(iat[5, 0]),
+                                              "6": str(iat[6, 0]),
+                                              "7": str(iat[7, 0]),
+                                              "8": str(iat[8, 0]),
+                                              "9": str(iat[9, 0]),
+                                              "10": str(iat[10, 0]),
+                                              "11": str(iat[11, 0]),
+                                              "12": str(iat[12, 0]),
+                                              "13": str(iat[13, 0]),
+                                              "14": str(iat[14, 0]),
+                                              "15": str(iat[15, 0]),
+                                              "16": str(iat[16, 0]),
+                                              "17": str(iat[17, 0]),
+                                              "18": str(iat[18, 0]),
+                                              "19": str(iat[19, 0]),
+                                              "20": str(iat[20, 0]),
+                                              "21": str(iat[21, 0]),
+                                              "22": str(iat[22, 0]),
+                                              "23": str(iat[23, 0])},
+                           "datetime": datetime}
             client = MongoClient(self.server + ':' + self.port)
             client.ForecastDay.forecastvalue.insert_one(forecastday)
         except Exception as e:
@@ -154,4 +140,4 @@ class BuildingRepository:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nForecastDay\n',forecastday)
+            print('\nForecastDay\n', forecastday)

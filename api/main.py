@@ -7,6 +7,7 @@ from flask_cors import CORS
 sys.path.append('.')
 import api.tokenManager as TM
 import api.trust as trust_manager
+from services.IotService import IotService
 from services.BatteryService import BatteryService
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
@@ -112,8 +113,8 @@ def energy_consumption_interval():
 @TM.token_required
 @trust_manager.discrete
 def get_iots():
-    building_service = BuildingService()
-    iots = building_service.get_iots()
+    iot_service = IotService()
+    iots = iot_service.get_iots()
     return jsonify({'iots': iots})
 
 @app.route('/batteries', methods=['GET'])
