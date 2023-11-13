@@ -42,4 +42,4 @@ class IotService:
         df = df.resample('1H').mean()
         df = df.tail(24)
         df['datetime'] = df.index
-        return df
+        return df.values.tolist()
