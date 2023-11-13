@@ -321,6 +321,15 @@ def get_benefit():
     dr_service.get_benefit_historic()
     return jsonify({'response': "OK"})
 
+@app.route('/iot/historic', methods=['POST'])
+@TM.token_required
+def get_iot_historic():
+    json = request.get_json()
+    iot = json['iot']
+    iot_service = IotService()
+    historic = iot_service.get_iot_historic(iot)
+    return jsonify({'historic': historic})
+
 if __name__ == "__main__":
     cr = Core()
     cr.daemon = True
