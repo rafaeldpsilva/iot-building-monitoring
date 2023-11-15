@@ -72,6 +72,11 @@ class BuildingRepository:
         client.close()
         return building_totalpower
 
+    def get_power_historic_interval(self, start: datetime, end: datetime):
+        client = MongoClient(self.server + ':' + self.port)
+        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find({'datetime': {'$gt': start, '$lt': end}}))
+        client.close()
+        return building_totalpower
     def get_totalpower_col(self):
         client = MongoClient(self.server + ':' + self.port)
         building_totalpower = list(

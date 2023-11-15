@@ -205,11 +205,40 @@ class BuildingService:
         total = total.tail(24)
         total['datetime'] = total.index
         return total['consumption'].values.tolist()
-        # consumption = pd.DataFrame(building_repo.get_totalpower_col())
-        # consumption = consumption.drop("_id", axis=1)
-        # forecast_adapter = ForecastAdapter()
-        # return forecast_adapter.forecast_day_consumption(consumption).numpy().tolist()
 
+    def forecast_generation(self):
+        building_repo = BuildingRepository()
+        now = datetime.now()
+        start = now - timedelta(days=1, hours=now.hour, minutes=now.minute)
+        generation = building_repo.get_historic_interval(start, start + timedelta(days=1))
+        generation = pd.DataFrame(generation)
+        total = generation.drop(["_id"], axis=1)
+
+        total = total.dropna()
+
+        total = total.values.tolist()
+        total_power = []
+
+        for row in total:
+            iots = row[0]
+            date = row[1]
+            generation = 0
+            for iot in iots:
+                for value in iot['values']:
+                    if 'values' in value:
+                        if value['type'] == 'generation':
+                            generation += value['values']
+
+            total_power.append([date, generation])
+
+        total = pd.DataFrame(total_power, columns=['datetime', 'generation'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1H').mean()
+        total = total.tail(24)
+        total['datetime'] = total.index
+        return total['generation'].values.tolist()
+    
     def forecast_consumption_saved_model(self):
         building_repo = BuildingRepository()
 

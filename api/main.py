@@ -201,6 +201,15 @@ def forecast_consumption():
 
     return jsonify({'forecasted_consumption': forecasted_consumption})
 
+@app.route('/forecast/generation', methods=['GET'])
+@TM.token_required
+@trust_manager.aggregated
+def forecast_generation():
+    building_service = BuildingService()
+    forecasted_generation = building_service.forecast_generation()
+
+    return jsonify({'forecasted_generation': forecasted_generation})
+
 @app.route('/forecast/flexibility', methods=['GET'])
 @TM.token_required
 @trust_manager.aggregated
