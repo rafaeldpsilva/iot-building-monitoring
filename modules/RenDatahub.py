@@ -68,6 +68,6 @@ def get_production_breakdown():
     series = []
     for line in production_breakdown['series']:
         label.append(line['name'])
-        series.append({"name": line['name'], "data": line['data']})
+        series.append({"name": line['name'], "data": line['data'], "color": line['color']})
 
     return {"legend": legend, "unit": unit, "labels": label, "series": series}
