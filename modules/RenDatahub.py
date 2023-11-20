@@ -60,20 +60,7 @@ def get_production_breakdown():
     day_to_search_string = get_day_to_search_string()
     url = f'https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString={day_to_search_string}&isShare=true'
 
-    production_breakdown = None
-    try:
-        production_breakdown = requests.post(url).text
-        print(production_breakdown)
-    except requests.exceptions.HTTPError:
-        print("HTTPError in " + "Production Breakdown")
-    except ConnectionRefusedError:
-        print("ConnectionRefusedError in " + "Production Breakdown")
-    except urllib3.exceptions.NewConnectionError:
-        print("NewConnectionError in " + "Production Breakdown")
-    except urllib3.exceptions.MaxRetryError:
-        print("MaxRetryError in " + "Production Breakdown")
-    except requests.exceptions.ConnectionError:
-        print("ConnectionError in " + "Production Breakdown")
+    production_breakdown = utils.update_values_post("production Breakdown", url)
 
     legend = production_breakdown['xAxis']['categories']
     unit = production_breakdown['yAxis']['title']['text']
