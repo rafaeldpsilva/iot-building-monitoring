@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 from utils import utils
+import urllib3
+import requests
+
 
 def get_day_to_search_string():
     # Get the current date in the format 'YYYY-MM-DD'
@@ -9,9 +12,21 @@ def get_day_to_search_string():
     # Construct the URL with the current date
     url = f'https://datahub.ren.pt/pt/homepage/electricity/production/detailed/?date={current_date}'
 
-
     # Send an HTTP GET request to the URL
-    response = utils.update_values_get('get_day_to_search_string', url)
+    response = None
+    try:
+        response = requests.get(url)
+    except requests.exceptions.HTTPError:
+        print("HTTPError in " + "get_day_to_search_string")
+    except ConnectionRefusedError:
+        print("ConnectionRefusedError in " + "get_day_to_search_string")
+    except urllib3.exceptions.NewConnectionError:
+        print("NewConnectionError in " + "get_day_to_search_string")
+    except urllib3.exceptions.MaxRetryError:
+        print("MaxRetryError in " + "get_day_to_search_string")
+    except requests.exceptions.ConnectionError:
+        print("ConnectionError in " + "get_day_to_search_string")
+
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
         # Parse the HTML content
@@ -40,12 +55,25 @@ def get_day_to_search_string():
         print("Failed to retrieve the page. Status code:", response.status_code)
     return day_to_search_string
 
+
 def get_production_breakdown():
     day_to_search_string = get_day_to_search_string()
     url = f'https://datahub.ren.pt/service/Electricity/ProductionBreakdown/1266?culture=pt-PT&dayToSearchString={day_to_search_string}&isShare=true'
-    
-    production_breakdown = utils.update_values_post("production breakdown", url)
-    
+
+    production_breakdown = None
+    try:
+        production_breakdown = requests.post(url)
+    except requests.exceptions.HTTPError:
+        print("HTTPError in " + "Production Breakdown")
+    except ConnectionRefusedError:
+        print("ConnectionRefusedError in " + "Production Breakdown")
+    except urllib3.exceptions.NewConnectionError:
+        print("NewConnectionError in " + "Production Breakdown")
+    except urllib3.exceptions.MaxRetryError:
+        print("MaxRetryError in " + "Production Breakdown")
+    except requests.exceptions.ConnectionError:
+        print("ConnectionError in " + "Production Breakdown")
+
     legend = production_breakdown['xAxis']['categories']
     unit = production_breakdown['yAxis']['title']['text']
     label = []
@@ -53,5 +81,5 @@ def get_production_breakdown():
     for line in production_breakdown['series']:
         label.append(line['name'])
         series.append({"name": line['name'], "data": line['data']})
-        
+
     return {"legend": legend, "unit": unit, "labels": label, "series": series}
