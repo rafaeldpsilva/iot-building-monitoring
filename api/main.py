@@ -14,6 +14,7 @@ from services.TokenService import TokenService
 from services.DemandResponseService import DemandResponseService
 from core.Core import Core
 from utils import utils
+from modules.RenDatahub import RenDatahub
 
 app = Flask(__name__)
 CORS(app)
@@ -338,6 +339,11 @@ def get_iot_historic():
     iot_service = IotService()
     historic = iot_service.get_iot_historic(iot)
     return jsonify({'historic': historic})
+
+@app.route('/production/breakdown', methods=['GET'])
+@TM.token_required
+def production_breakdown():
+    return jsonify(RenDatahub.get_production_breakdown())
 
 if __name__ == "__main__":
     cr = Core()
