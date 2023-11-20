@@ -62,7 +62,7 @@ def get_production_breakdown():
 
     production_breakdown = None
     try:
-        production_breakdown = requests.post(url)
+        production_breakdown = requests.post(url).text
         print(production_breakdown)
     except requests.exceptions.HTTPError:
         print("HTTPError in " + "Production Breakdown")
