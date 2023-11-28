@@ -8,6 +8,7 @@ sys.path.append('.')
 import api.tokenManager as TM
 import api.trust as trust_manager
 from services.IotService import IotService
+from services.DivisionService import DivisionService
 from services.BatteryService import BatteryService
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
@@ -348,12 +349,19 @@ def production_breakdown():
 @app.route('/divisions', methods=['GET'])
 @TM.token_required
 def get_divisions():
-    return jsonify(get_production_breakdown())
+    division_service = DivisionService()
+    divisions = division_service.get_divisions()
+    return jsonify(divisions)
 
 @app.route('/divisions/create', methods=['POST'])
 @TM.token_required
-def create_division():\
-    return jsonify(get_production_breakdown())
+def create_division():
+    json = request.get_json()
+    name = json['name']
+    iots = json['iots']
+    division_service = DivisionService()
+    division_service.insert_division(name, iots)
+    return jsonify(True)
 
 
 
