@@ -345,6 +345,18 @@ def get_iot_historic():
 def production_breakdown():
     return jsonify(get_production_breakdown())
 
+@app.route('/divisions', methods=['GET'])
+@TM.token_required
+def get_divisions():
+    return jsonify(get_production_breakdown())
+
+@app.route('/divisions/create', methods=['POST'])
+@TM.token_required
+def create_division():\
+    return jsonify(get_production_breakdown())
+
+
+
 if __name__ == "__main__":
     cr = Core()
     cr.daemon = True
