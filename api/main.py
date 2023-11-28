@@ -351,6 +351,7 @@ def production_breakdown():
 def get_divisions():
     division_service = DivisionService()
     divisions = division_service.get_divisions()
+    print(divisions)
     return jsonify({"divisions": divisions})
 
 @app.route('/divisions/create', methods=['POST'])

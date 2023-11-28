@@ -6,7 +6,11 @@ class DivisionService:
         self.divisions_repo = DivisionRepository()
 
     def get_divisions(self):
-        return self.divisions_repo.get_divisions()
+        divisions = self.divisions_repo.get_divisions()
+        div = []
+        for division in divisions:
+            div.append({'name': division['name'], "iots": division['iots']})
+        return div
 
     def insert_division(self, name, iots):
         # verify if iots exist
