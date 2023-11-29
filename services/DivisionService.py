@@ -9,7 +9,7 @@ class DivisionService:
 
     def set_ac_status_model_configuration(self, historic_interval, outside_temperature_iot, outside_temperature_tag,
                                           temperature_iot, temperature_tag, humidity_iot, humidity_tag, light_iot,
-                                          light_tag):
+                                          light_tag, division):
         considered_iots = [outside_temperature_iot, temperature_iot, humidity_iot, light_iot]
         outside_temperature_colname = outside_temperature_iot + '_' + outside_temperature_tag
         temperature_colname = temperature_iot + '_' + temperature_tag
@@ -18,7 +18,7 @@ class DivisionService:
 
         self.divisions_repo.set_ac_status_model_configuration(historic_interval, considered_iots,
                                                               outside_temperature_colname, temperature_colname,
-                                                              humidity_colname, light_colname)
+                                                              humidity_colname, light_colname,division)
 
     def get_ac_status(self):
         building_repo = BuildingRepository()

@@ -414,7 +414,7 @@ def config_ac_status():
     division_service.set_ac_status_model_configuration('1H', json['outside_temperature_iot'],
                                                        json['outside_temperature_tag'], json['temperature_iot'],
                                                        json['temperature_tag'], json['humidity_iot'],
-                                                       json['humidity_tag'], json['light_iot'], json['light_tag'])
+                                                       json['humidity_tag'], json['light_iot'], json['light_tag'], json['division'])
     return jsonify(True)
 
 

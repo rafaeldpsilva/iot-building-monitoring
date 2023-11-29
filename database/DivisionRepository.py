@@ -31,9 +31,9 @@ class DivisionRepository:
             print('\nDivision\n', division_save)
 
     def set_ac_status_model_configuration(self, historic_interval, considered_iots, outside_temperature_colname,
-                                          temperature_colname, humidity_colname, light_colname):
+                                          temperature_colname, humidity_colname, light_colname,division):
         try:
-            model_configuration = {"config": "ac_status", "historic_interval": historic_interval,
+            model_configuration = {"config": "ac_status_"+division, "historic_interval": historic_interval,
                                    "considered_iots": considered_iots,
                                    "colnames": {"outside_temperature": outside_temperature_colname, "temperature":
                                        temperature_colname, "humidity": humidity_colname, "light": light_colname}}
