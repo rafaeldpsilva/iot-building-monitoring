@@ -33,10 +33,14 @@ class BuildingRepository:
         client.close()
         return historic
 
-    def get_historic(self, start: str):
+    def get_historic(self, start):
+        if type(start) is str:
+            date_start = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
+        else:
+            date_start = start
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find(
-            {'datetime': {'$gt': datetime.strptime(start, "%Y-%m-%d %H:%M:%S")}}))
+            {'datetime': {'$gt': date_start}}))
         client.close()
         return historic
 
@@ -74,9 +78,11 @@ class BuildingRepository:
 
     def get_power_historic_interval(self, start: datetime, end: datetime):
         client = MongoClient(self.server + ':' + self.port)
-        building_totalpower = list(client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find({'datetime': {'$gt': start, '$lt': end}}))
+        building_totalpower = list(
+            client[self.TOTALPOWER[0]][self.TOTALPOWER[1]].find({'datetime': {'$gt': start, '$lt': end}}))
         client.close()
         return building_totalpower
+
     def get_totalpower_col(self):
         client = MongoClient(self.server + ':' + self.port)
         building_totalpower = list(
