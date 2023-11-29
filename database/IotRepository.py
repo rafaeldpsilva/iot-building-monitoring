@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from datetime import datetime
 from utils import utils
 
+
 class IotRepository:
     def __init__(self):
         self.config = utils.get_config()
@@ -12,7 +13,7 @@ class IotRepository:
     def get_iots(self):
         iots = []
         for iot in self.config['resources']['iots']:
-            iots.append({'name':iot['name'],'type':iot['type']})
+            iots.append({'name': iot['name'], 'type': iot['type'], 'values': iot['values']})
         return iots
 
     def insert_iots(self, iots, datetime):
@@ -26,7 +27,7 @@ class IotRepository:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nIoTS\n',iots_save)
+            print('\nIoTS\n', iots_save)
 
     def get_historic_by_interval(self, start: datetime, end: datetime):
         client = MongoClient(self.server + ':' + self.port)
