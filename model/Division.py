@@ -11,22 +11,26 @@ class Division:
         self.ac_status_configuration = ac_status_configuration
 
     def get_ac_status(self, iot_readings_historic):
-
+        considered_iots = [self.ac_status_configuration['outside_temperature'],
+                           self.ac_status_configuration['temperature'], self.ac_status_configuration['humidity'],
+                           self.ac_status_configuration['light']]
         aux = pd.DataFrame()
         for i, row in iot_readings_historic.iterrows():
             new = pd.DataFrame()
             for iot in row['iots']:
-                if iot['name'] in self.ac_status_configuration['considered_iots']:
+                if iot['name'] in considered_iots:
                     for value in iot['values']:
                         val = value['values']
                         new[iot['name'] + '_' + value['type']] = [val]
 
             aux = pd.concat([aux, new])
 
-        aux.rename(columns={self.ac_status_configuration['temperature_colname']: 'Temperature (Cº)',
-                            self.ac_status_configuration['humidity_colname']: 'Humidity (%)',
-                            self.ac_status_configuration['light_colname']: 'Light (%)'},
-                   inplace=True)
+        aux.rename(
+            columns={self.ac_status_configuration['outside_temperature'] + "_temperature": 'Outside temperature (ºC)',
+                     self.ac_status_configuration['temperature'] + "_temperature": 'Temperature (Cº)',
+                     self.ac_status_configuration['humidity'] + "_humidity": 'Humidity (%)',
+                     self.ac_status_configuration['light'] + "_light": 'Light (%)'},
+            inplace=True)
 
         aux['Temperature (Cº)'] = aux['Temperature (Cº)'] / 10
         aux['Humidity (%)'] = aux['Humidity (%)'] / 10
@@ -49,8 +53,8 @@ class Division:
         division_repo.update_division(self.id, name, iots, ac_status_configuration)
 
     def configure_ac_status_model(self, ac_status_configuration):
-        if ac_status_configuration['considered_iots'] and ac_status_configuration['temperature_colname'] and \
-                ac_status_configuration['humidity_colname'] and ac_status_configuration['light_colname']:
+        if ac_status_configuration['outside_temperature'] and ac_status_configuration['temperature'] and \
+                ac_status_configuration['humidity'] and ac_status_configuration['light']:
             self.ac_status_configuration = ac_status_configuration
 
     def to_json(self):
