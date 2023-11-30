@@ -1,3 +1,4 @@
+from bson import ObjectId
 from pymongo import MongoClient
 
 from utils import utils
@@ -17,9 +18,16 @@ class DivisionRepository:
         client.close()
         return divisions
 
-    def insert_division(self, name, iots):
+    def get_division(self, id):
+        client = MongoClient(self.server + ':' + self.port)
+        division = list(client[self.DIVISIONS[0]][self.DIVISIONS[1]].find({"_id": ObjectId(id)}))
+        client.close()
+        return division[0]
+
+    def insert_division(self, name, iots, ac_status_configuration):
         try:
-            division_save = {"name": name, "iots": iots}
+            division_save = {"name": name, "iots": iots,
+                             "ac_status_configuration": ac_status_configuration}
             client = MongoClient(self.server + ':' + self.port)
             client[self.DIVISIONS[0]][self.DIVISIONS[1]].insert_one(division_save)
         except Exception as e:
@@ -30,25 +38,16 @@ class DivisionRepository:
         if self.config['app']['monitoring']:
             print('\nDivision\n', division_save)
 
-    def set_ac_status_model_configuration(self, historic_interval, considered_iots, outside_temperature_colname,
-                                          temperature_colname, humidity_colname, light_colname,division):
+    def update_division(self, id, name, iots, ac_status_configuration):
         try:
-            model_configuration = {"config": "ac_status_"+division, "historic_interval": historic_interval,
-                                   "considered_iots": considered_iots,
-                                   "colnames": {"outside_temperature": outside_temperature_colname, "temperature":
-                                       temperature_colname, "humidity": humidity_colname, "light": light_colname}}
+            division_save = {'name': name, 'iots': iots,
+                             "ac_status_configuration": ac_status_configuration}
             client = MongoClient(self.server + ':' + self.port)
-            client[self.CONFIG[0]][self.CONFIG[1]].insert_one(model_configuration)
+            client[self.DIVISIONS[0]][self.DIVISIONS[1]].update_one({'_id': id}, {'$set': division_save})
         except Exception as e:
             print("An exception occurred ::", e)
         finally:
             client.close()
 
         if self.config['app']['monitoring']:
-            print('\nAC Status Model Configuration\n', model_configuration)
-
-    def get_ac_status_configuration(self):
-        client = MongoClient(self.server + ':' + self.port)
-        divisions = list(client[self.CONFIG[0]][self.CONFIG[1]].find({"config": "ac_status"}))
-        client.close()
-        return divisions[0]
+            print('\nUpdate Division', name, '\n', division_save)

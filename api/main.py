@@ -405,24 +405,20 @@ def create_division():
     division_service.insert_division(name, iots)
     return jsonify(True)
 
-
-@app.route('/divisions/config/acstatus', methods=['POST'])
+@app.route('/divisions/update', methods=['POST'])
 @TM.token_required
-def config_ac_status():
+def update_division():
     json = request.get_json()
     division_service = DivisionService()
-    division_service.set_ac_status_model_configuration('1H', json['outside_temperature_iot'],
-                                                       json['outside_temperature_tag'], json['temperature_iot'],
-                                                       json['temperature_tag'], json['humidity_iot'],
-                                                       json['humidity_tag'], json['light_iot'], json['light_tag'], json['division'])
+    division_service.update_division(json['id'], json['name'], json['iots'], json['ac_status_configuration'])
     return jsonify(True)
 
-
-@app.route('/divisions/acstatus', methods=['GET'])
+@app.route('/divisions/acstatus', methods=['POST'])
 @TM.token_required
 def get_ac_status():
+    json = request.get_json()
     division_service = DivisionService()
-    ac_status = division_service.get_ac_status()
+    ac_status = division_service.get_ac_status(json['id'])
     if ac_status == 1:
         ac_status = "on-cold"
     elif ac_status == -1:
