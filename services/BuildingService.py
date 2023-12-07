@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
 import random
+from datetime import datetime, timedelta
 
 import pandas as pd
 
@@ -238,7 +238,7 @@ class BuildingService:
         total = total.tail(24)
         total['datetime'] = total.index
         return total['generation'].values.tolist()
-    
+
     def forecast_consumption_saved_model(self):
         building_repo = BuildingRepository()
 

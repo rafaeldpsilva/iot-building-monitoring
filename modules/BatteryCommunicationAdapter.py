@@ -1,6 +1,7 @@
+import logging
+
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.utils import get_2comp
-import logging
 
 logger = logging.getLogger(__name__)
 

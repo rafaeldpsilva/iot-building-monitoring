@@ -1,42 +1,37 @@
-import json
 from threading import Thread
 from time import time, sleep
 
-
 from utils import utils
+
 
 class IoT(Thread):
     def __init__(self, config, config_monitoring):
         Thread.__init__(self)
         self.name = config["name"]
-        print(self.name)
         self.type = config["type"]
         self.uri = config["uri"]
         self.method = config["method"]
         self.body = config["body"]
         self.values = config["values"]
-        print(self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
         self.control = config["control"]
         self.monitoring_period = config_monitoring
-        #self.store = iot_config.store
+        # print(self.name, self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
 
-        #for value in self.values:
-        #    value["value"] = 0
     def get_power(self):
         for value in self.values:
             if value["type"] == "power":
                 return value["values"]
         return 0
-    
+
     def get_voltage(self):
         for value in self.values:
             if value["type"] == "voltage":
                 return value["values"]
         return 0
-    
+
     def get_current(self):
         for value in self.values:
-            if value["type"]  == "current":
+            if value["type"] == "current":
                 return value["values"]
         return 0
 
@@ -45,7 +40,7 @@ class IoT(Thread):
             if value["type"] == valueName:
                 return value["values"]
         return 0
-    
+
     def get_generation(self):
         for value in self.values:
             if value["type"] == "generation":
@@ -63,13 +58,13 @@ class IoT(Thread):
             try:
                 for value in self.values:
                     path = response
-                    
+
                     config_tags = value['tag'].split('.')
 
                     for config_tag in config_tags:
                         path = path[config_tag]
-                    
-                    if("multiplier" in value):
+
+                    if ("multiplier" in value):
                         path *= value["multiplier"]
                     value['values'] = round(path, 4)
             except KeyError:
@@ -77,7 +72,7 @@ class IoT(Thread):
             except TypeError:
                 utils.print_error("Type Error in " + self.name)
         else:
-            utils.print_error("ERROR! IN UPDATING VALUES OF IOT "+ self.name)
+            utils.print_error("ERROR! IN UPDATING VALUES OF IOT " + self.name)
 
     def run(self):
         while True:

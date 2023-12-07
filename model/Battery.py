@@ -1,4 +1,3 @@
-import json
 from threading import Thread
 from time import time, sleep
 
@@ -10,11 +9,10 @@ class Battery(Thread):
     def __init__(self, config, config_monitoring):
         Thread.__init__(self)
         self.name = config["name"]
-        print(self.name)
         self.ip = config["ip"]
         self.values = config["values"]
-        print(self.values)  # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
         self.monitoring_period = config_monitoring
+        # print(self.name, self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
 
     def get_battery_charging_rate(self):
         return BatteryCommunicationAdapter.get_battery_charging_rate(self.ip)

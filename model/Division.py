@@ -1,6 +1,7 @@
+import pandas as pd
+
 from database.DivisionRepository import DivisionRepository
 from modules import ACStatusAdapter
-import pandas as pd
 
 
 class Division:

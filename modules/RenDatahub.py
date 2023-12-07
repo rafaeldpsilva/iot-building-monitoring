@@ -1,8 +1,10 @@
-from bs4 import BeautifulSoup
 from datetime import datetime
-from utils import utils
-import urllib3
+
 import requests
+import urllib3
+from bs4 import BeautifulSoup
+
+from utils import utils
 
 
 def get_day_to_search_string():

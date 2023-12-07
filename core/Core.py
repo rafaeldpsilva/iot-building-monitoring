@@ -27,23 +27,23 @@ class Core(Thread):
 
         for i in config["resources"]["iots"]:
             iot = IoT(i, config['resources']['monitoring_period'])
-            iot.daemon = True
+            # iot.daemon = True
             iot.start()
             self.iots.append(iot)
 
         for i in config["resources"]["batteries"]:
             battery = Battery(i, config['storage']['storing_frequency'])
-            battery.daemon = True
+            # battery.daemon = True
             battery.start()
             self.batteries.append(battery)
 
         storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
-        storing_manager.daemon = True
+        # storing_manager.daemon = True
         storing_manager.start()
 
         if not config['app']['monitoring']:
             monitoring = Monitoring(self)
-            monitoring.daemon = True
+            # monitoring.daemon = True
             monitoring.start()
 
         # for i, iot in enumerate(self.iots):

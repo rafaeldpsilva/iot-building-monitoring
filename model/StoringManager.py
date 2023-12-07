@@ -8,6 +8,7 @@ from database.BuildingRepository import BuildingRepository
 from database.IotRepository import IotRepository
 from database.BatteryRepository import BatteryRepository
 
+
 class StoringManager(Thread):
     def __init__(self, core, storing_frequency, hour_offset):
         Thread.__init__(self)

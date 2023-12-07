@@ -1,18 +1,21 @@
 import json
+import smtplib
 import sys
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import requests
 import urllib3
 from colorama import init, Fore
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 sys.path.append('.')
 init(autoreset=True)
 
+
 def get_config():
     with open('./config/config.json') as config_file:
         return json.load(config_file)
+
 
 def update_values_get(process_name, uri):
     response = None
@@ -34,6 +37,7 @@ def update_values_get(process_name, uri):
         return response
     return response
 
+
 def update_values_post(iot_name, uri):
     response = None
     try:
@@ -43,21 +47,23 @@ def update_values_post(iot_name, uri):
     except requests.exceptions.HTTPError:
         print_error("HTTPError in " + iot_name)
     except ConnectionRefusedError:
-         print_error("ConnectionRefusedError in " + iot_name)
+        print_error("ConnectionRefusedError in " + iot_name)
     except urllib3.exceptions.NewConnectionError:
-         print_error("NewConnectionError in " + iot_name)
+        print_error("NewConnectionError in " + iot_name)
     except urllib3.exceptions.MaxRetryError:
-         print_error("MaxRetryError in " + iot_name)
+        print_error("MaxRetryError in " + iot_name)
     except requests.exceptions.ConnectionError:
-         print_error("ConnectionError in " + iot_name)
+        print_error("ConnectionError in " + iot_name)
 
     if response == None:
         return response
     return response
 
+
 def print_error(error):
-    print('\n'+Fore.RED + error)
+    print('\n' + Fore.RED + error)
     send_error_email(error)
+
 
 def send_error_email(message):
     config = get_config()

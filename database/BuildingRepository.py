@@ -1,5 +1,7 @@
-from pymongo import MongoClient, DESCENDING
 from datetime import datetime
+
+from pymongo import MongoClient, DESCENDING
+
 from utils import utils
 
 

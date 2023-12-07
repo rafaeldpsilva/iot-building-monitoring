@@ -2,22 +2,20 @@ import os
 import zipfile
 
 
-def zip_selected_files(zip_file_path, items_to_zip):
+def zip_selected_folders(zip_file_path, folders_to_zip):
     try:
         with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
-            for item in items_to_zip:
-                if os.path.isfile(item):
-                    # Add individual file to the zip archive
-                    zip_file.write(item, os.path.basename(item))
-                elif os.path.isdir(item):
-                    # Add all files in a directory to the zip archive
-                    for foldername, subfolders, filenames in os.walk(item):
+            for folder in folders_to_zip:
+                if os.path.isdir(folder):
+                    for foldername, subfolders, filenames in os.walk(folder):
                         for filename in filenames:
                             file_path = os.path.join(foldername, filename)
-                            arcname = os.path.relpath(file_path, item)
-                            zip_file.write(file_path, arcname)
+                            zip_file.write(file_path, file_path)
                 else:
-                    print(f"Ignoring unknown item: {item}")
+                    print(f"Ignoring non-directory item: {folder}")
+
+            # add requirments
+            zip_file.write("requirements.txt", "requirements.txt")
 
         print(f"Zip file created successfully: {zip_file_path}")
 
@@ -27,6 +25,6 @@ def zip_selected_files(zip_file_path, items_to_zip):
 
 # Example Usage
 zip_file_path = "iot-bm.zip"
-items_to_zip = ["api", "config", "core", "database", "model", "modules", "services", "utils", "saved_model"]
+folders_to_zip = ["api", "config", "core", "database", "model", "modules", "services", "utils", "saved_model"]
 
-zip_selected_files(zip_file_path, items_to_zip)
+zip_selected_folders(zip_file_path, folders_to_zip)

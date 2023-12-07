@@ -1,7 +1,9 @@
-from database.DivisionRepository import DivisionRepository
-from database.BuildingRepository import BuildingRepository
-import pandas as pd
 from datetime import datetime, timedelta
+
+import pandas as pd
+
+from database.BuildingRepository import BuildingRepository
+from database.DivisionRepository import DivisionRepository
 from model.Division import Division
 
 

@@ -1,6 +1,5 @@
 import random
 import sys
-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -307,7 +306,6 @@ def answer_invitation():
     json = request.get_json()
     event_time = json['event_time']
     response = json['response']
-
     dr_service = DemandResponseService()
     dr_service.answer_invitation(event_time, response)
     return jsonify({'response': response})
@@ -405,6 +403,7 @@ def create_division():
     division_service.insert_division(name, iots)
     return jsonify(True)
 
+
 @app.route('/divisions/update', methods=['POST'])
 @TM.token_required
 def update_division():
@@ -412,6 +411,7 @@ def update_division():
     division_service = DivisionService()
     division_service.update_division(json['id'], json['name'], json['iots'], json['ac_status_configuration'])
     return jsonify(True)
+
 
 @app.route('/divisions/acstatus', methods=['POST'])
 @TM.token_required
@@ -431,7 +431,7 @@ def get_ac_status():
 
 if __name__ == "__main__":
     cr = Core()
-    cr.daemon = True
+    # cr.daemon = True
     cr.start()
 
     config = utils.get_config()

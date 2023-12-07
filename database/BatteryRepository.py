@@ -1,5 +1,7 @@
-from pymongo import MongoClient
 from datetime import datetime, timedelta
+
+from pymongo import MongoClient
+
 from utils import utils
 
 

@@ -13,6 +13,7 @@ app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = 'thisisthesecretkey'
 
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -24,7 +25,7 @@ def token_required(f):
 
         token_repo = TokenRepository()
         col = token_repo.get_tokens()
-        
+
         try:
             for document in col:
                 if token == document["token"]:
