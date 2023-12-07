@@ -64,6 +64,17 @@ def download_and_install_update(repo_owner, repo_name, asset_name, new_folder, o
         # Extract the update
         with zipfile.ZipFile(update_file_path, 'r') as zip_ref:
             zip_ref.extractall(new_folder)
+
+        if os.path.exists(update_file_path):
+            os.remove(update_file_path)
+
+        os.makedirs(new_folder + "/config", exist_ok=True)
+        shutil.copy("config.json", new_folder + "/config")
+
+        os.chdir(new_folder)
+        subprocess.run(['pip', 'install', '-r', 'requirements.txt'], check=True, shell=False)
+        os.chdir("..")
+
     except Exception as e:
         print(f"Error during update: {e}")
 
@@ -84,8 +95,6 @@ def check_install_updates():
         update_folder = current_version
         main_program_thread = Program(new_version, new_version)
         main_program_thread.start()
-
-        print("Running Version:", current_version)
     else:
         print("No New Version Available")
 
@@ -96,8 +105,10 @@ def get_folders_in_directory(directory):
         entries = os.listdir(directory)
         # Filter the entries to include only directories
         folders = [entry for entry in entries if os.path.isdir(os.path.join(directory, entry))]
-
-        return folders
+        if len(folders) == 0:
+            return folders, True
+        else:
+            return folders, False
 
     except Exception as e:
         print(f"Error getting folders in directory: {e}")
@@ -122,23 +133,34 @@ class Program(Thread):
         os.chdir("..")
 
     def run(self):
+        print("Running Version:", self.current_version)
         os.chdir(self.run_folder)
-        subprocess.run(['pip', 'install', '-r', 'requirements.txt'], check=True)
         self.process = subprocess.Popen(['python', 'api/main.py'])
 
 
-current_version = "v0.0.1"
-update_folder = current_version
+current_version = ""
+update_folder = ""
 main_program_thread = None
 
-new_version, update = check_for_updates(repo_owner, repo_name, current_version)
-if new_version in get_folders_in_directory("."):
-    main_program_thread = Program(new_version, new_version)
-    main_program_thread.start()
-else:
+folders, initial = get_folders_in_directory(".")
+if initial:
+    current_version = ""
+    update_folder = ""
     check_install_updates()
+else:
+    new_version, update = check_for_updates(repo_owner, repo_name, current_version)
+    if new_version not in folders:
+        current_version = folders[0]
+        update_folder = folders[0]
+        check_install_updates()
+    else:
+        main_program_thread = Program(new_version, new_version)
+        main_program_thread.start()
 
 schedule.every().day.at("00:00").do(check_install_updates)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+try:
+    while True:
+        schedule.run_pending()
+        time.sleep(10)
+except KeyboardInterrupt:
+    main_program_thread.stop()

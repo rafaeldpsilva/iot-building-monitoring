@@ -25,6 +25,6 @@ def zip_selected_folders(zip_file_path, folders_to_zip):
 
 # Example Usage
 zip_file_path = "iot-bm.zip"
-folders_to_zip = ["api", "config", "core", "database", "model", "modules", "services", "utils", "saved_model"]
+folders_to_zip = ["api", "core", "database", "model", "modules", "services", "utils", "saved_model"]
 
 zip_selected_folders(zip_file_path, folders_to_zip)
