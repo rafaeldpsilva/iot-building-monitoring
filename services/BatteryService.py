@@ -12,6 +12,9 @@ class BatteryService:
 
     def get_batteries(self):
         batteries = self.battery_repo.get_batteries()
+        if len(batteries) == 0:
+            return []
+
         for battery in batteries:
             battery['charging_rate'] = BatteryCommunicationAdapter.get_battery_charging_rate(battery['ip'])
             battery['charge'] = BatteryCommunicationAdapter.get_battery_state_of_charge(battery['ip'])
