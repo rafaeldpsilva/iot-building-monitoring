@@ -13,6 +13,7 @@ class BuildingRepository:
         self.IOTS_READING = self.config['storage']['local']['iots_reading']
         self.FORECAST = self.config['storage']['local']['forecast']
         self.TOTALPOWER = self.config['storage']['local']['totalpower']
+        self.TOTALPOWERHOUR = self.config['storage']['local']['totalpowerhour']
         self.CONFIG_DB = self.config['storage']['local']['config']
 
     def save_config(self):
@@ -154,3 +155,17 @@ class BuildingRepository:
 
         if self.config['app']['monitoring']:
             print('\nForecastDay\n', forecastday)
+
+    def insert_hour(self, start_hour, consumption, generation, flexibility):
+        try:
+            total = {"datetime": start_hour, "consumption": consumption, "generation": generation,
+                     "flexibility": flexibility}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.TOTALPOWERHOUR[0]][self.TOTALPOWERHOUR[1]].insert_one(total)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()
+
+        if self.config['app']['monitoring']:
+            print('\nTotal\n', total)

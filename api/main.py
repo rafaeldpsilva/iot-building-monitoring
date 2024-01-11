@@ -106,7 +106,7 @@ def historic_old():
 @trust_manager.aggregated
 def historic():
     building_service = BuildingService()
-    historic_last_day = building_service.get_historic_last_day()
+    historic_last_day = building_service.get_historic_last_day_by_hour()
     return jsonify({'historic': historic_last_day})
 
 

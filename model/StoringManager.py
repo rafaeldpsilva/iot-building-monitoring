@@ -2,8 +2,10 @@ import sys
 from datetime import datetime, timedelta
 from threading import Thread
 from time import time, sleep
+import schedule
 
 sys.path.append(".")
+from services.BuildingService import BuildingService
 from database.BuildingRepository import BuildingRepository
 from database.IotRepository import IotRepository
 from database.BatteryRepository import BatteryRepository
@@ -38,9 +40,15 @@ class StoringManager(Thread):
         building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(),
                                    datetime.now() + timedelta(hours=self.hour_offset))
 
+    def save_hour(self):
+        building_service = BuildingService()
+        building_service.save_last_hour()
+
     def run(self):
+        schedule.every().hour.at(":00").do(self.save_hour)
         while True:
             sleep(self.storing_frequency - time() % 1)
             self.save_iot_values()
             self.save_batteries_values()
             self.save_total()
+            schedule.run_pending()

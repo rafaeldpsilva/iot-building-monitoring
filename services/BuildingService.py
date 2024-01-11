@@ -94,9 +94,45 @@ class BuildingService:
         total = total.drop(["_id"], axis=1)
         return total.values.tolist()
 
-    def get_historic_last_day(self):
+    def save_last_hour(self):
+        end_hour = datetime.now().replace(minute=0, second=0, microsecond=0)
+        start_hour = end_hour - timedelta(hours=1)
+        last_hour = self.building_repo.get_historic_interval(start_hour, end_hour)
+        last_hour = pd.DataFrame(last_hour)
+        last_hour = last_hour.drop(["_id"], axis=1)
+
+        last_hour = last_hour.dropna()
+
+        last_hour = last_hour.values.tolist()
+        total_power = []
+
+        for row in last_hour:
+            iots = row[0]
+            date = row[1]
+            consumption = 0
+            generation = 0
+            flexibility = 0
+            for iot in iots:
+                for value in iot['values']:
+                    if 'values' in value:
+                        if value['type'] == 'generation':
+                            generation += value['values']
+                        if value['type'] == 'power':
+                            consumption += value['values']
+                            flexibility += value['values'] * random.randrange(0, 20) / 100
+
+            total_power.append([date, consumption, generation, flexibility])
+
+        total = pd.DataFrame(total_power, columns=['datetime', 'consumption', 'generation', 'flexibility'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1H').mean()
+        total = total.values.tolist()
+        self.building_repo.insert_hour(start_hour, total[0][0], total[0][1], total[0][2])
+
+    def get_historic_last_day_by_hour(self):
         total = self.building_repo.get_historic(
-            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
+            datetime.strftime(datetime.now() - timedelta(hours=48), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
 
