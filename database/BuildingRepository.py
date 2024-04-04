@@ -56,8 +56,14 @@ class BuildingRepository:
         historic = list(client[self.TOTALPOWERHOUR[0]][self.TOTALPOWERHOUR[1]].find({'datetime': {'$gt': date_start}}))
         client.close()
         return historic
+    
+    def get_historic_hour_interval(self, start: datetime, end: datetime):
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(client[self.TOTALPOWERHOUR[0]][self.TOTALPOWERHOUR[1]].find({'datetime': {'$gt': start, '$lt': end}}))
+        client.close()
+        return historic
 
-    def get_historic_update(self, start):
+    def historic_update(self, start):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start}}))
         client.close()

@@ -109,7 +109,7 @@ def historic():
     historic_last_day = building_service.get_historic_last_day_by_hour()
     return jsonify({'historic': historic_last_day})
 
-
+#!TODO USE TOTALPOWER ON THIS INSTEAD OF IOTREADINGS
 @app.route('/historic/interval', methods=['POST'])
 @TM.token_required
 @trust_manager.discrete
