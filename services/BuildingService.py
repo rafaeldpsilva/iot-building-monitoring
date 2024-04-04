@@ -187,7 +187,7 @@ class BuildingService:
         building_totalpower = building_repo.get_power_historic_interval(start, start + timedelta(days=1))
         consumption = []
         for line in building_totalpower:
-            consumption.append([line['datetime'],line['consumption']])
+            consumption.append([line['datetime'],line['totalpower']])
 
         total = pd.DataFrame(consumption, columns=['datetime', 'consumption'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
@@ -202,7 +202,7 @@ class BuildingService:
         building_totalpower = building_repo.get_historic_interval(start, start + timedelta(days=1))
         generation = []
         for line in building_totalpower:
-            generation.append([line['datetime'],line['generation']])
+            generation.append([line['datetime'],line['totalgeneration']])
 
         total = pd.DataFrame(generation, columns=['datetime', 'generation'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)

@@ -70,7 +70,7 @@ def forecast_consumption():
 
     last_24_hours_data = df_test[df_test['datetime'] >= twenty_four_hours_ago]
 
-    last_24_hours_data['totalpower'] = pd.to_numeric(last_24_hours_data['consumption'], errors='coerce')
+    last_24_hours_data['totalpower'] = pd.to_numeric(last_24_hours_data['totalpower'], errors='coerce')
     last_24_hours_data['Month'] = last_24_hours_data['datetime'].dt.month
     last_24_hours_data['Day'] = last_24_hours_data['datetime'].dt.day
     last_24_hours_data['Hour'] = last_24_hours_data['datetime'].dt.hour
