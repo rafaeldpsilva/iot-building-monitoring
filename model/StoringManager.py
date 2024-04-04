@@ -50,5 +50,5 @@ class StoringManager(Thread):
             sleep(self.storing_frequency - time() % 1)
             self.save_iot_values()
             self.save_batteries_values()
-            self.save_total()
+            self.save_ total()
             schedule.run_pending()
