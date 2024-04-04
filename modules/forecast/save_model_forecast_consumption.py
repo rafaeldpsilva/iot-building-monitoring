@@ -30,8 +30,8 @@ def predict_saved_model(last_24_hours_data):
     model = tf.keras.models.load_model('saved_model/consumption_forecast')
 
     # Load the scaler
-    scaler = joblib.load('training_1/scaler.pkl')
-    pred_scaler = joblib.load('training_1/pred_scaler.pkl')
+    scaler = joblib.load('saved_model/scaler.pkl')
+    pred_scaler = joblib.load('saved_model/pred_scaler.pkl')
 
     df_scaled = scaler.fit_transform(last_24_hours_data)
     
