@@ -5,9 +5,13 @@ class ForecastAdapter:
     def __init__(self):
         return
 
-    def forecast_saved_model(self, last_24_hours_data):
-        from modules.forecast.save_model_forecast import predict_saved_model
-        return predict_saved_model(last_24_hours_data)
+    def forecast_saved_model(self):
+        from modules.forecast.save_model_forecast_consumption import forecast_consumption
+        return forecast_consumption()
+    
+    def forecast_generation_saved_model(self):
+        from modules.forecast.save_model_forecast_generation import forecast_generation
+        return forecast_generation()
 
     def forecast_day_consumption(self, consumption):
         from modules.forecast.Forecast_Script_Consumption import ForecastDay_Cons

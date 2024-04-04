@@ -47,6 +47,16 @@ class BuildingRepository:
         client.close()
         return historic
 
+    def get_historic_hour(self, start):
+        if type(start) is str:
+            date_start = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
+        else:
+            date_start = start
+        client = MongoClient(self.server + ':' + self.port)
+        historic = list(client[self.TOTALPOWERHOUR[0]][self.TOTALPOWERHOUR[1]].find({'datetime': {'$gt': date_start}}))
+        client.close()
+        return historic
+
     def get_historic_update(self, start):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start}}))

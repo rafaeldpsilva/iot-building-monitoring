@@ -131,39 +131,10 @@ class BuildingService:
         self.building_repo.insert_hour(start_hour, total[0][0], total[0][1], total[0][2])
 
     def get_historic_last_day_by_hour(self):
-        total = self.building_repo.get_historic(
+        total = self.building_repo.get_historic_hour(
             datetime.strftime(datetime.now() - timedelta(hours=48), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
-
-        total = total.dropna()
-
-        total = total.values.tolist()
-        total_power = []
-
-        for row in total:
-            iots = row[0]
-            date = row[1]
-            consumption = 0
-            generation = 0
-            flexibility = 0
-            for iot in iots:
-                for value in iot['values']:
-                    if 'values' in value:
-                        if value['type'] == 'generation':
-                            generation += value['values']
-                        if value['type'] == 'power':
-                            consumption += value['values']
-                            flexibility += value['values'] * random.randrange(0, 20) / 100
-
-            total_power.append([date, consumption, generation, flexibility])
-
-        total = pd.DataFrame(total_power, columns=['datetime', 'consumption', 'generation', 'flexibility'])
-        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
-        total.set_index("datetime", inplace=True)
-        total = total.resample('1H').mean()
-        total = total.tail(24)
-        total['datetime'] = total.index
         total = total.values.tolist()
         return total
 
@@ -213,99 +184,39 @@ class BuildingService:
         building_repo = BuildingRepository()
         now = datetime.now()
         start = now - timedelta(days=7, hours=now.hour, minutes=now.minute)
-        consumption = building_repo.get_historic_interval(start, start + timedelta(days=1))
-        consumption = pd.DataFrame(consumption)
-        total = consumption.drop(["_id"], axis=1)
+        building_totalpower = building_repo.get_power_historic_interval(start, start + timedelta(days=1))
+        consumption = []
+        for line in building_totalpower:
+            consumption.append([line['datetime'],line['consumption']])
 
-        total = total.dropna()
-
-        total = total.values.tolist()
-        total_power = []
-
-        for row in total:
-            iots = row[0]
-            date = row[1]
-            consumption = 0
-            for iot in iots:
-                for value in iot['values']:
-                    if 'values' in value:
-                        if value['type'] == 'power':
-                            consumption += value['values']
-
-            total_power.append([date, consumption])
-
-        total = pd.DataFrame(total_power, columns=['datetime', 'consumption'])
+        total = pd.DataFrame(consumption, columns=['datetime', 'consumption'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
-        total = total.resample('1H').mean()
-        total = total.tail(24)
-        total['datetime'] = total.index
+        total = total.resample('1h').mean()
         return total['consumption'].values.tolist()
 
     def forecast_generation(self):
         building_repo = BuildingRepository()
         now = datetime.now()
         start = now - timedelta(days=1, hours=now.hour, minutes=now.minute)
-        generation = building_repo.get_historic_interval(start, start + timedelta(days=1))
-        generation = pd.DataFrame(generation)
-        total = generation.drop(["_id"], axis=1)
+        building_totalpower = building_repo.get_historic_interval(start, start + timedelta(days=1))
+        generation = []
+        for line in building_totalpower:
+            generation.append([line['datetime'],line['generation']])
 
-        total = total.dropna()
-
-        total = total.values.tolist()
-        total_power = []
-
-        for row in total:
-            iots = row[0]
-            date = row[1]
-            generation = 0
-            for iot in iots:
-                for value in iot['values']:
-                    if 'values' in value:
-                        if value['type'] == 'generation':
-                            generation += value['values']
-
-            total_power.append([date, generation])
-
-        total = pd.DataFrame(total_power, columns=['datetime', 'generation'])
+        total = pd.DataFrame(generation, columns=['datetime', 'generation'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
-        total = total.resample('1H').mean()
-        total = total.tail(24)
-        total['datetime'] = total.index
+        total = total.resample('1h').mean()
         return total['generation'].values.tolist()
 
     def forecast_consumption_saved_model(self):
-        building_repo = BuildingRepository()
-
-        df_test = pd.DataFrame(building_repo.get_totalpower_col())
-        df_test = df_test.drop("_id", axis=1)
-
-        df_test['datetime'] = pd.to_datetime(df_test['datetime'])
-
-        current_time = df_test['datetime'].max()
-        twenty_four_hours_ago = current_time - timedelta(hours=24)
-
-        last_24_hours_data = df_test[df_test['datetime'] >= twenty_four_hours_ago]
-
-        last_24_hours_data['totalpower'] = pd.to_numeric(last_24_hours_data['totalpower'], errors='coerce')
-        last_24_hours_data['Month'] = last_24_hours_data['datetime'].dt.month
-        last_24_hours_data['Day'] = last_24_hours_data['datetime'].dt.day
-        last_24_hours_data['Hour'] = last_24_hours_data['datetime'].dt.hour
-        last_24_hours_data['Minute'] = last_24_hours_data['datetime'].dt.minute
-
-        last_24_hours_data.rename(columns={'totalpower': 'Consumption'}, inplace=True)
-        last_24_hours_data.drop(['datetime', 'totalgeneration'], axis=1, inplace=True)
-
-        last_24_hours_data = last_24_hours_data.dropna()
-        last_24_hours_data['Consumption-1'] = last_24_hours_data['Consumption'].shift(1)
-        last_24_hours_data.loc[last_24_hours_data['Day'] != last_24_hours_data['Day'].shift(1), 'Consumption-1'] = 0
-        last_24_hours_data['Consumption-2'] = last_24_hours_data['Consumption'].shift(2)
-        last_24_hours_data.loc[last_24_hours_data['Day'] != last_24_hours_data['Day'].shift(2), 'Consumption-2'] = 0
-        last_24_hours_data = last_24_hours_data[
-            ['Month', 'Day', 'Hour', 'Minute', 'Consumption-1', 'Consumption-2', 'Consumption']]
         forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_saved_model(last_24_hours_data)
+        return forecast_adapter.forecast_saved_model()
+
+    def forecast_generation_saved_model(self):
+        forecast_adapter = ForecastAdapter()
+        return forecast_adapter.forecast_generation_saved_model()
 
     def forecast_flexibility(self):
         building_repo = BuildingRepository()
