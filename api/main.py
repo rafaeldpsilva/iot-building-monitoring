@@ -94,8 +94,7 @@ def revoke_token():
 def overview():
     building_service = BuildingService()
     historic_overview = building_service.get_historic_overview()
-    forecast = [building_service.forecast_consumption(), building_service.forecast_generation(),
-                building_service.forecast_flexibility()]
+    forecast = building_service.forecast_consumption()
     return jsonify({'historic': historic_overview, 'forecast': forecast})
 
 @app.route('/historic', methods=['GET'])

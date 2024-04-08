@@ -161,6 +161,21 @@ class BuildingService:
         total = total.resample('1h').mean()
         return total['generation'].values.tolist()
 
+    def forecast_flexibility(self):
+        building_repo = BuildingRepository()
+        now = datetime.now()
+        start = now - timedelta(days=1, hours=now.hour, minutes=now.minute)
+        building_totalpower = building_repo.get_historic_hour_interval(start, start + timedelta(days=1))
+        flexibility = []
+        for line in building_totalpower:
+            flexibility.append([line['datetime'],line['flexibility']])
+
+        total = pd.DataFrame(flexibility, columns=['datetime', 'flexibility'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1h').mean()
+        return total['flexibility'].values.tolist()
+
     def forecast_consumption_saved_model(self):
         forecast_adapter = ForecastAdapter()
         return forecast_adapter.forecast_saved_model()
@@ -169,7 +184,7 @@ class BuildingService:
         forecast_adapter = ForecastAdapter()
         return forecast_adapter.forecast_generation_saved_model()
 
-    def forecast_flexibility(self):
+    def forecast_flexibility_saved_model(self):
         building_repo = BuildingRepository()
         consumption = pd.DataFrame(building_repo.get_totalpower_col())
         consumption = consumption.drop("_id", axis=1)
