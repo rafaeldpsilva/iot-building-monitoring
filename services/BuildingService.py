@@ -126,7 +126,7 @@ class BuildingService:
         total = pd.DataFrame(total_power, columns=['datetime', 'consumption', 'generation', 'flexibility'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
-        total = total.resample('1H').mean()
+        total = total.resample('1h').mean()
         total = total.values.tolist()
         self.building_repo.insert_hour(start_hour, total[0][0], total[0][1], total[0][2])
 
