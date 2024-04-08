@@ -49,27 +49,34 @@ class BuildingService:
                 shift_hours.append(iot_hour)
         return [shift_kwh, shift_hours]
 
-    def energy_consumption(self, TM, cr):
-        consumption = []
-        iots = cr.iots
-        if TM.dados['Data Aggregation'] == 'individual':
-            for resource in TM.dados['List of Resources']:
-                for iot in iots:
-                    if resource['text'] == iot.name:
-                        if resource['text'] != 'Generation':
-                            consumption.append({"resource": iot.name, "values": iot.get_power()})
-                        else:
-                            consumption.append({"resource": iot.name, "values": iot.get_generation()})
-        else:
-            consumption = {"resource": "end-user", "values": 0}
-            for resource in TM.dados['List of Resources']:
-                for iot in iots:
-                    if resource['text'] == iot.name:
-                        consumption['values'] += iot.get_power()
-        return consumption
+    def get_historic_overview(self):
+        historic = self.get_historic_last_day_by_hour()
+        last_hour = self.get_historic(datetime.now().replace(minute=0, second=0, microsecond=0))
+        total = pd.DataFrame(last_hour, columns=['consumption', 'generation', 'datetime'])
+        total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
+        total.set_index("datetime", inplace=True)
+        total = total.resample('1h').mean()
+        total = total.values.tolist()[0]
+        historic.insert(0, [datetime.now().replace(minute=0, second=0, microsecond=0), total[0], total[1],
+                            total[0] * random.randrange(5, 20) / 100])
+        return historic
+
+    def get_historic(self, start):
+        total = self.building_repo.get_power_historic(start)
+        total = pd.DataFrame(total)
+        total = total.drop(["_id"], axis=1)
+        return total.values.tolist()
+
+    def get_historic_last_day_by_hour(self):
+        total = self.building_repo.get_historic_hour(
+            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
+        total = pd.DataFrame(total)
+        total = total.drop(["_id"], axis=1)
+        total = total.values.tolist()
+        return total
 
     def get_mean_values(self, start):
-        historic = self.building_repo.get_historic(start)
+        historic = self.building_repo.get_historic_iots(start)
         instants = 0
         consumption = []
         generation = []
@@ -88,16 +95,10 @@ class BuildingService:
         else:
             return [0], [0], 1
 
-    def get_historic(self, start):
-        total = self.building_repo.get_historic(start)
-        total = pd.DataFrame(total)
-        total = total.drop(["_id"], axis=1)
-        return total.values.tolist()
-
     def save_last_hour(self):
         end_hour = datetime.now().replace(minute=0, second=0, microsecond=0)
         start_hour = end_hour - timedelta(hours=1)
-        last_hour = self.building_repo.get_historic_interval(start_hour, end_hour)
+        last_hour = self.building_repo.get_historic_interval_iots(start_hour, end_hour)
         last_hour = pd.DataFrame(last_hour)
         last_hour = last_hour.drop(["_id"], axis=1)
 
@@ -129,56 +130,6 @@ class BuildingService:
         total = total.resample('1h').mean()
         total = total.values.tolist()
         self.building_repo.insert_hour(start_hour, total[0][0], total[0][1], total[0][2])
-
-    def get_historic_last_day_by_hour(self):
-        total = self.building_repo.get_historic_hour(
-            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
-        total = pd.DataFrame(total)
-        total = total.drop(["_id"], axis=1)
-        total = total.values.tolist()
-        return total
-
-    def historic(self, TM):
-        time = datetime.now() - timedelta(minutes=180)
-        timeemb = datetime.now() - timedelta(minutes=int(TM.dados['Embargo Period']))
-
-        indexArray = []
-        dataArray = []
-        columns = []
-        if TM.dados['Data Aggregation'] == 'sum':
-            columns.append("end-user")
-
-        getIndex = True
-        iots_reading = []
-        for i in TM.dados['List of Resources']:
-            iots_reading = self.building_repo.get_iots_reading_col(time, timeemb)
-            if TM.dados['Data Aggregation'] == 'individual':
-                columns.append(i['text'])
-            index = 0
-            for entry in iots_reading:
-                if getIndex:
-                    indexArray.append(datetime.strptime(entry["datetime"][:19], "%Y-%m-%d %H:%M:%S"))
-                    dataArray.append([])
-                    if TM.dados['Data Aggregation'] == 'sum':
-                        dataArray[index].append(0)
-                if TM.dados['Data Aggregation'] == 'individual':
-                    dataArray[index].append(get_value(entry['iot_values'], 'power'))
-                else:
-                    dataArray[index][0] += get_value(entry['iot_values'], 'power')
-                index += 1
-            if getIndex:
-                getIndex = False
-
-        df = pd.DataFrame(dataArray, index=indexArray, columns=columns)
-
-        if TM.dados["Time Aggregation"] == "5minutes":
-            df = df.groupby(df.index.floor('5T')).mean()
-        elif TM.dados["Time Aggregation"] == "15minutes":
-            df = df.groupby(df.index.floor('15T')).mean()
-        elif TM.dados["Time Aggregation"] == "60minutes":
-            df = df.groupby(df.index.floor('60T')).mean()
-
-        return df
 
     def forecast_consumption(self):
         building_repo = BuildingRepository()

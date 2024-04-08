@@ -88,18 +88,15 @@ def revoke_token():
     return jsonify({'token': token['token'], 'datetime': token['datetime'], 'active': token['active']})
 
 
-@app.route('/historicold', methods=['GET'])
+@app.route('/overview', methods=['GET'])
 @TM.token_required
-def historic_old():
+@trust_manager.aggregated
+def overview():
     building_service = BuildingService()
-    df = building_service.historic(TM)
-
-    return app.response_class(
-        response=df.to_json(orient='index', date_format='iso'),
-        status=200,
-        mimetype='application/json'
-    )
-
+    historic_overview = building_service.get_historic_overview()
+    forecast = [building_service.forecast_consumption(), building_service.forecast_generation(),
+                building_service.forecast_flexibility()]
+    return jsonify({'historic': historic_overview, 'forecast': forecast})
 
 @app.route('/historic', methods=['GET'])
 @TM.token_required

@@ -7,7 +7,8 @@ class ForecastAdapter:
 
     def forecast_saved_model(self):
         from modules.forecast.save_model_forecast_consumption import forecast_consumption
-        return forecast_consumption()
+        df = forecast_consumption()
+        return df.values.tolist()
     
     def forecast_generation_saved_model(self):
         from modules.forecast.save_model_forecast_generation import forecast_generation

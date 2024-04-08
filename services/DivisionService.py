@@ -15,7 +15,7 @@ class DivisionService:
         division = self.get_division(id)
 
         building_repo = BuildingRepository()
-        df = pd.DataFrame(building_repo.get_historic(datetime.now() - timedelta(hours=1)))
+        df = pd.DataFrame(building_repo.get_historic_iots(datetime.now() - timedelta(hours=1)))
         df = df.drop("_id", axis=1)
 
         return division.get_ac_status(df)

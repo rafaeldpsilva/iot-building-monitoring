@@ -29,14 +29,14 @@ class BuildingRepository:
         if self.config['app']['monitoring']:
             print('\nConfig\n', conf)
 
-    def get_historic_interval(self, start, end):
+    def get_historic_interval_iots(self, start, end):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start, '$lt': end}}))
         client.close()
         return historic
 
-    def get_historic(self, start):
+    def get_historic_iots(self, start):
         if type(start) is str:
             date_start = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
         else:
@@ -63,7 +63,7 @@ class BuildingRepository:
         client.close()
         return historic
 
-    def historic_update(self, start):
+    def iots_historic_update(self, start):
         client = MongoClient(self.server + ':' + self.port)
         historic = list(client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start}}))
         client.close()
