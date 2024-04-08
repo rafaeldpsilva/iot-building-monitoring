@@ -132,7 +132,7 @@ class BuildingService:
 
     def get_historic_last_day_by_hour(self):
         total = self.building_repo.get_historic_hour(
-            datetime.strftime(datetime.now() - timedelta(hours=48), "%Y-%m-%d %H:%M:%S"))
+            datetime.strftime(datetime.now() - timedelta(hours=24), "%Y-%m-%d %H:%M:%S"))
         total = pd.DataFrame(total)
         total = total.drop(["_id"], axis=1)
         total = total.values.tolist()
