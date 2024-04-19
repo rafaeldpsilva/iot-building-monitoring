@@ -35,15 +35,16 @@ class BatteryService:
             date = row[1]
             stored_energy = 0
 
-            cena = []
+            #calculate total state of charge
+            a = []
             for battery in batteries:
                 for value in battery['values']:
                     if 'values' in value:
                         if value['tag'] == "battery.stored_energy":
                             stored_energy += value['values']
-                            cena.append(round(value['values'], 2))
+                            a.append(round(value['values'], 2))
             aux = [date, round(stored_energy / len(batteries), 2)]
-            aux.extend(cena)
+            aux.extend(a)
             batteries_energy.append(aux)
         names = ['datetime', 'stored_energy']
 
