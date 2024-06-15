@@ -115,8 +115,10 @@ class DemandResponseRepository:
         client = MongoClient(self.server + ':' + self.port)
         balance = client[self.BALANCE[0]][self.BALANCE[1]].find().sort("datetime", -1).limit(1)
         client.close()
-
-        new_balance = balance[0]['balance'] + value
+        if balance[0]['balance'] == []:
+            new_balance = value
+        else:
+            new_balance = balance[0]['balance'] + value
         try:
             json = {"balance": new_balance}
             client = MongoClient(self.server + ':' + self.port)
