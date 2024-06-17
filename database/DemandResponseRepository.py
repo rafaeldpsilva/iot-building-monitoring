@@ -113,7 +113,7 @@ class DemandResponseRepository:
 
     def add_benefit(self, value):
         client = MongoClient(self.server + ':' + self.port)
-        balance = client[self.BALANCE[0]][self.BALANCE[1]].find().sort("datetime", -1).limit(1)
+        balance = list(client[self.BALANCE[0]][self.BALANCE[1]].find().sort("datetime", -1).limit(1))
         client.close()
         if balance[0]['balance'] == []:
             new_balance = value
