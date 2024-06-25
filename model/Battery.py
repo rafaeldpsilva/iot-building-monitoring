@@ -2,7 +2,7 @@ from threading import Thread
 from time import time, sleep
 
 from modules import BatteryCommunicationAdapter
-from utils import utils
+import logging
 
 
 class Battery(Thread):
@@ -49,11 +49,11 @@ class Battery(Thread):
                         path *= value["multiplier"]
                     value['values'] = round(path, 4)
             except KeyError:
-                utils.print_error("Key Error in " + self.name + " with tag " + config_tag)
+                logging.warning("Key Error in " + self.name + " with tag " + config_tag)
             except TypeError:
-                utils.print_error("Type Error in " + self.name)
+                logging.warning("Type Error in " + self.name)
         else:
-            utils.print_error("ERROR! IN UPDATING VALUES OF IOT " + self.name)
+            logging.warning("ERROR! IN UPDATING VALUES OF IOT " + self.name)
 
     def run(self):
         while True:
