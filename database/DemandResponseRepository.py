@@ -120,7 +120,7 @@ class DemandResponseRepository:
         else:
             new_balance = balance[0]['balance'] + value
         try:
-            json = {"balance": new_balance}
+            json = {"datetime": datetime.now(), "balance": new_balance}
             client = MongoClient(self.server + ':' + self.port)
             client[self.BALANCE[0]][self.BALANCE[1]].insert_one(json)
         except Exception as e:
