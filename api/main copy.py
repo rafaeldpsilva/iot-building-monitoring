@@ -14,7 +14,7 @@ from services.TokenService import TokenService
 from services.DemandResponseService import DemandResponseService
 from core.Core import Core
 from utils import utils
-from modules.RenDatahub import get_production_breakdown
+
 
 app = Flask(__name__)
 CORS(app)

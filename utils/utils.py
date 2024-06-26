@@ -1,8 +1,5 @@
 import json
-import smtplib
 import sys
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import requests
 import urllib3
