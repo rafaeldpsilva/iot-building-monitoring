@@ -10,8 +10,6 @@ class IoT(Thread):
         self.name = config["name"]
         self.type = config["type"]
         self.uri = config["uri"]
-        self.method = config["method"]
-        self.body = config["body"]
         self.values = config["values"]
         self.control = config["control"]
         self.monitoring_period = config_monitoring
@@ -48,27 +46,14 @@ class IoT(Thread):
         return 0
 
     def update_values(self):
-        response = None
-        if (self.method == 'GET'):
-            response = utils.update_values_get(self.name, self.uri)
-        else:
-            response = utils.update_values_post(self.name, self.uri)
+        response = utils.update_values_get(self.name, self.uri)
 
         if response != None:
             try:
                 for value in self.values:
-                    path = response
-
-                    config_tags = value['tag'].split('.')
-
-                    for config_tag in config_tags:
-                        path = path[config_tag]
-
-                    if ("multiplier" in value):
-                        path *= value["multiplier"]
-                    value['values'] = round(path, 4)
+                    value['values'] = round(response, 4)
             except KeyError:
-                logging.warning("Key Error in " + self.name + " with tag " + config_tag)
+                logging.warning("Key Error in " + self.name + " with response " + response)
             except TypeError:
                 logging.warning("Type Error in " + self.name)
         else:
