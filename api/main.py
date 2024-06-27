@@ -27,8 +27,6 @@ def home():
 
 
 @app.route('/tokens', methods=['GET'])
-@TM.token_required
-@trust_manager.admin
 def get_token_list():
     token_service = TokenService()
     tokens = token_service.get_tokens()
@@ -36,7 +34,6 @@ def get_token_list():
 
 
 @app.route('/tokens/generate', methods=['GET', 'POST'])
-@TM.token_required
 def generate_token():
     token = ''
     json = request.get_json()
@@ -49,8 +46,6 @@ def generate_token():
 
 
 @app.route('/tokens/check', methods=['POST'])
-@TM.token_required
-@trust_manager.admin
 def check_token():
     token = request.get_json().get("token")
 
@@ -62,8 +57,6 @@ def check_token():
 
 
 @app.route('/tokens/save', methods=['POST'])
-@TM.token_required
-@trust_manager.admin
 def save_token():
     token = request.get_json().get("token")
 
@@ -75,8 +68,6 @@ def save_token():
 
 
 @app.route('/tokens/revoke', methods=['POST'])
-@TM.token_required
-@trust_manager.admin
 def revoke_token():
     token = request.get_json().get("token")
 
@@ -88,8 +79,6 @@ def revoke_token():
 
 
 @app.route('/overview', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def overview():
     building_service = BuildingService()
     historic_overview = building_service.get_historic_overview()
@@ -97,8 +86,6 @@ def overview():
     return jsonify({'historic': historic_overview, 'forecast': forecast})
 
 @app.route('/historic', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def historic():
     building_service = BuildingService()
     historic_last_day = building_service.get_historic_last_day_by_hour()
@@ -106,8 +93,6 @@ def historic():
 
 #!TODO USE TOTALPOWER ON THIS INSTEAD OF IOTREADINGS
 @app.route('/historic/interval', methods=['POST'])
-@TM.token_required
-@trust_manager.discrete
 def energy_consumption_interval():
     json = request.get_json()
     start = json['start']
@@ -117,8 +102,6 @@ def energy_consumption_interval():
 
 
 @app.route('/iots', methods=['GET'])
-@TM.token_required
-@trust_manager.discrete
 def get_iots():
     iot_service = IotService()
     iots = iot_service.get_iots()
@@ -126,8 +109,6 @@ def get_iots():
 
 
 @app.route('/batteries', methods=['GET'])
-@TM.token_required
-@trust_manager.discrete
 def get_batteries():
     batteries_service = BatteryService()
     batteries = batteries_service.get_batteries()
@@ -135,8 +116,6 @@ def get_batteries():
 
 
 @app.route('/batteries/historic', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def get_last_day_batteries():
     batteries_service = BatteryService()
     historic_last_day = batteries_service.get_batteries_historic_last_day()
@@ -144,8 +123,6 @@ def get_last_day_batteries():
 
 
 @app.route('/batteries/charge', methods=['POST'])
-@TM.token_required
-@trust_manager.aggregated
 def charge_battery():
     json = request.get_json()
     battery = json['battery']
@@ -156,8 +133,6 @@ def charge_battery():
 
 
 @app.route('/energy/now', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def energy_now():
     consumption = cr.get_total_consumption()
     generation = cr.get_total_generation()
@@ -167,8 +142,6 @@ def energy_now():
 
 
 @app.route('/energy/totalpower', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def energy_totalpower():
     data = cr.get_total_consumption()
 
@@ -176,8 +149,6 @@ def energy_totalpower():
 
 
 @app.route('/energy/consumption', methods=['GET'])
-@TM.token_required
-@trust_manager.discrete
 def energy_consumption():
     consumption = cr.get_iot_consumption()
     json = []
@@ -187,8 +158,6 @@ def energy_consumption():
 
 
 @app.route('/energy/generation', methods=['GET'])
-@TM.token_required
-@trust_manager.discrete
 def energy_generation():
     generation = cr.get_iot_generation()
     json = []
@@ -198,21 +167,12 @@ def energy_generation():
 
 
 @app.route('/energy/flexibility', methods=['GET'])
-@TM.token_required
-@trust_manager.discrete
 def energy_flexibility():
     flexibility = cr.get_total_consumption() * random.randrange(0, 20) / 100
     return jsonify({'flexibility': flexibility})
 
 
-@app.route('/correlations', methods=['GET', 'POST'])
-def correlations():
-    return jsonify({'correlations': "not implemented yet"})
-
-
 @app.route('/forecast/consumption', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_consumption():
     building_service = BuildingService()
     forecasted_consumption = building_service.forecast_consumption()
@@ -220,8 +180,6 @@ def forecast_consumption():
     return jsonify({'forecasted_consumption': forecasted_consumption})
 
 @app.route('/forecast/consumption/model', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_consumption_model():
     building_service = BuildingService()
     forecasted_consumption = building_service.forecast_consumption_saved_model()
@@ -230,8 +188,6 @@ def forecast_consumption_model():
 
 
 @app.route('/forecast/generation', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_generation():
     building_service = BuildingService()
     forecasted_generation = building_service.forecast_generation()
@@ -239,8 +195,6 @@ def forecast_generation():
     return jsonify({'forecasted_generation': forecasted_generation})
 
 @app.route('/forecast/generation/model', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_generation_model():
     building_service = BuildingService()
     forecasted_generation = building_service.forecast_generation_saved_model()
@@ -248,16 +202,12 @@ def forecast_generation_model():
     return jsonify({'forecasted_generation': forecasted_generation})
 
 @app.route('/forecast/flexibility', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_flexibility():
     flexibility = cr.get_forecasted_flexibility()
     return jsonify({'forecasted_flexibility': flexibility})
 
 
 @app.route('/forecast', methods=['GET'])
-@TM.token_required
-@trust_manager.aggregated
 def forecast_value():
     building_service = BuildingService()
     df = building_service.forecast_value()
@@ -270,8 +220,6 @@ def forecast_value():
 
 
 @app.route('/shifting', methods=['GET'])
-@TM.token_required
-@trust_manager.community_manager
 def get_shifting():
     iots = cr.get_forecasted_flexibility()
     building_service = BuildingService()
@@ -280,8 +228,6 @@ def get_shifting():
 
 
 @app.route('/invitation/get', methods=['POST'])
-@TM.token_required
-@trust_manager.community_manager
 def get_invitation():
     json = request.get_json()
     event_time = json['event_time']
@@ -294,8 +240,6 @@ def get_invitation():
 
 
 @app.route('/invitation/unanswered', methods=['GET'])
-@TM.token_required
-@trust_manager.community_manager
 def get_unanswered_invitations():
     dr_service = DemandResponseService()
     invitations = dr_service.get_unanswered_invitations()
@@ -303,8 +247,6 @@ def get_unanswered_invitations():
 
 
 @app.route('/invitation/answered', methods=['GET'])
-@TM.token_required
-@trust_manager.community_manager
 def get_answered_invitations():
     dr_service = DemandResponseService()
     invitations = dr_service.get_answered_invitations()
@@ -312,8 +254,6 @@ def get_answered_invitations():
 
 
 @app.route('/invitation/answer', methods=['POST'])
-@TM.token_required
-@trust_manager.community_manager
 def answer_invitation():
     json = request.get_json()
     event_time = json['event_time']
@@ -324,8 +264,6 @@ def answer_invitation():
 
 
 @app.route('/invitation/send', methods=['POST'])
-@TM.token_required
-@trust_manager.community_manager
 def invitation():
     json = request.get_json()
     event_time = json['event_time']
@@ -339,7 +277,6 @@ def invitation():
 
 
 @app.route('/invitation/auto', methods=['GET'])
-@TM.token_required
 def get_auto_answer():
     dr_service = DemandResponseService()
     auto_answer = dr_service.get_auto_answer_config()
@@ -347,7 +284,6 @@ def get_auto_answer():
 
 
 @app.route('/invitation/auto', methods=['POST'])
-@TM.token_required
 def auto_answer():
     json = request.get_json()
     auto_answer = json['auto_answer']
@@ -357,13 +293,11 @@ def auto_answer():
 
 
 @app.route('/audit/check', methods=['GET'])
-@TM.token_required
 def audit_check():
     return jsonify({'response': "OK"})
 
 
 @app.route('/benefit', methods=['POST'])
-@TM.token_required
 def benefit():
     json = request.get_json()
     iot = json['iot']
@@ -374,7 +308,6 @@ def benefit():
 
 
 @app.route('/benefit/historic', methods=['GET'])
-@TM.token_required
 def get_benefit():
     dr_service = DemandResponseService()
     dr_service.get_benefit_historic()
@@ -382,7 +315,6 @@ def get_benefit():
 
 
 @app.route('/iot/historic', methods=['POST'])
-@TM.token_required
 def get_iot_historic():
     json = request.get_json()
     iot = json['iot']
@@ -391,14 +323,7 @@ def get_iot_historic():
     return jsonify({'historic': historic})
 
 
-@app.route('/production/breakdown', methods=['GET'])
-@TM.token_required
-def production_breakdown():
-    return jsonify(get_production_breakdown())
-
-
 @app.route('/divisions', methods=['GET'])
-@TM.token_required
 def get_divisions():
     division_service = DivisionService()
     divisions = division_service.get_divisions()
@@ -406,7 +331,6 @@ def get_divisions():
 
 
 @app.route('/divisions/create', methods=['POST'])
-@TM.token_required
 def create_division():
     json = request.get_json()
     name = json['name']
@@ -417,7 +341,6 @@ def create_division():
 
 
 @app.route('/divisions/update', methods=['POST'])
-@TM.token_required
 def update_division():
     json = request.get_json()
     division_service = DivisionService()
@@ -426,7 +349,6 @@ def update_division():
 
 
 @app.route('/divisions/acstatus', methods=['POST'])
-@TM.token_required
 def get_ac_status():
     json = request.get_json()
     division_service = DivisionService()

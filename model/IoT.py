@@ -51,9 +51,16 @@ class IoT(Thread):
         if response != None:
             try:
                 for value in self.values:
-                    value['values'] = round(response, 4)
+                    path = response
+
+                    config_tags = value['tag'].split('.')
+
+                    for config_tag in config_tags:
+                        path = path[config_tag]
+
+                    value['values'] = round(path, 4)
             except KeyError:
-                logging.warning("Key Error in " + self.name + " with response " + response)
+                logging.warning("Key Error in " + self.name + " with tag " + config_tag)
             except TypeError:
                 logging.warning("Type Error in " + self.name)
         else:
