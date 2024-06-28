@@ -15,6 +15,8 @@ class Core(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.iots = []
+        self.iots_consumption = []
+        self.iots_generation = []
         self.batteries = []
 
     def run_thread_schedule(self, job):
@@ -28,6 +30,10 @@ class Core(Thread):
         for i in config["resources"]["iots"]:
             iot = IoT(i, config['resources']['monitoring_period'])
             # iot.daemon = True
+            if i["store"]["type"] == "consumption":
+                self.iots_consumption.append(iot)
+            if i["store"]["type"] == "generation":
+                self.iots_generation.append(iot)
             iot.start()
             self.iots.append(iot)
 
@@ -61,13 +67,13 @@ class Core(Thread):
 
     def get_total_consumption(self):
         totalPower = 0
-        for iot in self.iots:
+        for iot in self.iots_consumption:
             totalPower += iot.get_power()
         return totalPower
 
     def get_total_generation(self):
         total_generation = 0
-        for iot in self.iots:
+        for iot in self.iots_generation:
             if iot.type == "generation":
                 total_generation += iot.get_generation()
         return total_generation
