@@ -12,7 +12,6 @@ class IoT(Thread):
         self.uri = config["uri"]
         self.values = config["values"]
         for value in self.values:
-            if value["type"] == "power":
                 value["values"] = 0
         self.control = config["control"]
         self.monitoring_period = config_monitoring
