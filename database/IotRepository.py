@@ -15,7 +15,7 @@ class IotRepository:
     def get_iots(self):
         iots = []
         for iot in self.config['resources']['iots']:
-            iots.append({'name': iot['name'], 'type': iot['type'], 'values': iot['values']})
+            iots.append(iot)
         return iots
 
     def insert_iots(self, iots, datetime):
