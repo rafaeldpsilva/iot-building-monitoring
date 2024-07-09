@@ -16,6 +16,9 @@ def get_config():
     with open(FILE_PATH) as config_file:
         return json.load(config_file)
 
+def save_config(data):
+    with open(FILE_PATH, 'w') as file:
+        json.dump(data, file, indent=4)
 
 def update_values_get(process_name, uri):
     response = None

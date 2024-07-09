@@ -1,0 +1,297 @@
+{
+    "app": {
+        "port": 5000,
+        "monitoring": 0,
+        "dr_events_auto_accept": 1,
+        "hour_offset": 0
+    },
+    "storage": {
+        "_comment": "database configuration using mongodb",
+        "storing_frequency": 5,
+        "local": {
+            "type": "mongodb",
+            "server": "192.168.2.68",
+            "port": 27018,
+            "database": "H16",
+            "batteries": [
+                "H16",
+                "batteries"
+            ],
+            "iots_reading": [
+                "H16",
+                "iots_reading"
+            ],
+            "forecast": [
+                "H16",
+                "forecast"
+            ],
+            "totalpower": [
+                "H16",
+                "totalpower"
+            ],
+            "totalpowerhour": [
+                "H16",
+                "totalpowerhour"
+            ],
+            "token": [
+                "H16",
+                "tokens"
+            ],
+            "demand_response": [
+                "H16",
+                "demand_response_invitations"
+            ],
+            "config": [
+                "H16",
+                "config"
+            ],
+            "balance": [
+                "H16",
+                "balance"
+            ],
+            "benefit": [
+                "H16",
+                "benefit"
+            ],
+            "divisions": [
+                "H16",
+                "divisions"
+            ]
+        }
+    },
+    "resources": {
+        "_comment": "reading period in seconds, resource response",
+        "monitoring_period": 5,
+        "batteries": [],
+        "iots": [
+            {
+                "name": "AC1",
+                "type": "hvac",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/AC1",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "AC2",
+                "type": "hvac",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/AC2",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "AC3",
+                "type": "hvac",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/AC3",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "AC4",
+                "type": "hvac",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/AC4",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Water Heater",
+                "type": "water heater",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Water heater",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "TV",
+                "type": "tv",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/TV",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Microwave",
+                "type": "microwave",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Microwave",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Kettle",
+                "type": "kettle",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Kettle",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Lighting",
+                "type": "lamp",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Lighting",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Refrigerator",
+                "type": "refrigerator",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Refrigerator",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": true
+                },
+                "store": {
+                    "period": 10,
+                    "type": "avg"
+                }
+            },
+            {
+                "name": "Consumption",
+                "type": "consumption",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Consumption",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": false
+                },
+                "store": {
+                    "period": 10,
+                    "type": "consumption"
+                }
+            },
+            {
+                "name": "Generation",
+                "type": "generation",
+                "uri": "http://192.168.2.63:5000/api/realtime/H_16/Generation",
+                "values": [
+                    {
+                        "type": "power",
+                        "tag": "power",
+                        "data": "DOUBLE"
+                    }
+                ],
+                "control": {
+                    "demandresponse": false
+                },
+                "store": {
+                    "period": 10,
+                    "type": "generation"
+                }
+            }
+        ]
+    }
+}

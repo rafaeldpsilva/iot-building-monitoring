@@ -37,3 +37,12 @@ class IotRepository:
             client[self.IOTS_READING[0]][self.IOTS_READING[1]].find({'datetime': {'$gt': start, '$lt': end}}))
         client.close()
         return historic
+
+    def change_dr_enable(self, iot_name, enable):
+        success = False
+        for iot in self.config['resources']['iots']:
+            if iot['name'] == iot_name:
+                iot['control']['demandresponse'] = enable
+                success = True
+        if success:
+            utils.save_config(self.config)

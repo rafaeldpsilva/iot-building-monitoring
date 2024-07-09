@@ -43,3 +43,6 @@ class IotService:
         df = df.tail(24)
         df['datetime'] = df.index
         return df.values.tolist()
+
+    def change_dr_enable(self, iot, enable):
+        self.iot_repo.change_dr_enable(iot, enable)

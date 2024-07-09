@@ -328,6 +328,14 @@ def get_iot_historic():
     historic = iot_service.get_iot_historic(iot)
     return jsonify({'historic': historic})
 
+@app.route('/iot/demandresponse/enable', methods=['POST'])
+def change_dr_enable():
+    json = request.get_json()
+    iot = json['iot']
+    enable = json['enable']
+    iot_service = IotService()
+    iot_service.change_dr_enable(iot, enable)
+    return jsonify(True)
 
 @app.route('/divisions', methods=['GET'])
 def get_divisions():
