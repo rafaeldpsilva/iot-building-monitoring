@@ -9,7 +9,7 @@ from model.IoT import IoT
 from model.Battery import Battery
 from model.StoringManager import StoringManager
 from model.Monitoring import Monitoring
-
+from core.DemandResponseAtuator import DemandResponseAtuator
 
 class Core(Thread):
     def __init__(self):
@@ -18,6 +18,7 @@ class Core(Thread):
         self.iots_consumption = []
         self.iots_generation = []
         self.batteries = []
+        self.dr_reduced_power = 0
 
     def run_thread_schedule(self, job):
         forecast = threading.Thread(target=job)
@@ -69,7 +70,9 @@ class Core(Thread):
         totalPower = 0
         for iot in self.iots_consumption:
             totalPower += iot.get_power()
-        return totalPower
+        reduce = self.dr_reduced_power
+        self.dr_reduced_power = 0
+        return totalPower - reduce
 
     def get_total_generation(self):
         total_generation = 0
@@ -103,3 +106,13 @@ class Core(Thread):
         for iot in self.iots:
             forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return forecasted_flexibility
+
+    def schedule_event(self, event_time, iot_name):
+        iot = None
+        for i in self.iots:
+            if i.name == iot_name:
+                iot = i
+        if iot is None:
+            return False
+        dr = DemandResponseAtuator(self, iot)
+        dr.start()

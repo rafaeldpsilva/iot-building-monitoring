@@ -4,21 +4,58 @@ from datetime import timedelta
 import pandas as pd
 import numpy as np
 import sys
+from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
 from keras.layers import LSTM, Dense
 sys.path.append('.')
 from database.BuildingRepository import BuildingRepository
 
 def create_model():
-    # LSTM model
-    timesteps = 1
-    shape = 6
+    look_back = 15
     model = Sequential()
-    model.add(LSTM(units=4, input_shape=(timesteps, shape)))
-    model.add(Dense(units=1))  # Use the original number of features as the output units
-    model.compile(optimizer='adam', loss='mean_squared_error',metrics=['mae', 'mse'])
-
+    model.add(LSTM(50, return_sequences=True, input_shape=(look_back, 1)))
+    model.add(LSTM(50, return_sequences=False))
+    model.add(Dense(25))
+    model.add(Dense(1))
+    model.compile(optimizer='adam', loss='mean_squared_error')
     return model
+
+
+def create_dataset(dataset, look_back=1):
+    X, Y = [], []
+    for i in range(len(dataset) - look_back - 1):
+        a = dataset[i:(i + look_back), 0]
+        X.append(a)
+        Y.append(dataset[i + look_back, 0])
+    return np.array(X), np.array(Y)
+
+
+def train_model(df):
+    df['Time'] = pd.to_datetime(df['Time'])
+    df.set_index('Time', inplace=True)
+
+    # Select the columns to be used for prediction
+    data = df[['Consumption']]
+
+    # Scale the data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    scaled_data = scaler.fit_transform(data)
+
+    look_back = 15
+
+    # Prepare data for consumption prediction
+    X_con, y_con = create_dataset(scaled_data[:, 0].reshape(-1, 1), look_back)
+
+    X_con = np.reshape(X_con, (X_con.shape[0], look_back, 1))
+    model = create_model()
+    model.fit(X_con, y_con, batch_size=1, epochs=10)
+    model.save("modules/forecast/consumption.keras")
+
+    # Make predictions for Consumption
+    predictions_con = model.predict(X_con)
+    predictions_con = scaler.inverse_transform(
+        np.concatenate((np.zeros_like(predictions_con), predictions_con), axis=1))[:, 1]
+
 def prepare_data(data, time_steps):
     X, y = [], []
     for i in range(len(data) - time_steps - 2):

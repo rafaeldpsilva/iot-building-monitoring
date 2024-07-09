@@ -4,8 +4,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 sys.path.append('.')
-import api.tokenManager as TM
-import api.trust as trust_manager
 from services.IotService import IotService
 from services.DivisionService import DivisionService
 from services.BatteryService import BatteryService
@@ -291,6 +289,14 @@ def auto_answer():
     dr_service.set_auto_answer_config(auto_answer)
     return jsonify({'response': "OK"})
 
+
+@app.route('/event/check', methods=['POST'])
+def event_check():
+    json = request.get_json()
+    event_time = json['event_time']
+    iot_name = json['iot']
+    cr.schedule_event(event_time, iot_name)
+    return jsonify(True)
 
 @app.route('/audit/check', methods=['GET'])
 def audit_check():

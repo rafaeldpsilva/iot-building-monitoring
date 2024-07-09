@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pymongo import MongoClient
 
@@ -19,7 +19,16 @@ class DemandResponseRepository:
         client = MongoClient(self.server + ':' + self.port)
         config = list(client[self.CONFIG[0]][self.CONFIG[1]].find())
         client.close()
-        return config[0]['auto_answer']
+        if len(config) == 0:
+            if self.config['app']['dr_events_auto_accept']:
+                auto_answer = {"config": "config", "auto_answer": True}
+            else:
+                auto_answer = {"config": "config", "auto_answer": False}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.CONFIG[0]][self.CONFIG[1]].insert_one(auto_answer)
+            client.close()
+        else:
+            return config[0]['auto_answer']
 
     def set_auto_answer_config(self, auto_answer):
         if auto_answer:
@@ -29,8 +38,6 @@ class DemandResponseRepository:
         client = MongoClient(self.server + ':' + self.port)
         client[self.CONFIG[0]][self.CONFIG[1]].update_one({'config': "config"}, {'$set': {'auto_answer': auto_answer}})
         client.close()
-        if self.get_auto_answer_config() != auto_answer:
-            print("ERROR ON AUTO ANSWER UPDATE!")
 
     def get_unanswered_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
@@ -56,6 +63,13 @@ class DemandResponseRepository:
                 {"datetime": invite['datetime'], "event_time": event_time, "load_kwh": invite['load_kwh'],
                  "load_percentage": invite['load_percentage'], "iots": invite['iots'], "response": invite['response']})
         return invitations
+
+    def get_accepted_upcoming_invitations(self):
+        client = MongoClient(self.server + ':' + self.port)
+        inv = list(client[self.DEMANDRESPONSE[0]][self.DEMANDRESPONSE[1]].find(
+            {'response': {"$eq": "YES"}, 'event_time': {'$gt': datetime.now() - timedelta(hours=1)}}))
+        client.close()
+        return inv
 
     def get_all_invitations(self):
         client = MongoClient(self.server + ':' + self.port)
