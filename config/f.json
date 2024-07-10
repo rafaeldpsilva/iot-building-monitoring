@@ -276,6 +276,7 @@
             {
                 "name": "Generation",
                 "type": "generation",
+                "connectionmode": "local",
                 "uri": "http://192.168.2.63:5000/api/realtime/H_16/Generation",
                 "values": [
                     {

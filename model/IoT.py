@@ -11,11 +11,15 @@ class IoT(Thread):
         self.type = config["type"]
         self.uri = config["uri"]
         self.values = config["values"]
+        self.demandresponse = config["control"]["demandresponse"]
         for value in self.values:
-                value["values"] = 0
+            value["values"] = 0
         self.control = config["control"]
         self.monitoring_period = config_monitoring
         # print(self.name, self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
+
+    def get_values(self):
+        return self.values
 
     def get_power(self):
         for value in self.values:

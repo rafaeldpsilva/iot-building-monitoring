@@ -176,14 +176,6 @@ class BuildingService:
         total = total.resample('1h').mean()
         return total['flexibility'].values.tolist()
 
-    def forecast_consumption_saved_model(self):
-        forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_saved_model()
-
-    def forecast_generation_saved_model(self):
-        forecast_adapter = ForecastAdapter()
-        return forecast_adapter.forecast_generation_saved_model()
-
     def forecast_flexibility_saved_model(self):
         building_repo = BuildingRepository()
         consumption = pd.DataFrame(building_repo.get_totalpower_col())

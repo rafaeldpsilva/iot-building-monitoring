@@ -177,25 +177,10 @@ def forecast_consumption():
 
     return jsonify({'forecasted_consumption': forecasted_consumption})
 
-@app.route('/forecast/consumption/model', methods=['GET'])
-def forecast_consumption_model():
-    building_service = BuildingService()
-    forecasted_consumption = building_service.forecast_consumption_saved_model()
-
-    return jsonify({'forecasted_consumption': forecasted_consumption})
-
-
 @app.route('/forecast/generation', methods=['GET'])
 def forecast_generation():
     building_service = BuildingService()
     forecasted_generation = building_service.forecast_generation()
-
-    return jsonify({'forecasted_generation': forecasted_generation})
-
-@app.route('/forecast/generation/model', methods=['GET'])
-def forecast_generation_model():
-    building_service = BuildingService()
-    forecasted_generation = building_service.forecast_generation_saved_model()
 
     return jsonify({'forecasted_generation': forecasted_generation})
 
@@ -319,7 +304,13 @@ def get_benefit():
     dr_service.get_benefit_historic()
     return jsonify({'response': "OK"})
 
-
+@app.route('/iot/values', methods=['POST'])
+def get_iot_values():
+    json = request.get_json()
+    iot = json['iot']
+    values = cr.get_iot_values(iot)
+    return jsonify(values)
+    
 @app.route('/iot/historic', methods=['POST'])
 def get_iot_historic():
     json = request.get_json()

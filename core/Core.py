@@ -100,11 +100,18 @@ class Core(Thread):
             if iot.type == "generation":
                 iot_generation.append([iot.name, iot.get_generation()])
         return iot_generation
+    
+    def get_iot_values(self, name):
+        for iot in self.iots:
+            if iot.name == name:
+                return iot
+        return False
 
     def get_forecasted_flexibility(self):
         forecasted_flexibility = []
         for iot in self.iots:
-            forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
+            if iot.demandresponse:
+                forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return forecasted_flexibility
 
     def schedule_event(self, event_time, iot_name):
