@@ -190,6 +190,11 @@ def forecast_flexibility():
     return jsonify({'forecasted_flexibility': flexibility})
 
 
+@app.route('/iots/forecast/consumption', methods=['GET'])
+def forecast_consumption():
+    consumption = cr.get_forecasted_consumption()
+    return jsonify({'forecasted_consumption': consumption})
+
 @app.route('/forecast', methods=['GET'])
 def forecast_value():
     building_service = BuildingService()

@@ -104,7 +104,8 @@ class Core(Thread):
     def get_iot_values(self, name):
         for iot in self.iots:
             if iot.name == name:
-                return iot
+                print(iot.values)
+                return iot.values
         return False
 
     def get_forecasted_flexibility(self):
@@ -113,6 +114,13 @@ class Core(Thread):
             if iot.demandresponse:
                 forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return forecasted_flexibility
+
+    def get_forecasted_consumption(self):
+        forecasted_consumption = []
+        for iot in self.iots:
+            if iot.demandresponse:
+                forecasted_consumption.append([iot.name, iot.get_power()])
+        return forecasted_consumption
 
     def schedule_event(self, event_time, iot_name):
         iot = None
