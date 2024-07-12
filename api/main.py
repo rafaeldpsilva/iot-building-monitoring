@@ -186,12 +186,12 @@ def forecast_generation():
 
 @app.route('/forecast/flexibility', methods=['GET'])
 def forecast_flexibility():
-    flexibility = cr.get_forecasted_flexibility()
-    return jsonify({'forecasted_flexibility': flexibility})
+    shifting, reducing = cr.get_forecasted_flexibility()
+    return jsonify({'shifting': shifting, 'reducing': reducing})
 
 
 @app.route('/iots/forecast/consumption', methods=['GET'])
-def forecast_consumption():
+def iots_forecast_consumption():
     consumption = cr.get_forecasted_consumption()
     return jsonify({'forecasted_consumption': consumption})
 
@@ -205,15 +205,6 @@ def forecast_value():
         status=200,
         mimetype='application/json'
     )
-
-
-@app.route('/shifting', methods=['GET'])
-def get_shifting():
-    iots = cr.get_forecasted_flexibility()
-    building_service = BuildingService()
-    [shift_kwh, shift_hours] = building_service.get_shift_hours_kwh(iots)
-    return jsonify({'shift_hours': shift_hours, 'shift_kwh': shift_kwh})
-
 
 @app.route('/invitation/get', methods=['POST'])
 def get_invitation():

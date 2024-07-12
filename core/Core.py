@@ -109,16 +109,19 @@ class Core(Thread):
         return False
 
     def get_forecasted_flexibility(self):
-        forecasted_flexibility = []
+        shifting = []
+        reducing = []
         for iot in self.iots:
-            if iot.demandresponse:
-                forecasted_flexibility.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
-        return forecasted_flexibility
+            if iot.demandresponse == "shifting":
+                shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
+            if iot.demandresponse == "reducing":
+                shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
+        return shifting, reducing
 
     def get_forecasted_consumption(self):
         forecasted_consumption = []
         for iot in self.iots:
-            if iot.demandresponse:
+            if iot.demandresponse == 'shifting' or iot.demandresponse == 'reducing':
                 forecasted_consumption.append([iot.name, iot.get_power()])
         return forecasted_consumption
 

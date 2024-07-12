@@ -168,7 +168,7 @@
                 }
               ],
               "control": {
-                "demandresponse": false
+                "demandresponse": "unusable"
               },
               "store": {
                 "period": 10,
@@ -261,7 +261,7 @@
           }
         ],
         "control": {
-          "demandresponse": false
+          "demandresponse": "unusable"
         },
         "store": {
           "period": 10,
@@ -385,7 +385,7 @@
           }
         ],
         "control": {
-          "demandresponse": false
+          "demandresponse": "unusable"
         },
         "store": {
           "period": 10,
@@ -447,7 +447,7 @@
                 }
               ],
               "control": {
-                "demandresponse": false
+                "demandresponse": "unusable"
               },
               "store": {
                 "period": 10,
@@ -657,7 +657,7 @@
                     }
                 ],
               "control": {
-                "demandresponse": false
+                "demandresponse": "unusable"
                 },
               "store": {
                 "period": 10,
@@ -678,7 +678,7 @@
           }
         ],
         "control": {
-          "demandresponse": false
+          "demandresponse": "unusable"
         },
         "store": {
           "period": 10,
