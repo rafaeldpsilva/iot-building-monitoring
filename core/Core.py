@@ -115,7 +115,7 @@ class Core(Thread):
             if iot.demandresponse == "shifting":
                 shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
             if iot.demandresponse == "reducing":
-                shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
+                reducing.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return shifting, reducing
 
     def get_forecasted_consumption(self):
