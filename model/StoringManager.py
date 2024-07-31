@@ -33,12 +33,12 @@ class StoringManager(Thread):
         iots = []
         for i in self.core.iots:
             iots.append({"name": i.name, "type": i.type, "values": i.values})
-        iot_repo.insert_iots(iots, datetime.now() + timedelta(hours=self.hour_offset))
+        iot_repo.insert_iots(iots, datetime.now())
 
     def save_total(self):
         building_repo = BuildingRepository()
         building_repo.insert_total(self.core.get_total_consumption(), self.core.get_total_generation(),
-                                   datetime.now() + timedelta(hours=self.hour_offset))
+                                   datetime.now())
 
     def save_hour(self):
         building_service = BuildingService()

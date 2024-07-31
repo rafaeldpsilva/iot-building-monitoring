@@ -57,7 +57,7 @@ class BuildingService:
         total.set_index("datetime", inplace=True)
         total = total.resample('1h').mean()
         total = total.values.tolist()[0]
-        historic.append([datetime.now().replace(minute=0, second=0, microsecond=0), total[0], total[1],
+        historic.insert(0, [datetime.now().replace(minute=0, second=0, microsecond=0), total[0], total[1],
                             total[0] * random.randrange(5, 20) / 100])
         return historic
 
