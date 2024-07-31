@@ -6,6 +6,7 @@ from flask_cors import CORS
 sys.path.append('.')
 from services.IotService import IotService
 from services.DivisionService import DivisionService
+from services.P2PService import P2PService
 from services.BatteryService import BatteryService
 from services.BuildingService import BuildingService
 from services.TokenService import TokenService
@@ -363,6 +364,22 @@ def get_ac_status():
 
     return jsonify({"ac_status": ac_status})
 
+
+@app.route('/p2p/prices', methods=['POST'])
+def post_prices():
+    json = request.get_json()
+    sell_percentage = json['sell_percentage']
+    buy_percentage = json['buy_percentage']
+    p2p_service = P2PService()
+    p2p_service.update_prices(sell_percentage, buy_percentage)
+    return jsonify(True)
+
+
+@app.route('/p2p/prices', methods=['GET'])
+def get_prices():
+    p2p_service = P2PService()
+    prices = p2p_service.get_prices()
+    return jsonify({"prices": prices})
 
 if __name__ == "__main__":
     cr = Core()
