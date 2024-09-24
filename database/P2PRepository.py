@@ -14,7 +14,7 @@ class P2PRepository:
 
     def update_prices(self, sell_percentage, buy_percentage):
         try:
-            prices = {"datetime": datetime.now().replace(hour=0, minute=0, second=0, microsecond=0),
+            prices = {"datetime": datetime.now(),
                       "sell_percentage": sell_percentage, "buy_percentage": buy_percentage}
             client = MongoClient(self.server + ':' + self.port)
             client[self.P2P_PRICES[0]][self.P2P_PRICES[1]].insert_one(prices)
@@ -45,4 +45,4 @@ class P2PRepository:
             buy.append(price[1] * (1 - buy_per))
             sell.append(price[1] * (1 + sell_per))
 
-        return {'buy': buy, 'sell': sell, 'market_prices': market_prices}
+        return {'buy': buy, 'buy_percentage': buy_per, 'sell': sell, 'sell_percentage': sell_per,'market_prices': market_prices}
