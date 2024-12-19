@@ -22,11 +22,12 @@ class StoringManager(Thread):
         sys.exit()
 
     def save_batteries_values(self):
-        battery_repo = BatteryRepository()
-        batteries = []
-        for i in self.core.batteries:
-            batteries.append({"name": i.name, "values": i.values})
-        battery_repo.insert_batteries(batteries)
+        if len(self.core.batteries) > 0:
+            battery_repo = BatteryRepository()
+            batteries = []
+            for i in self.core.batteries:
+                batteries.append({"name": i.name, "values": i.values})
+            battery_repo.insert_batteries(batteries)
 
     def save_iot_values(self):
         iot_repo = IotRepository()
