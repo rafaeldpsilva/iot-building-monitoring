@@ -7,17 +7,16 @@ import os
 import logging
 sys.path.append('.')
 
-FILE_PATH = os.environ.get('CARAVELS_CONFIG_FILE')
-if FILE_PATH is None:
-    raise EnvironmentError("Caravels config file not setup!")
+CARAVELS_CONFIG = os.environ.get('CARAVELS_CONFIG')
+if CARAVELS_CONFIG is None:
+    raise EnvironmentError("Caravels config not setup!")
 
 
 def get_config():
-    with open(FILE_PATH) as config_file:
-        return json.load(config_file)
+    return json.loads(os.environ.get('CARAVELS_CONFIG'))
 
 def save_config(data):
-    with open(FILE_PATH, 'w') as file:
+    with open(CARAVELS_CONFIG, 'w') as file:
         json.dump(data, file, indent=4)
 
 def update_values_get(process_name, uri):

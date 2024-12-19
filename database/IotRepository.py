@@ -39,10 +39,11 @@ class IotRepository:
         return historic
 
     def change_dr_enable(self, iot_name, enable):
-        success = False
+        raise RuntimeError('DEPRECATED: Change Dr enabling is not possible on this version')
+        """success = False
         for iot in self.config['resources']['iots']:
             if iot['name'] == iot_name:
                 iot['control']['demandresponse'] = enable
                 success = True
         if success:
-            utils.save_config(self.config)
+            utils.save_config(self.config) """

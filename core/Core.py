@@ -8,7 +8,6 @@ from utils.utils import get_config
 from model.IoT import IoT
 from model.Battery import Battery
 from model.StoringManager import StoringManager
-from model.Monitoring import Monitoring
 from core.DemandResponseAtuator import DemandResponseAtuator
 
 class Core(Thread):
@@ -30,7 +29,6 @@ class Core(Thread):
 
         for i in config["resources"]["iots"]:
             iot = IoT(i, config['resources']['monitoring_period'])
-            # iot.daemon = True
             if i["store"]["type"] == "consumption":
                 self.iots_consumption.append(iot)
             if i["store"]["type"] == "generation":
@@ -40,25 +38,16 @@ class Core(Thread):
 
         for i in config["resources"]["batteries"]:
             battery = Battery(i, config['storage']['storing_frequency'])
-            # battery.daemon = True
             battery.start()
             self.batteries.append(battery)
 
         storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
-        # storing_manager.daemon = True
         storing_manager.start()
 
-        if not config['app']['monitoring']:
-            monitoring = Monitoring(self)
-            # monitoring.daemon = True
-            monitoring.start()
+        for i, iot in enumerate(self.iots):
+            iot.join()
 
-        # for i, iot in enumerate(self.iots):
-        #    iot.join()
-
-        # storing_manager.join()
-        # if not config['app']['monitoring']:
-        #    monitoring.join()
+        storing_manager.join()
 
     def get_total_batteries_state(self):
         total_state = 0
@@ -112,16 +101,14 @@ class Core(Thread):
         shifting = []
         reducing = []
         for iot in self.iots:
-            if iot.demandresponse == "shifting":
+            if iot.demandresponse:
                 shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
-            if iot.demandresponse == "reducing":
-                reducing.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return shifting, reducing
 
     def get_forecasted_consumption(self):
         forecasted_consumption = []
         for iot in self.iots:
-            if iot.demandresponse == 'shifting' or iot.demandresponse == 'reducing':
+            if iot.demandresponse:
                 forecasted_consumption.append([iot.name, iot.get_power()])
         return forecasted_consumption
 

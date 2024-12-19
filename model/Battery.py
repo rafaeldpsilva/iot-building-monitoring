@@ -12,7 +12,6 @@ class Battery(Thread):
         self.ip = config["ip"]
         self.values = config["values"]
         self.monitoring_period = config_monitoring
-        # print(self.name, self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
 
     def get_battery_charging_rate(self):
         return BatteryCommunicationAdapter.get_battery_charging_rate(self.ip)

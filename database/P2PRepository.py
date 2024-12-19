@@ -11,6 +11,7 @@ class P2PRepository:
         self.server = str(self.config['storage']['local']['server'])
         self.port = str(self.config['storage']['local']['port'])
         self.P2P_PRICES = self.config['storage']['local']['p2p_prices']
+        self.P2P_TRANSACTIONS = self.config['storage']['local']['p2p_transaction']
 
     def update_prices(self, sell_percentage, buy_percentage):
         try:
@@ -46,3 +47,13 @@ class P2PRepository:
             sell.append(price[1] * (1 + sell_per))
 
         return {'buy': buy, 'buy_percentage': buy_per, 'sell': sell, 'sell_percentage': sell_per,'market_prices': market_prices}
+
+    def set_transaction(self, datetime, peer, quantity, cost):
+        try:
+            transaction = {"datetime": datetime, "peer": peer, "quantity": quantity, "cost": cost}
+            client = MongoClient(self.server + ':' + self.port)
+            client[self.P2P_TRANSACTIONS[0]][self.P2P_TRANSACTIONS[1]].insert_one(transaction)
+        except Exception as e:
+            print("An exception occurred ::", e)
+        finally:
+            client.close()

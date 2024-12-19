@@ -35,7 +35,6 @@ class BatteryService:
             date = row[1]
             stored_energy = 0
 
-            #calculate total state of charge
             a = []
             for battery in batteries:
                 for value in battery['values']:

@@ -9,7 +9,9 @@ from services.DivisionService import DivisionService
 from services.P2PService import P2PService
 from services.BatteryService import BatteryService
 from services.BuildingService import BuildingService
+from services.ForecastService import ForecastService
 from services.TokenService import TokenService
+from services.EnergyService import EnergyService
 from services.DemandResponseService import DemandResponseService
 from core.Core import Core
 from utils import utils
@@ -81,7 +83,8 @@ def revoke_token():
 def overview():
     building_service = BuildingService()
     historic_overview = building_service.get_historic_overview()
-    forecast = building_service.forecast_consumption()
+    forecast_service = ForecastService()
+    forecast = forecast_service.forecast_consumption()
     return jsonify({'historic': historic_overview, 'forecast': forecast})
 
 @app.route('/historic', methods=['GET'])
@@ -173,15 +176,15 @@ def energy_flexibility():
 
 @app.route('/forecast/consumption', methods=['GET'])
 def forecast_consumption():
-    building_service = BuildingService()
-    forecasted_consumption = building_service.forecast_consumption()
+    forecast_service = ForecastService()
+    forecasted_consumption = forecast_service.forecast_consumption()
 
     return jsonify({'forecasted_consumption': forecasted_consumption})
 
 @app.route('/forecast/generation', methods=['GET'])
 def forecast_generation():
-    building_service = BuildingService()
-    forecasted_generation = building_service.forecast_generation()
+    forecast_service = ForecastService()
+    forecasted_generation = forecast_service.forecast_generation()
 
     return jsonify({'forecasted_generation': forecasted_generation})
 
@@ -198,8 +201,8 @@ def iots_forecast_consumption():
 
 @app.route('/forecast', methods=['GET'])
 def forecast_value():
-    building_service = BuildingService()
-    df = building_service.forecast_value()
+    forecast_service = ForecastService()
+    df = forecast_service.forecast_value()
 
     return app.response_class(
         response=df.to_json(orient='index', date_format='iso'),
@@ -381,9 +384,43 @@ def get_prices():
     prices = p2p_service.get_prices()
     return jsonify({"prices": prices})
 
+@app.route('/p2p/transaction', methods=['POST'])
+def set_bids():
+    json = request.get_json()
+    hour = json['hour']
+    peer = json['peer']
+    quantity = json['quantity']
+    cost = json['cost']
+    p2p_service = P2PService()
+    p2p_service.set_transaction(hour, peer, quantity, cost)
+    return jsonify(True)
+
+@app.route('/energy/selfconsumption', methods=['GET'])
+def get_self_consumption():
+    energy_service = EnergyService()
+    self_consumption = energy_service.get_self_consumption()
+    return jsonify({"self_consumption": self_consumption})
+
+@app.route('/energy/retailer', methods=['GET'])
+def get_retailer():
+    energy_service = EnergyService()
+    retailer = energy_service.get_energy_from_retailer()
+    return jsonify({"retailer": retailer})
+
+@app.route('/energy/co2/p2p', methods=['GET'])
+def get_co2_with_p2p():
+    energy_service = EnergyService()
+    co2_with_p2p = energy_service.get_co2_with_p2p()
+    return jsonify({"co2": co2_with_p2p})
+
+@app.route('/energy/co2', methods=['GET'])
+def get_co2_without_p2p():
+    energy_service = EnergyService()
+    co2_without_p2p = energy_service.get_co2_without_p2p()
+    return jsonify({"co2": co2_without_p2p})
+
 if __name__ == "__main__":
     cr = Core()
-    # cr.daemon = True
     cr.start()
 
     config = utils.get_config()
