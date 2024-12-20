@@ -1,1976 +1,278 @@
 {
-  "app": {
-      "port" : 5000,
-      "monitoring": 0,
-      "dr_events_auto_accept": 1,
-      "hour_offset": 0
-  },
-  "storage" : {
-      "_comment" : "database configuration using mongodb",
-      "storing_frequency": 5,
-      "local" : {
-          "type" : "mongodb",
-          "server" : "192.168.2.91",
-          "port" : 32017,
-          "database" : "BuildingLeftSide",
-          "batteries": ["BuildingLeftSide","batteries"],
-          "iots_reading": ["BuildingLeftSide","iots_reading_left_side"],
-          "forecast": ["BuildingLeftSide","forecastvalue"],
-          "totalpower": ["BuildingLeftSide","powerleftside"],
-          "totalpowerhour": ["BuildingLeftSide","totalpowerhour"],
-        "token": ["BuildingLeftSide","tokencol"],
-          "demand_response": ["BuildingLeftSide", "demand_response_invitations"],
-          "config": ["BuildingLeftSide","config"],
-          "balance": ["BuildingLeftSide","balance"],
-          "benefit": ["BuildingLeftSide","benefit"],
-          "divisions": ["BuildingLeftSide","divisions"],
-          "p2p_prices": ["BuildingLeftSide","p2p_prices"]
-      }
-  },
-  "resources" : {
-      "_comment" : "reading period in seconds, resource response",
-      "monitoring_period" : 1,
-      "batteries":[
-          {
-              "name": "Battery_4",
-              "type": "battery",
-              "ip": "192.168.2.57",
-              "capacity": 3600,
-              "values" : [
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.stored_energy",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.charging_rate",
-                      "data" : "DOUBLE"
-                  }
-              ]
-          },
-          {
-              "name": "Battery_5",
-              "type": "battery",
-              "ip": "192.168.2.58",
-              "capacity": 2400,
-              "values" : [
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.stored_energy",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.charging_rate",
-                      "data" : "DOUBLE"
-                  }
-              ]
-          },
-          {
-              "name": "Battery_6",
-              "type": "battery",
-              "ip": "192.168.2.59",
-              "capacity": 3600,
-              "values" : [
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.stored_energy",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "energy",
-                      "tag" : "battery.charging_rate",
-                      "data" : "DOUBLE"
-                  }
-              ]
-          }
-      ],
-      "iots" : [
-          {
-              "name" : "Air Conditioner 101",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer1_V4.Ph1_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer1_V4.Ph1_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer1_V4.Ph1_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-             } 
-          },
-          {
-              "name" : "Air Conditioner 102",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer102ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer102ac_V1.AC102_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer102ac_V1.AC102_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer102ac_V1.AC102_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner 103",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer103ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer103ac_V1.AC103_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer103ac_V1.AC103_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer103ac_V1.AC103_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner 105",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer105ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer105ac_V1.AC105_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer105ac_V1.AC105_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer105ac_V1.AC105_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner 107",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer107_108_109ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer107_108_109ac_V1.AC107_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer107_108_109ac_V1.AC107_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer107_108_109ac_V1.AC107_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner 108",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer107_108_109ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer107_108_109ac_V1.AC108_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer107_108_109ac_V1.AC108_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer107_108_109ac_V1.AC108_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner 109",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer107_108_109ac_V1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer107_108_109ac_V1.AC109_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer107_108_109ac_V1.AC109_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer107_108_109ac_V1.AC109_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Sockets-101-102-103",
-              "type" : "sockets",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer1_V4.Ph2_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer1_V4.Ph2_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer1_V4.Ph2_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Sockets-104-105-106",
-              "type" : "sockets",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer2_V3.Ph1_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer2_V3.Ph1_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer2_V3.Ph1_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Sockets-107-108-109",
-              "type" : "sockets",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer3_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer3_V3.Ph3_P",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer3_V3.Ph3_U",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer3_V3.Ph3_I",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Sockets-corredor",
-              "type" : "sockets",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer4_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer4_V4.P1",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer4_V4.U1",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer4_V4.I1",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Air Conditioner Corredor",
-              "type" : "hvac",
-              "uri" : "http://192.168.2.5:8520/resource/Analyzer4_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "Analyzer4_V4.P3",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "voltage",
-                      "tag" : "Analyzer4_V4.U3",
-                      "data" : "DOUBLE"
-                  },
-                  {
-                      "type" : "current",
-                      "tag" : "Analyzer4_V4.I3",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_101",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/101/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 2_101",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/101/2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_102",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/102/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 2_102",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/102/2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_103",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/103/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_105",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/105/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 2_105",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/105/2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_106",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/106/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_107",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/107/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_108",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/108/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Lamp 1_109",
-              "type" : "lamp",
-              "uri" : "http://192.168.2.68:8089/desenrasca/lamp/109/1",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "power",
-                      "tag" : "consumption_w",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : true
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "consumption"
-              } 
-          },
-          {
-              "name" : "Movement Sensor 102_1",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_1_V4.Movement_Sensor_N102_1",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Movement Sensor 102_2",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_1_V4.Movement_Sensor_N102_2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Movement Sensor 102_3",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_1_V4.Movement_Sensor_N102_3",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 101",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_1_V4.N101_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 102",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_1_V4.N102_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 103",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_1_V4.N103_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 101",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_1_V4.N101_CO2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 101",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_1_V4.N101_VOC_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 101",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_1_V4.N101_Temp_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 101",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_1_V4.N101_Hum_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 101",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_1_V4.N101_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 102",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_1_V4.N102_Co2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 102",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_1_V4.N102_VOC_Air_Quality_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 102",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_1_V4.N102_Temperature_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 102",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_1_V4.N102_Humidity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 102",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_1_V4.N102_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 103",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_1_V4.N103_CO2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 103",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_1_V4.N103_VOC_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 103",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_1_V4.N103_Temp_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 103",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_1_V4.N103_Hum_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 103",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_1_V4",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_1_V4.N103_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Movement Sensor 105_1",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_2_V3.Movement_Sensor_N105_1",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Movement Sensor 105_2",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_2_V3.Movement_Sensor_N105_2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 104",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_2_V3.N104_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 105",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_2_V3.N105_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 106",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_2_V3.N106_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 104",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_2_V3.N104_Co2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 104",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_2_V3.N104_VOC_Air_Quality_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 104",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_2_V3.N104_Temperature_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 104",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_2_V3.N104_Humidity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 105",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_2_V3.N105_Co2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 105",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_2_V3.N105_VOC_Air_Quality_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 105",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_2_V3.N105_Temperature_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 105",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_2_V3.N105_Humidity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 105",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_2_V3.N105_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 106",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_2_V3.N106_Co2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 106",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_2_V3.N106_VOC_Air_Quality_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 106",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_2_V3.N106_Temperature_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 106",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_2_V3.N106_Humidity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 106",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_2_V3",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_2_V3.N106_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 107",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_3_V2.N107_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 108",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_3_V2.N108_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Door Sensor 109",
-              "type" : "door",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "door",
-                      "tag" : "Sensors_3_V2.N109_Door_NO",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor Outside",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_3_V2.Light_Sensor_Outside",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Movement Contact 107",
-              "type" : "movement",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "movement",
-                      "tag" : "Sensors_3_V2.N107_Movement_Contact",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 107",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_3_V2.N107_Temperature_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 107",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_3_V2.N107_Humidity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 107",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_3_V2.N107_Light_Intensity_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Corridor Light",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_3_V2.Corridor_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 108",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_3_V2.N108_CO2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 108",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_3_V2.N108_VOC_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 108",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_3_V2.N108_Temp_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 108",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_3_V2.N108_Hum_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 108",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_3_V2.N108_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "CO2 Sensor 109",
-              "type" : "co2",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "co2",
-                      "tag" : "Sensors_3_V2.N109_CO2",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "VOC Sensor 109",
-              "type" : "voc",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "voc",
-                      "tag" : "Sensors_3_V2.N109_VOC_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Temperature Sensor 109",
-              "type" : "temperature",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Sensors_3_V2.N109_Temp_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Humidity Sensor 109",
-              "type" : "humidity",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "humidity",
-                      "tag" : "Sensors_3_V2.N109_Hum_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Light Sensor 109",
-              "type" : "light",
-              "uri" : "http://192.168.2.5:8520/resource/Sensors_3_V2",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "light",
-                      "tag" : "Sensors_3_V2.N109_Light_x10",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "avg"
-              }  
-          },
-          {
-              "name" : "Generation",
-              "type" : "generation",
-              "uri" : "http://192.168.2.68:8089/desenrasca/generation/3750",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "generation",
-                      "tag" : "generation_w",
-                      "data" : "DOUBLE"   
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10, 
-                  "type" : "generation"
-              } 
-          },
-          {
-              "name" : "Weather",
-              "type" : "weather",
-              "uri" : "http://192.168.2.5:8520/resource/Weather",
-              "method" : "GET",
-              "connectionmode": "local",
-              "values" : [
-                  {
-                      "type" : "temperature",
-                      "tag" : "Weather.outdoor_app_temp",
-                      "data" : "DOUBLE"
-                  }
-              ],
-              "control" : {
-                  "demandresponse" : false
-              },
-              "store" : {
-                  "period" : 10,
-                  "type" : "avg"
-              }
-          }
-      ]
-  }
-} 
+    "app": {
+        "port" : 5000,
+        "monitoring": 0,
+        "dr_events_auto_accept": 1,
+        "hour_offset": 0
+    },
+    "storage" : {
+        "_comment" : "database configuration using mongodb",
+        "storing_frequency": 5,
+        "local" : {
+            "type" : "mongodb",
+            "server" : "192.168.2.91",
+            "port" : 32017,
+            "database" : "H01",
+            "batteries": ["H01","batteries"],
+            "iots_reading": ["H01","iots_reading"],
+            "forecast": ["H01","forecast"],
+            "totalpower": ["H01","totalpower"],
+            "totalpowerhour": ["H01","totalpowerhour"],
+            "token": ["H01","tokens"],
+            "demand_response": ["H01", "demand_response_invitations"],
+            "config": ["H01","config"],
+            "balance": ["H01","balance"],
+            "benefit": ["H01","benefit"],
+            "divisions": ["H01","divisions"],
+            "p2p_prices": ["H01","p2p_prices"],
+            "p2p_transaction": ["H01","p2p_transaction"]
+        }
+    },
+    "resources" : {
+        "_comment" : "reading period in seconds, resource response",
+        "monitoring_period" : 1,
+        "batteries":[],
+        "iots" : [
+            {
+                "name" : "AC1",
+                "type" : "hvac",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/AC1",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "AC2",
+                "type" : "hvac",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/AC2",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "AC3",
+                "type" : "hvac",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/AC3",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "AC4",
+                "type" : "hvac",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/AC4",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Water Heater",
+                "type" : "water heater",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Water heater",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "TV",
+                "type" : "tv",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/TV",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : false
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Microwave",
+                "type" : "microwave",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Microwave",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : false
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Kettle",
+                "type" : "kettle",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Kettle",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : false
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Lighting",
+                "type" : "lamp",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Lighting",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Refrigerator",
+                "type" : "refrigerator",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Refrigerator",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : true
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "avg"
+                }
+            },
+            {
+                "name" : "Consumption",
+                "type" : "consumption",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Consumption",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "power",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : false
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "consumption"
+                }
+            },
+            {
+                "name" : "Generation",
+                "type" : "generation",
+                "uri" : "http://192.168.2.91:30000/api/realtime/H_01/Generation",
+                "connectionmode": "local",
+                "values" : [
+                    {
+                        "type" : "generation",
+                        "tag" : "power",
+                        "data" : "DOUBLE"
+                    }
+                ],
+                "control" : {
+                    "demandresponse" : false
+                },
+                "store" : {
+                    "period" : 10,
+                    "type" : "generation"
+                }
+            }
+        ]
+    }
+}

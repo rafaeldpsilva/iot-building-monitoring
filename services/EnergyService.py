@@ -11,7 +11,7 @@ class EnergyService:
         today = datetime.now().replace(hour=0,minute=0, second=0, microsecond=0) - timedelta(seconds=1)
         last_day = today - timedelta(days=1)
         repo = BuildingRepository()
-        totalpower = repo.get_power_historic_interval(today, last_day)
+        totalpower = repo.get_power_historic_interval(last_day, today)
         total = pd.DataFrame(totalpower, columns=['totalpower', 'totalgeneration', 'datetime'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
