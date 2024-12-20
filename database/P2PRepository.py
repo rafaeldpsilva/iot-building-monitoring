@@ -17,7 +17,7 @@ class P2PRepository:
         try:
             prices = {"datetime": datetime.now(),
                       "sell_percentage": sell_percentage, "buy_percentage": buy_percentage}
-            client = MongoClient(self.server + ':' + self.port)
+            client = MongoClient(f"{self.server}:{self.port}")
             client[self.P2P_PRICES[0]][self.P2P_PRICES[1]].insert_one(prices)
         except Exception as e:
             print("An exception occurred ::", e)
@@ -28,7 +28,7 @@ class P2PRepository:
             print('\nP2P Prices\n', prices)
 
     def get_prices(self):
-        client = MongoClient(self.server + ':' + self.port)
+        client = MongoClient(f"{self.server}:{self.port}")
         prices = list(
             client[self.P2P_PRICES[0]][self.P2P_PRICES[1]].find().sort("datetime", -1))
         client.close()
@@ -48,10 +48,19 @@ class P2PRepository:
 
         return {'buy': buy, 'buy_percentage': buy_per, 'sell': sell, 'sell_percentage': sell_per,'market_prices': market_prices}
 
+    def get_transactions(self, start, end):
+        client = MongoClient(f"{self.server}:{self.port}")
+        try:
+            collection = client[self.P2P_TRANSACTIONS[0]][self.P2P_TRANSACTIONS[1]]
+            data = list(collection.find({'datetime': {'$gte': start, '$lt': end}}))
+        finally:
+            client.close()
+        return data
+    
     def set_transaction(self, datetime, peer, quantity, cost):
         try:
             transaction = {"datetime": datetime, "peer": peer, "quantity": quantity, "cost": cost}
-            client = MongoClient(self.server + ':' + self.port)
+            client = MongoClient(f"{self.server}:{self.port}")
             client[self.P2P_TRANSACTIONS[0]][self.P2P_TRANSACTIONS[1]].insert_one(transaction)
         except Exception as e:
             print("An exception occurred ::", e)
