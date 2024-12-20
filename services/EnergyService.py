@@ -15,7 +15,7 @@ class EnergyService:
         total = pd.DataFrame(totalpower, columns=['totalpower', 'totalgeneration', 'datetime'])
         total['datetime'] = pd.to_datetime(total['datetime'], format='%Y-%m-%d %H:%M:%S', dayfirst=True)
         total.set_index("datetime", inplace=True)
-        total = total.resample('5min').mean()
+        total = total.resample('1h').mean()
         total['datetime'] = total.index
         return total.to_dict(orient='records')
 

@@ -14,5 +14,5 @@ class P2PService:
         return prices
     
     def set_transaction(self, hour, peer, quantity, cost):
-        datetime = datetime.now().replace(hour=hour,minute=0, second=0, microsecond=0) + timedelta(days=1)
-        self.p2p_repo.set_transaction(datetime, peer, quantity, cost)
+        t = datetime.now().replace(hour=hour,minute=0, second=0, microsecond=0) + timedelta(days=1)
+        self.p2p_repo.set_transaction(t, peer, quantity, cost)
