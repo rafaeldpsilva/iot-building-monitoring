@@ -1,5 +1,6 @@
 from database.BuildingRepository import BuildingRepository
 from database.P2PRepository import P2PRepository
+from database.FinancialRespository import FinancialRepository
 from datetime import datetime, timedelta
 import pandas as pd
 
@@ -85,3 +86,16 @@ class EnergyService:
             else:
                 co2.append({"datetime": interval['datetime'], "co2_without_p2p": 0})
         return co2
+    
+    def add_benefit(self, source, product, value):
+        repo = FinancialRepository()
+        repo.insert_benefit(source, product, value)
+        repo.add_benefit(value)
+    
+    
+    def get_benefit_historic(self):
+        end = datetime.now().replace(day=1,hour=0,minute=0, second=0, microsecond=0)
+        start = end - timedelta(days=2)
+        start = start.replace(day=1)
+        repo = FinancialRepository()
+        return repo.get_benefit_historic(start, end)

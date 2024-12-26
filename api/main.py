@@ -288,15 +288,23 @@ def audit_check():
     return jsonify({'response': "OK"})
 
 
-@app.route('/benefit', methods=['POST'])
-def benefit():
+@app.route('/dr/benefit', methods=['POST'])
+def dr_benefit():
     json = request.get_json()
     iot = json['iot']
     value = json['value']
-    dr_service = DemandResponseService()
-    dr_service.add_benefit(iot, value)
+    service = EnergyService()
+    service.add_benefit('dr',iot, value)
     return jsonify({'response': "OK"})
 
+@app.route('/p2p/benefit', methods=['POST'])
+def p2p_benefit():
+    json = request.get_json()
+    peer = json['peer']
+    value = json['value']
+    dr_service = EnergyService()
+    dr_service.add_benefit('p2p',peer, value)
+    return jsonify({'response': "OK"})
 
 @app.route('/benefit/historic', methods=['GET'])
 def get_benefit():
