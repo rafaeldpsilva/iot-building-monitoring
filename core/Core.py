@@ -97,19 +97,29 @@ class Core(Thread):
                 return iot.values
         return False
 
-    def get_forecasted_flexibility(self):
+    def set_instructions(self, instructions):
+        for iot in self.iots:
+            iot.instructions = instructions[iot.name]
+            
+    def get_forecasted_flexibility(self, hour):
         shifting = []
         reducing = []
         for iot in self.iots:
-            if iot.demandresponse:
-                shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
+            if hour in iot.instructions:
+                if iot.instructions[hour] == "participation":
+                    shifting.append([iot.name, iot.get_power()])
+                if iot.instructions[hour] == "shifting":
+                    shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return shifting, reducing
 
-    def get_forecasted_consumption(self):
+    def get_forecasted_consumption(self, hour):
         forecasted_consumption = []
         for iot in self.iots:
-            if iot.demandresponse:
-                forecasted_consumption.append([iot.name, iot.get_power()])
+            if hour in iot.instructions:
+                if iot.instructions[hour] == "participation":
+                    forecasted_consumption.append([iot.name, iot.get_power()])
+                if iot.instructions[hour] == "shifting":
+                    forecasted_consumption.append([iot.name, iot.get_power()* random.randrange(0, 20) / 100])
         return forecasted_consumption
 
     def schedule_event(self, event_time, iot_name):

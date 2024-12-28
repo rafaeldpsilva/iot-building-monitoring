@@ -46,3 +46,9 @@ class IotService:
 
     def change_dr_enable(self, iot, enable):
         self.iot_repo.change_dr_enable(iot, enable)
+
+    def update_instructions(self, instructions):
+        self.iot_repo.update_instructions(instructions)
+    
+    def get_instructions(self):
+        self.iot_repo.get_instructions()

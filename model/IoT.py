@@ -16,7 +16,7 @@ class IoT(Thread):
             value["values"] = 0
         self.control = config["control"]
         self.monitoring_period = config_monitoring
-        # print(self.name, self.values) # [{type:, tag:, dataType:},{type:, tag:, dataType:}]
+        self.instruction = {}
 
     def get_values(self):
         return self.values

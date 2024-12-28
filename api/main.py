@@ -190,13 +190,23 @@ def forecast_generation():
 
 @app.route('/forecast/flexibility', methods=['GET'])
 def forecast_flexibility():
-    shifting, reducing = cr.get_forecasted_flexibility()
+    forecast_service = ForecastService()
+    forecasted_flexibility = forecast_service.forecast_flexibility()
+    return jsonify({'forecasted_flexibility': forecasted_flexibility}) 
+
+@app.route('/iots/forecast/flexibility', methods=['POST'])
+def iots_forecast_flexibility():
+    json = request.get_json()
+    hour = json['hour']
+    shifting, reducing = cr.get_forecasted_flexibility(hour)
     return jsonify({'shifting': shifting, 'reducing': reducing})
 
 
-@app.route('/iots/forecast/consumption', methods=['GET'])
+@app.route('/iots/forecast/consumption', methods=['POST'])
 def iots_forecast_consumption():
-    consumption = cr.get_forecasted_consumption()
+    json = request.get_json()
+    hour = json['hour']
+    consumption = cr.get_forecasted_consumption(hour)
     return jsonify({'forecasted_consumption': consumption})
 
 @app.route('/forecast', methods=['GET'])
@@ -335,6 +345,21 @@ def change_dr_enable():
     iot_service = IotService()
     iot_service.change_dr_enable(iot, enable)
     return jsonify(True)
+
+@app.route('/iot/instructions', methods=['POST'])
+def instructions():
+    json = request.get_json()
+    instructions = json['instructions']
+    iot_service = IotService()
+    iot_service.update_instructions(instructions)
+    cr.set_instructions(instructions)
+    return jsonify(True)
+
+@app.route('/iot/instructions', methods=['GET'])
+def get_instructions():
+    iot_service = IotService()
+    instructions = iot_service.get_instructions()
+    return jsonify(instructions)
 
 @app.route('/divisions', methods=['GET'])
 def get_divisions():
