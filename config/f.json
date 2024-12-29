@@ -25,7 +25,8 @@
             "benefit": ["H01","benefit"],
             "divisions": ["H01","divisions"],
             "p2p_prices": ["H01","p2p_prices"],
-            "p2p_transaction": ["H01","p2p_transaction"]
+            "p2p_transaction": ["H01","p2p_transaction"],
+            "instructions": ["H01","instructions"]
         }
     },
     "resources" : {

@@ -51,4 +51,4 @@ class IotService:
         self.iot_repo.update_instructions(instructions)
     
     def get_instructions(self):
-        self.iot_repo.get_instructions()
+        return self.iot_repo.get_instructions()
