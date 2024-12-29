@@ -99,7 +99,8 @@ class Core(Thread):
 
     def set_instructions(self, instructions):
         for iot in self.iots:
-            iot.instructions = instructions[iot.name]
+            if iot.name in instructions:
+                iot.instructions = instructions[iot.name]
             
     def get_forecasted_flexibility(self, hour):
         shifting = []
