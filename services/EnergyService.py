@@ -111,3 +111,16 @@ class EnergyService:
             benefits[ben] = round(benefits[ben], 4)
         
         return benefits
+
+    def get_benefits(self):
+        end = datetime.now().replace(day=1,hour=0,minute=0, second=0, microsecond=0)
+        start = end - timedelta(days=2)
+        start = start.replace(day=1)
+        repo = FinancialRepository()
+        transactions = repo.get_benefit_historic(start, end)
+        
+        benefits = []
+        for t in transactions:
+            benefits.append({'source': t['source'], 'datetime':t['datetime'], 'product': t['product'], 'value': t['value']})
+        
+        return benefits

@@ -458,6 +458,12 @@ def get_monthly_benefits():
     monthly_benefits = energy_service.get_monthly_benefits()
     return jsonify(monthly_benefits)
 
+@app.route('/benefits/detailed', methods=['GET'])
+def get_benefits():
+    energy_service = EnergyService()
+    benefits = energy_service.get_benefits()
+    return jsonify({'benefits':benefits})
+
 if __name__ == "__main__":
     cr = Core()
     cr.start()
