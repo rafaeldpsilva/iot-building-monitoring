@@ -40,7 +40,7 @@ class IotRepository:
         try:
             iots_save = {"instructions": instructions}
             client = MongoClient(f"{self.server}:{self.port}")
-            client[self.INSTRUCTIONS[0]][self.INSTRUCTIONS[1]].update_one({}, {"$set": iots_save})
+            client[self.INSTRUCTIONS[0]][self.INSTRUCTIONS[1]].update_one({}, {"$set": iots_save}, upsert=True)
         except Exception as e:
             print("An exception occurred ::", e)
         finally:

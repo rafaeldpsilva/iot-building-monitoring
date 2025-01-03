@@ -93,9 +93,21 @@ class EnergyService:
         repo.add_benefit(value)
     
     
-    def get_benefit_historic(self):
+    def get_monthly_benefits(self):
         end = datetime.now().replace(day=1,hour=0,minute=0, second=0, microsecond=0)
         start = end - timedelta(days=2)
         start = start.replace(day=1)
         repo = FinancialRepository()
-        return repo.get_benefit_historic(start, end)
+        transactions = repo.get_benefit_historic(start, end)
+        
+        benefits = {
+            'p2p': 0,
+            'dr': 0
+        }
+        for ben in transactions:
+            benefits[ben['source']] += ben['value']
+
+        for ben in benefits:
+            benefits[ben] = round(benefits[ben], 4)
+        
+        return benefits

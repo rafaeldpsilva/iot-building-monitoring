@@ -452,6 +452,12 @@ def get_co2_without_p2p():
     co2_without_p2p = energy_service.get_co2_without_p2p()
     return jsonify({"co2": co2_without_p2p})
 
+@app.route('/benefits/monthly', methods=['GET'])
+def get_monthly_benefits():
+    energy_service = EnergyService()
+    monthly_benefits = energy_service.get_monthly_benefits()
+    return jsonify(monthly_benefits)
+
 if __name__ == "__main__":
     cr = Core()
     cr.start()
