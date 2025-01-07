@@ -8,6 +8,7 @@ from utils.utils import get_config
 from model.IoT import IoT
 from model.Battery import Battery
 from model.StoringManager import StoringManager
+from services.IotService import IotService
 from core.DemandResponseAtuator import DemandResponseAtuator
 
 class Core(Thread):
@@ -26,13 +27,22 @@ class Core(Thread):
 
     def run(self):
         config = get_config()
-
+        
+        iot_service = IotService()
+        instructions = iot_service.get_instructions()
+        print(instructions)
         for i in config["resources"]["iots"]:
+            
             iot = IoT(i, config['resources']['monitoring_period'])
             if i["store"]["type"] == "consumption":
                 self.iots_consumption.append(iot)
             if i["store"]["type"] == "generation":
                 self.iots_generation.append(iot)
+
+            if iot.name in instructions:
+                iot.instructions = instructions[iot.name]
+            else:
+                iot.instructions = {}
             iot.start()
             self.iots.append(iot)
 
@@ -41,13 +51,13 @@ class Core(Thread):
             battery.start()
             self.batteries.append(battery)
 
-        storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
-        storing_manager.start()
+        #storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
+        #storing_manager.start()
 
-        for i, iot in enumerate(self.iots):
-            iot.join()
+        #for i, iot in enumerate(self.iots):
+        #    iot.join()
 
-        storing_manager.join()
+        #storing_manager.join()
 
     def get_total_batteries_state(self):
         total_state = 0
@@ -105,7 +115,10 @@ class Core(Thread):
     def get_forecasted_flexibility(self, hour):
         shifting = []
         reducing = []
+        print(self.iots)
         for iot in self.iots:
+            print(iot.name)
+            print(iot.instructions)
             if hour in iot.instructions:
                 if iot.instructions[hour] == "participation":
                     shifting.append([iot.name, iot.get_power()])

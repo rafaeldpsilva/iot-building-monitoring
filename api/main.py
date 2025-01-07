@@ -209,6 +209,45 @@ def iots_forecast_consumption():
     consumption = cr.get_forecasted_consumption(hour)
     return jsonify({'forecasted_consumption': consumption})
 
+@app.route('/iot/values', methods=['POST'])
+def get_iot_values():
+    json = request.get_json()
+    iot = json['iot']
+    values = cr.get_iot_values(iot)
+    return jsonify(values)
+    
+@app.route('/iot/historic', methods=['POST'])
+def get_iot_historic():
+    json = request.get_json()
+    iot = json['iot']
+    iot_service = IotService()
+    historic = iot_service.get_iot_historic(iot)
+    return jsonify({'historic': historic})
+
+@app.route('/iot/demandresponse/enable', methods=['POST'])
+def change_dr_enable():
+    json = request.get_json()
+    iot = json['iot']
+    enable = json['enable']
+    iot_service = IotService()
+    iot_service.change_dr_enable(iot, enable)
+    return jsonify(True)
+
+@app.route('/iot/instructions', methods=['POST'])
+def instructions():
+    json = request.get_json()
+    instructions = json['instructions']
+    iot_service = IotService()
+    iot_service.update_instructions(instructions)
+    cr.set_instructions(instructions)
+    return jsonify(True)
+
+@app.route('/iot/instructions', methods=['GET'])
+def get_instructions():
+    iot_service = IotService()
+    instructions = iot_service.get_instructions()
+    return jsonify(instructions)
+
 @app.route('/forecast', methods=['GET'])
 def forecast_value():
     forecast_service = ForecastService()
@@ -321,45 +360,6 @@ def get_benefit():
     dr_service = DemandResponseService()
     dr_service.get_benefit_historic()
     return jsonify({'response': "OK"})
-
-@app.route('/iot/values', methods=['POST'])
-def get_iot_values():
-    json = request.get_json()
-    iot = json['iot']
-    values = cr.get_iot_values(iot)
-    return jsonify(values)
-    
-@app.route('/iot/historic', methods=['POST'])
-def get_iot_historic():
-    json = request.get_json()
-    iot = json['iot']
-    iot_service = IotService()
-    historic = iot_service.get_iot_historic(iot)
-    return jsonify({'historic': historic})
-
-@app.route('/iot/demandresponse/enable', methods=['POST'])
-def change_dr_enable():
-    json = request.get_json()
-    iot = json['iot']
-    enable = json['enable']
-    iot_service = IotService()
-    iot_service.change_dr_enable(iot, enable)
-    return jsonify(True)
-
-@app.route('/iot/instructions', methods=['POST'])
-def instructions():
-    json = request.get_json()
-    instructions = json['instructions']
-    iot_service = IotService()
-    iot_service.update_instructions(instructions)
-    cr.set_instructions(instructions)
-    return jsonify(True)
-
-@app.route('/iot/instructions', methods=['GET'])
-def get_instructions():
-    iot_service = IotService()
-    instructions = iot_service.get_instructions()
-    return jsonify(instructions)
 
 @app.route('/divisions', methods=['GET'])
 def get_divisions():
