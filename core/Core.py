@@ -53,8 +53,8 @@ class Core(Thread):
         storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
         storing_manager.start()
 
-        #for i, iot in enumerate(self.iots):
-        #    iot.join()
+        for i, iot in enumerate(self.iots):
+            iot.join()
 
         storing_manager.join()
 
@@ -115,7 +115,6 @@ class Core(Thread):
         shifting = []
         reducing = []
         for iot in self.iots:
-            print(iot.instructions)
             if str(hour) in iot.instructions:
                 if iot.instructions[str(hour)] == "participation":
                     shifting.append([iot.name, iot.get_power()])
@@ -126,10 +125,10 @@ class Core(Thread):
     def get_forecasted_consumption(self, hour):
         forecasted_consumption = []
         for iot in self.iots:
-            if hour in iot.instructions:
-                if iot.instructions[hour] == "participation":
+            if str(hour) in iot.instructions:
+                if iot.instructions[str(hour)] == "participation":
                     forecasted_consumption.append([iot.name, iot.get_power()])
-                if iot.instructions[hour] == "shifting":
+                if iot.instructions[str(hour)] == "shifting":
                     forecasted_consumption.append([iot.name, iot.get_power()* random.randrange(0, 20) / 100])
         return forecasted_consumption
 
