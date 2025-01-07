@@ -30,7 +30,6 @@ class Core(Thread):
         
         iot_service = IotService()
         instructions = iot_service.get_instructions()
-        print(instructions)
         for i in config["resources"]["iots"]:
             
             iot = IoT(i, config['resources']['monitoring_period'])
@@ -51,13 +50,13 @@ class Core(Thread):
             battery.start()
             self.batteries.append(battery)
 
-        #storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
-        #storing_manager.start()
+        storing_manager = StoringManager(self, config['storage']['storing_frequency'], config['app']['hour_offset'])
+        storing_manager.start()
 
         #for i, iot in enumerate(self.iots):
         #    iot.join()
 
-        #storing_manager.join()
+        storing_manager.join()
 
     def get_total_batteries_state(self):
         total_state = 0
