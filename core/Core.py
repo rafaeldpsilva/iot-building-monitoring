@@ -115,14 +115,12 @@ class Core(Thread):
     def get_forecasted_flexibility(self, hour):
         shifting = []
         reducing = []
-        print(self.iots)
         for iot in self.iots:
-            print(iot.name)
             print(iot.instructions)
-            if hour in iot.instructions:
-                if iot.instructions[hour] == "participation":
+            if str(hour) in iot.instructions:
+                if iot.instructions[str(hour)] == "participation":
                     shifting.append([iot.name, iot.get_power()])
-                if iot.instructions[hour] == "shifting":
+                if iot.instructions[str(hour)] == "shifting":
                     shifting.append([iot.name, iot.get_power() * random.randrange(0, 20) / 100])
         return shifting, reducing
 
