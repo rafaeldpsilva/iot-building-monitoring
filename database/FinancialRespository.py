@@ -45,3 +45,9 @@ class FinancialRepository:
         benefits = list(client[self.BENEFIT[0]][self.BENEFIT[1]].find({'datetime': {'$gt': start, '$lt': end}}))
         client.close()
         return benefits
+
+    def get_all_benefit(self, end):
+        client = MongoClient(self.server + ':' + self.port)
+        benefits = list(client[self.BENEFIT[0]][self.BENEFIT[1]].find({'datetime': {'$lt': end}}).sort("datetime", -1))
+        client.close()
+        return benefits

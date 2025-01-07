@@ -16,7 +16,7 @@ class IoT(Thread):
             value["values"] = 0
         self.control = config["control"]
         self.monitoring_period = config_monitoring
-        self.instruction = {}
+        self.instructions = {}
 
     def get_values(self):
         return self.values
